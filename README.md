@@ -49,7 +49,7 @@ Each pair below is the original manuscript next to its Readable Version, exactly
 | 107 | An Upper Bound of 9/4 for the Matrix Multiplication Exponent | [PDF](demos/107/original.pdf) | [PDF](demos/107/readable.pdf) |
 | 260 | The spacetime Penrose inequality and enclosing area | [PDF](demos/260/original.pdf) | [PDF](demos/260/readable.pdf) |
 
-Source revisions and SHA-256 checksums are listed in [`demos/manifest.json`](demos/manifest.json). The full upstream collection of 722 manuscripts lives at [openai/math](https://github.com/openai/math).
+The full upstream collection of 722 manuscripts lives at [openai/math](https://github.com/openai/math).
 
 ## Contributing
 

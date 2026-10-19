@@ -51,6 +51,13 @@ Each pair below is the original manuscript next to its Readable Version, exactly
 
 The full upstream collection of 722 manuscripts lives at [openai/math](https://github.com/openai/math).
 
+## Additional skill: paper-blueprint
+
+[`paper-blueprint`](skills/paper-blueprint/SKILL.md) turns mathematics and theoretical computer science papers into interactive HTML dependency graphs in the style of the
+[Lean blueprint](https://github.com/PatrickMassot/leanblueprint) dependency page. Darker nodes indicate greater importance. Click a node to view its statement, proof, and role in the argument. **No** formalization is involved.
+
+**Input:** A `.tex` file, a directory or archive of LaTeX sources, or a PDF. LaTeX sources give more accurate results.
+
 ## Contributing
 
 You can propose a new skill, improve an existing one, or correct a demo by opening a pull request; [CONTRIBUTING.md](CONTRIBUTING.md) walks through the process. Maintainers review and merge accepted changes, then publish them to the website in a separate release step.

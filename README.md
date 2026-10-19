@@ -11,7 +11,7 @@
 
 [Website](https://readable-intelligence.com) ·
 [Skill](skills/restructure-paper/SKILL.md) ·
-[Download](downloads/readable-v4.zip) ·
+[Download](downloads/restructure-paper-qualified-revised.zip) ·
 [Demos](#demo-papers) ·
 [Contributing](CONTRIBUTING.md) ·
 [Licensing](LICENSES.md)
@@ -29,12 +29,12 @@ This is the public contribution repository for [Readable Intelligence](https://r
 | | |
 | --- | --- |
 | 📖 **Read** | [`SKILL.md`](skills/restructure-paper/SKILL.md) and its [reference files](skills/restructure-paper/references/) |
-| 📦 **Download** | [`readable-v4.zip`](downloads/readable-v4.zip), the same file offered on the website |
+| 📦 **Download** | [`restructure-paper-qualified-revised.zip`](downloads/restructure-paper-qualified-revised.zip), the same file offered on the website |
 | ⚙️ **Install** | Unzip to get `restructure-paper/`, then install it as a skill in your AI tool |
 | 📝 **Input** | A manuscript |
 
 ```bash
-unzip downloads/readable-v4.zip   # → restructure-paper/
+unzip downloads/restructure-paper-qualified-revised.zip   # → restructure-paper/
 ```
 
 ## Demo papers

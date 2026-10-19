@@ -1,9 +1,9 @@
-# Every four-dimensional Kakeya set has full Hausdorff dimension
+# Exact Derandomization of Logarithmic Space: L = RL = BPL
 
-Family 074.
+Family 103.
 
-- [Original manuscript](original.pdf) · [upstream source](https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Every-four-dimensional-Kakeya-set-has-full-Hausdorff-dimension-September-24-2026/paper.pdf)
-- [Readable Version](readable.pdf) · [interactive reader](https://readable-intelligence.com/paper/aeaee36af8d9?view=readable)
+- [Original manuscript](original.pdf) · [upstream source](https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Exact-Derandomization-of-Logarithmic-Space-L-equals-RL-equals-BPL-September-23-2026/paper.pdf)
+- [Readable Version](readable.pdf)
 
 The Readable Version is a modified edition prepared by Readable Intelligence contributors to improve organization and explanation. It is not the upstream manuscript and is not an independent verification of the mathematical claims.
 

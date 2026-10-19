@@ -20,7 +20,7 @@
 
 ---
 
-This is the public contribution repository for [Readable Intelligence](https://readable-intelligence.com). It holds our paper-rewriting skill and the five demo papers featured on the site.
+This is the public contribution repository for [Readable Intelligence](https://readable-intelligence.com). It holds our paper-rewriting skill and five demo paper pairs.
 
 ## Current skill
 
@@ -39,14 +39,14 @@ unzip downloads/restructure-paper-qualified-revised.zip   # → restructure-pape
 
 ## Demo papers
 
-Each pair below is the original manuscript next to its Readable Version, exactly as deployed on the site.
+Each pair below is the original manuscript next to its Readable Version. Website publication is a separate release step.
 
 | Family | Paper | Original | Readable Version |
 | :---: | --- | :---: | :---: |
-| 003 | The Quasi-Riemann Hypothesis: A Zero-Free Half-Plane ℜs > 7/8 | [PDF](demos/003/original.pdf) | [PDF](demos/003/readable.pdf) |
 | 102 | The Unique Games Theorem | [PDF](demos/102/original.pdf) | [PDF](demos/102/readable.pdf) |
-| 074 | Every four-dimensional Kakeya set has full Hausdorff dimension | [PDF](demos/074/original.pdf) | [PDF](demos/074/readable.pdf) |
+| 103 | Exact Derandomization of Logarithmic Space: L = RL = BPL | [PDF](demos/103/original.pdf) | [PDF](demos/103/readable.pdf) |
 | 107 | An Upper Bound of 9/4 for the Matrix Multiplication Exponent | [PDF](demos/107/original.pdf) | [PDF](demos/107/readable.pdf) |
+| 167 | A power saving for planar unit distances | [PDF](demos/167/original.pdf) | [PDF](demos/167/readable.pdf) |
 | 260 | The spacetime Penrose inequality and enclosing area | [PDF](demos/260/original.pdf) | [PDF](demos/260/readable.pdf) |
 
 The full upstream collection of 722 manuscripts lives at [openai/math](https://github.com/openai/math).

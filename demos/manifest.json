@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-19",
+  "upstreamRepository": "https://github.com/openai/math",
+  "upstreamRevision": "adc7f1241b42e322a6451854ab7e4b4c146bf78a",
+  "papers": [
+    {
+      "family": "102",
+      "title": "The Unique Games Theorem",
+      "originalSource": "https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/The-Unique-Games-Theorem-September-23-2026/paper.pdf",
+      "files": {
+        "original.pdf": {
+          "path": "102/original.pdf",
+          "sha256": "04d0290a9cb7ee815060f82cf556cee893d32b5255613160ca8b8d02a5fe1289",
+          "bytes": 801214
+        },
+        "readable.pdf": {
+          "path": "102/readable.pdf",
+          "sha256": "7d4e0284b9b96eb38e3665a9985f311a5785544514830700804374aec16fb10c",
+          "bytes": 715030
+        }
+      },
+      "readableUpdated": "2026-10-19"
+    },
+    {
+      "family": "103",
+      "title": "Exact Derandomization of Logarithmic Space: L = RL = BPL",
+      "originalSource": "https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Exact-Derandomization-of-Logarithmic-Space-L-equals-RL-equals-BPL-September-23-2026/paper.pdf",
+      "files": {
+        "original.pdf": {
+          "path": "103/original.pdf",
+          "sha256": "15030fab23d31a4d91bd944100a547c3e9eff6da8330a4fb94ea999f071fadfc",
+          "bytes": 1000094
+        },
+        "readable.pdf": {
+          "path": "103/readable.pdf",
+          "sha256": "492db8a0339d32e533f00564c699d297ae52bbf762c0b1b2421606ccf24fbef1",
+          "bytes": 1037007
+        }
+      },
+      "readableUpdated": "2026-10-19"
+    },
+    {
+      "family": "107",
+      "title": "An Upper Bound of 9/4 for the Matrix Multiplication Exponent",
+      "originalSource": "https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Matrix-Multiplication-Nine-Fourths-October-2-2026/paper.pdf",
+      "files": {
+        "original.pdf": {
+          "path": "107/original.pdf",
+          "sha256": "9c430672ddf2a1d0d2335c55c03b0b1fdea72f5a000c586bf130c2e984f19ae6",
+          "bytes": 370884
+        },
+        "readable.pdf": {
+          "path": "107/readable.pdf",
+          "sha256": "286479dedb02a78ad9748f0c4a41ecf6c39ac2b58fd555c763f3027c032c4c5e",
+          "bytes": 359356
+        }
+      },
+      "readableUpdated": "2026-10-19"
+    },
+    {
+      "family": "167",
+      "title": "A power saving for planar unit distances",
+      "originalSource": "https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/A-power-saving-for-planar-unit-distances-September-23-2026/paper.pdf",
+      "files": {
+        "original.pdf": {
+          "path": "167/original.pdf",
+          "sha256": "72bfa9153772b2124385cf4e53a5557320ab92e29fe4bdcb35a05a34481aede0",
+          "bytes": 619610
+        },
+        "readable.pdf": {
+          "path": "167/readable.pdf",
+          "sha256": "c8f636512f823c2275fc87fcf84790adabf8efcb50a3af6d185cefc041319112",
+          "bytes": 686249
+        }
+      },
+      "readableUpdated": "2026-10-19"
+    },
+    {
+      "family": "260",
+      "title": "The spacetime Penrose inequality and enclosing area",
+      "originalSource": "https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/The-spacetime-Penrose-inequality-and-enclosing-area-September-27-2026/paper.pdf",
+      "files": {
+        "original.pdf": {
+          "path": "260/original.pdf",
+          "sha256": "9bb0c350914915db56195840fc40dc31c8ee792628d488148a66f86940d1e35d",
+          "bytes": 910424
+        },
+        "readable.pdf": {
+          "path": "260/readable.pdf",
+          "sha256": "af5d70498963855774400f965b89a3f031140dc94ea13fdf85f8d98c228bbafb",
+          "bytes": 941004
+        }
+      }
+    }
+  ]
+}

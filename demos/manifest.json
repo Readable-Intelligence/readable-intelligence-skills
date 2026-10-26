@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-10-19",
+  "updated": "2026-10-26",
   "upstreamRepository": "https://github.com/openai/math",
   "upstreamRevision": "adc7f1241b42e322a6451854ab7e4b4c146bf78a",
   "papers": [
@@ -92,6 +92,24 @@
           "bytes": 941004
         }
       }
+    },
+    {
+      "family": "336",
+      "title": "Positive scalar curvature and uniform codimension-two width",
+      "originalSource": "https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/Positive-scalar-curvature-and-uniform-codimension-two-width-September-23-2026/paper.pdf",
+      "files": {
+        "original.pdf": {
+          "path": "336/original.pdf",
+          "sha256": "f67c30579306bd4dd256ece4d24cdad18ba149930fa97f9ab31a1e6a768cef89",
+          "bytes": 864828
+        },
+        "readable.pdf": {
+          "path": "336/readable.pdf",
+          "sha256": "d99983e0a3ff4b0d69c29ae6bc9833eb3046fe9e96bd559dda6eb40be20e8e13",
+          "bytes": 928010
+        }
+      },
+      "readableUpdated": "2026-10-26"
     }
   ]
 }

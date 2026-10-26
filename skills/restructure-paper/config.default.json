@@ -1,0 +1,56 @@
+{
+ "claude": {
+  "bin": "claude",
+  "model": "opus",
+  "effort": "high",
+  "timeout_min": 120,
+  "extra_args": []
+ },
+ "gpt": {
+  "bin": "codex",
+  "model": "",
+  "effort": "high",
+  "timeout_min": 120,
+  "extra_args": []
+ },
+ "role_model": {},
+ "role_effort": {
+  "registrar.md": "max"
+ },
+ "rounds": 3,
+ "terminology_pass": true,
+ "max_consecutive_rejections": 2,
+ "max_items": null,
+ "repair_on_reject": true,
+ "max_repairs": 3,
+ "revert_fallback": true,
+ "confirmation_check": true,
+ "final_acceptance": true,
+ "defensive_pass": true,
+ "accept": {
+  "open_base_min_confidence": "high"
+ },
+ "pairwise_votes": 1,
+ "canary_check": true,
+ "audit_shard_size": 35,
+ "max_parallel_claude": 4,
+ "max_parallel_gpt": 6,
+ "retries": 2,
+ "supplementary_retrieval": true,
+ "isolation": {
+  "lock_vault": true,
+  "lock_foreign_stores": true,
+  "claude_restricted": true,
+  "claude_safe_mode": true,
+  "claude_permission_prompts_none": true,
+  "allow_mixed_parallel": "auto"
+ },
+ "lock_test_seconds": 6,
+ "rate_limit": {
+  "initial_wait_min": 15,
+  "max_wait_min": 300,
+  "max_retries": 12
+ },
+ "timeout_per_page_min": 2,
+ "cross_review": {}
+}

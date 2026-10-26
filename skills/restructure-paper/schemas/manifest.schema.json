@@ -1,0 +1,78 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "manifest",
+ "type": "object",
+ "required": [
+  "entries"
+ ],
+ "properties": {
+  "entries": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "key",
+     "title",
+     "authors",
+     "year",
+     "url",
+     "relation",
+     "why",
+     "access",
+     "txt"
+    ],
+    "properties": {
+     "key": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     },
+     "authors": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "year": {
+      "type": "integer"
+     },
+     "venue": {
+      "type": "string"
+     },
+     "url": {
+      "type": "string"
+     },
+     "relation": {
+      "type": "string",
+      "enum": [
+       "builds-on",
+       "same-problem",
+       "method",
+       "comparable-length",
+       "definitional"
+      ]
+     },
+     "why": {
+      "type": "string"
+     },
+     "access": {
+      "type": "string",
+      "enum": [
+       "full",
+       "partial",
+       "abstract"
+      ]
+     },
+     "txt": {
+      "type": "string"
+     },
+     "pdf": {
+      "type": "string"
+     }
+    }
+   },
+   "minItems": 1
+  }
+ }
+}

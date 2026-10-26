@@ -1,0 +1,155 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "acceptance",
+ "type": "object",
+ "required": [
+  "summary",
+  "conditions",
+  "math_issues",
+  "optional",
+  "coverage"
+ ],
+ "properties": {
+  "summary": {
+   "type": "string"
+  },
+  "conditions": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "status",
+     "locations",
+     "evidence"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "PASS",
+       "FAIL",
+       "UNVERIFIED"
+      ]
+     },
+     "locations": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "page",
+        "quote"
+       ],
+       "properties": {
+        "page": {
+         "type": "integer"
+        },
+        "quote": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "evidence": {
+      "type": "string"
+     },
+     "required_repair": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "math_issues": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "kind",
+     "page",
+     "quote",
+     "explanation",
+     "needed"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "error",
+       "gap",
+       "unclear",
+       "overclaim"
+      ]
+     },
+     "page": {
+      "type": "integer"
+     },
+     "quote": {
+      "type": "string"
+     },
+     "explanation": {
+      "type": "string"
+     },
+     "needed": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "optional": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "page",
+     "quote",
+     "note"
+    ],
+    "properties": {
+     "page": {
+      "type": "integer"
+     },
+     "quote": {
+      "type": "string"
+     },
+     "note": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "coverage": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "section",
+     "depth"
+    ],
+    "properties": {
+     "section": {
+      "type": "string"
+     },
+     "depth": {
+      "type": "string",
+      "enum": [
+       "careful",
+       "skimmed",
+       "not read"
+      ]
+     },
+     "reason": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

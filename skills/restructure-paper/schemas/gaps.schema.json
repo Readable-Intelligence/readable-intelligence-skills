@@ -1,0 +1,46 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "gaps",
+ "type": "object",
+ "required": [
+  "gaps"
+ ],
+ "properties": {
+  "gaps": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "kind",
+     "detail"
+    ],
+    "properties": {
+     "kind": {
+      "type": "string"
+     },
+     "detail": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "exclude": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "key",
+     "reason"
+    ],
+    "properties": {
+     "key": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

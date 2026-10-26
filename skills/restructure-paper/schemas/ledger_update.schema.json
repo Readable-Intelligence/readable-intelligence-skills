@@ -1,0 +1,54 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "ledger_update",
+ "type": "object",
+ "required": [
+  "decisions",
+  "reversals"
+ ],
+ "properties": {
+  "decisions": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "anchor",
+     "decision",
+     "reason"
+    ],
+    "properties": {
+     "anchor": {
+      "type": "string"
+     },
+     "decision": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "for_author": {
+      "type": "boolean"
+     }
+    }
+   }
+  },
+  "reversals": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "ledger_id",
+     "argument"
+    ],
+    "properties": {
+     "ledger_id": {
+      "type": "string"
+     },
+     "argument": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

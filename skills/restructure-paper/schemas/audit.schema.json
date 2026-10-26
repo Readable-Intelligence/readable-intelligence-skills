@@ -1,0 +1,155 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "audit",
+ "type": "object",
+ "required": [
+  "additions",
+  "gaps"
+ ],
+ "properties": {
+  "additions": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "location",
+     "quote",
+     "status",
+     "justification"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "location": {
+      "type": "string"
+     },
+     "quote": {
+      "type": "string"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "mechanism",
+       "argument",
+       "computation",
+       "attribution",
+       "statement",
+       "other"
+      ]
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "verified",
+       "standard",
+       "unverifiable",
+       "unsupported",
+       "false"
+      ]
+     },
+     "justification": {
+      "type": "string"
+     },
+     "sources": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "key",
+        "locator"
+       ],
+       "properties": {
+        "key": {
+         "type": "string"
+        },
+        "locator": {
+         "type": "string"
+        },
+        "quote": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "carried_forward": {
+      "type": "boolean"
+     },
+     "region": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "gaps": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "location",
+     "quote",
+     "class",
+     "obligation"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "location": {
+      "type": "string"
+     },
+     "quote": {
+      "type": "string"
+     },
+     "class": {
+      "type": "string",
+      "enum": [
+       "1",
+       "2",
+       "3"
+      ]
+     },
+     "obligation": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "summary": {
+   "type": "string"
+  },
+  "regions": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "verdict"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "verdict": {
+      "type": "string",
+      "enum": [
+       "no_new_claim",
+       "addition"
+      ]
+     },
+     "addition_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "note": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

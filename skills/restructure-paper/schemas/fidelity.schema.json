@@ -1,0 +1,115 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "fidelity",
+ "type": "object",
+ "required": [
+  "counts",
+  "items",
+  "build_ok"
+ ],
+ "properties": {
+  "counts": {
+   "type": "object",
+   "required": [
+    "H",
+    "M",
+    "L"
+   ],
+   "properties": {
+    "H": {
+     "type": "integer"
+    },
+    "M": {
+     "type": "integer"
+    },
+    "L": {
+     "type": "integer"
+    }
+   }
+  },
+  "items": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "severity",
+     "kind",
+     "explanation"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "severity": {
+      "type": "string",
+      "enum": [
+       "H",
+       "M",
+       "L"
+      ]
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "changed",
+       "weakened",
+       "lost",
+       "added_claim",
+       "undefined_symbol",
+       "citation",
+       "other",
+       "strengthened",
+       "qualification_lost"
+      ]
+     },
+     "original_loc": {
+      "type": "string"
+     },
+     "current_loc": {
+      "type": "string"
+     },
+     "quote_original": {
+      "type": "string"
+     },
+     "quote_current": {
+      "type": "string"
+     },
+     "explanation": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "build_ok": {
+   "type": "boolean"
+  },
+  "checks": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "verdict",
+     "where"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "verdict": {
+      "type": "string",
+      "enum": [
+       "kept",
+       "absorbed",
+       "lost"
+      ]
+     },
+     "where": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,83 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "receipt",
+ "type": "object",
+ "required": [
+  "items",
+  "consequential_changes",
+  "compiles"
+ ],
+ "properties": {
+  "items": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "status"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "done",
+       "partial",
+       "declined"
+      ]
+     },
+     "changed": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "file",
+        "lines"
+       ],
+       "properties": {
+        "file": {
+         "type": "string"
+        },
+        "lines": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "reason": {
+      "type": "string"
+     },
+     "sources": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "consequential_changes": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "file",
+     "description"
+    ],
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "description": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "compiles": {
+   "type": "boolean"
+  }
+ }
+}

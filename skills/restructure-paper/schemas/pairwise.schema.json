@@ -1,0 +1,259 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "pairwise",
+ "type": "object",
+ "required": [
+  "dimensions",
+  "field_reader",
+  "checking_reader",
+  "overall",
+  "regressions"
+ ],
+ "properties": {
+  "dimensions": {
+   "type": "object",
+   "required": [
+    "G",
+    "C",
+    "L",
+    "T"
+   ],
+   "properties": {
+    "G": {
+     "type": "object",
+     "required": [
+      "verdict",
+      "confidence"
+     ],
+     "properties": {
+      "verdict": {
+       "type": "string",
+       "enum": [
+        "X",
+        "Y",
+        "tie"
+       ]
+      },
+      "confidence": {
+       "type": "string",
+       "enum": [
+        "low",
+        "medium",
+        "high"
+       ]
+      }
+     }
+    },
+    "C": {
+     "type": "object",
+     "required": [
+      "verdict",
+      "confidence"
+     ],
+     "properties": {
+      "verdict": {
+       "type": "string",
+       "enum": [
+        "X",
+        "Y",
+        "tie"
+       ]
+      },
+      "confidence": {
+       "type": "string",
+       "enum": [
+        "low",
+        "medium",
+        "high"
+       ]
+      }
+     }
+    },
+    "L": {
+     "type": "object",
+     "required": [
+      "verdict",
+      "confidence"
+     ],
+     "properties": {
+      "verdict": {
+       "type": "string",
+       "enum": [
+        "X",
+        "Y",
+        "tie"
+       ]
+      },
+      "confidence": {
+       "type": "string",
+       "enum": [
+        "low",
+        "medium",
+        "high"
+       ]
+      }
+     }
+    },
+    "T": {
+     "type": "object",
+     "required": [
+      "verdict",
+      "confidence"
+     ],
+     "properties": {
+      "verdict": {
+       "type": "string",
+       "enum": [
+        "X",
+        "Y",
+        "tie"
+       ]
+      },
+      "confidence": {
+       "type": "string",
+       "enum": [
+        "low",
+        "medium",
+        "high"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "field_reader": {
+   "type": "object",
+   "required": [
+    "verdict",
+    "confidence"
+   ],
+   "properties": {
+    "verdict": {
+     "type": "string",
+     "enum": [
+      "X",
+      "Y",
+      "tie"
+     ]
+    },
+    "confidence": {
+     "type": "string",
+     "enum": [
+      "low",
+      "medium",
+      "high"
+     ]
+    }
+   }
+  },
+  "checking_reader": {
+   "type": "object",
+   "required": [
+    "verdict",
+    "confidence"
+   ],
+   "properties": {
+    "verdict": {
+     "type": "string",
+     "enum": [
+      "X",
+      "Y",
+      "tie"
+     ]
+    },
+    "confidence": {
+     "type": "string",
+     "enum": [
+      "low",
+      "medium",
+      "high"
+     ]
+    }
+   }
+  },
+  "overall": {
+   "type": "object",
+   "required": [
+    "verdict",
+    "confidence"
+   ],
+   "properties": {
+    "verdict": {
+     "type": "string",
+     "enum": [
+      "X",
+      "Y",
+      "tie"
+     ]
+    },
+    "confidence": {
+     "type": "string",
+     "enum": [
+      "low",
+      "medium",
+      "high"
+     ]
+    }
+   }
+  },
+  "regressions": {
+   "type": "object",
+   "required": [
+    "X",
+    "Y"
+   ],
+   "properties": {
+    "X": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "page",
+       "quote",
+       "what"
+      ],
+      "properties": {
+       "page": {
+        "type": "integer"
+       },
+       "quote": {
+        "type": "string"
+       },
+       "what": {
+        "type": "string"
+       },
+       "false_or_unsupported_claim": {
+        "type": "boolean"
+       }
+      }
+     }
+    },
+    "Y": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "page",
+       "quote",
+       "what"
+      ],
+      "properties": {
+       "page": {
+        "type": "integer"
+       },
+       "quote": {
+        "type": "string"
+       },
+       "what": {
+        "type": "string"
+       },
+       "false_or_unsupported_claim": {
+        "type": "boolean"
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

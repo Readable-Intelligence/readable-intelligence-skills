@@ -1,0 +1,140 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "notes",
+ "type": "object",
+ "required": [
+  "equivalences",
+  "open_issues"
+ ],
+ "properties": {
+  "equivalences": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "statement",
+     "argument"
+    ],
+    "properties": {
+     "statement": {
+      "type": "string"
+     },
+     "argument": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "open_issues": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "location",
+     "issue"
+    ],
+    "properties": {
+     "location": {
+      "type": "string"
+     },
+     "issue": {
+      "type": "string"
+     },
+     "class": {
+      "type": "string",
+      "enum": [
+       "3",
+       "other"
+      ]
+     }
+    }
+   }
+  },
+  "architecture_plan": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "item",
+     "new_location",
+     "presentation",
+     "reason"
+    ],
+    "properties": {
+     "item": {
+      "type": "string"
+     },
+     "new_location": {
+      "type": "string"
+     },
+     "presentation": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "reference_pattern": {
+      "type": "string"
+     },
+     "labels": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "added_arguments": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "location",
+     "class",
+     "obligation",
+     "inputs"
+    ],
+    "properties": {
+     "location": {
+      "type": "string"
+     },
+     "class": {
+      "type": "string",
+      "enum": [
+       "1",
+       "2"
+      ]
+     },
+     "obligation": {
+      "type": "string"
+     },
+     "inputs": {
+      "type": "string"
+     },
+     "sources": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "key",
+        "locator"
+       ],
+       "properties": {
+        "key": {
+         "type": "string"
+        },
+        "locator": {
+         "type": "string"
+        },
+        "quote": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

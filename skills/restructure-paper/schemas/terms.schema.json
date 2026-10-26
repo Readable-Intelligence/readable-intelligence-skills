@@ -1,0 +1,49 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "terms",
+ "type": "object",
+ "required": [
+  "terms"
+ ],
+ "properties": {
+  "terms": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "manuscript_term",
+     "standard_term",
+     "status",
+     "source_key",
+     "locator",
+     "quote"
+    ],
+    "properties": {
+     "manuscript_term": {
+      "type": "string"
+     },
+     "standard_term": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "standard",
+       "private-name",
+       "no-standard-term"
+      ]
+     },
+     "source_key": {
+      "type": "string"
+     },
+     "locator": {
+      "type": "string"
+     },
+     "quote": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

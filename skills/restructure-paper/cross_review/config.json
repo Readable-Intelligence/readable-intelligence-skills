@@ -1,0 +1,10 @@
+{
+ "claude": {"bin": "claude", "model": "claude-opus-5-5", "effort": "xhigh", "timeout_min": 360, "extra_args": []},
+ "gpt": {"bin": "codex", "model": "gpt-6-astra", "effort": "max", "timeout_min": 360, "extra_args": []},
+ "timeout_per_page_min": 10,
+ "max_parallel_claude": 2,
+ "max_parallel_gpt": 2,
+ "retries": 2,
+ "lock_records": true,
+ "rate_limit": {"initial_wait_min": 15, "max_wait_min": 300, "max_retries": 12}
+}

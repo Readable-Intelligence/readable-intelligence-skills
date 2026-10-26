@@ -1,0 +1,149 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "instructions",
+ "type": "object",
+ "required": [
+  "round",
+  "mode",
+  "items",
+  "do_not_touch"
+ ],
+ "properties": {
+  "round": {
+   "type": "integer"
+  },
+  "mode": {
+   "type": "string",
+   "enum": [
+    "repair",
+    "revert"
+   ]
+  },
+  "items": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "class",
+     "priority",
+     "title",
+     "locations",
+     "instances_complete",
+     "problem",
+     "target",
+     "constraints"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "class": {
+      "type": "string",
+      "enum": [
+       "F",
+       "G",
+       "C",
+       "L",
+       "T"
+      ]
+     },
+     "priority": {
+      "type": "integer"
+     },
+     "title": {
+      "type": "string"
+     },
+     "locations": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "file",
+        "line",
+        "snippet"
+       ],
+       "properties": {
+        "file": {
+         "type": "string"
+        },
+        "line": {
+         "type": "integer"
+        },
+        "snippet": {
+         "type": "string"
+        },
+        "page": {
+         "type": "integer"
+        }
+       }
+      },
+      "minItems": 1
+     },
+     "instances_complete": {
+      "type": "boolean"
+     },
+     "rule_for_rest": {
+      "type": "string"
+     },
+     "problem": {
+      "type": "string"
+     },
+     "target": {
+      "type": "string"
+     },
+     "constraints": {
+      "type": "string"
+     },
+     "example": {
+      "type": "string"
+     },
+     "renames": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "old",
+        "new"
+       ],
+       "properties": {
+        "old": {
+         "type": "string"
+        },
+        "new": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "origin": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "edit",
+       "mechanism",
+       "cut"
+      ]
+     },
+     "obligation": {
+      "type": "string"
+     },
+     "materials": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "do_not_touch": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
+ }
+}

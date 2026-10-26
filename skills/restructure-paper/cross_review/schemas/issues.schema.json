@@ -1,0 +1,126 @@
+{
+ "type": "object",
+ "required": [
+  "issues",
+  "open",
+  "not_issues"
+ ],
+ "properties": {
+  "issues": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "location",
+     "problem",
+     "pattern",
+     "evidence",
+     "fix",
+     "edits"
+    ],
+    "properties": {
+     "location": {
+      "type": "string"
+     },
+     "problem": {
+      "type": "string"
+     },
+     "pattern": {
+      "type": "string"
+     },
+     "evidence": {
+      "type": "string"
+     },
+     "fix": {
+      "type": "string"
+     },
+     "edits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "required": [
+        "file",
+        "old",
+        "new"
+       ],
+       "properties": {
+        "file": {
+         "type": "string"
+        },
+        "old": {
+         "type": "string"
+        },
+        "new": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "reported": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "open": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "location",
+     "problem",
+     "evidence"
+    ],
+    "properties": {
+     "location": {
+      "type": "string"
+     },
+     "problem": {
+      "type": "string"
+     },
+     "evidence": {
+      "type": "string"
+     },
+     "reported": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "not_issues": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "location",
+     "cost",
+     "reason"
+    ],
+    "properties": {
+     "location": {
+      "type": "string"
+     },
+     "cost": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "reported": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ }
+}

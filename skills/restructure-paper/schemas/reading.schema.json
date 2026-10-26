@@ -1,0 +1,105 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "reading",
+ "type": "object",
+ "required": [
+  "claims",
+  "routes",
+  "constructions",
+  "reconstruction",
+  "nothing_new"
+ ],
+ "properties": {
+  "claims": {
+   "type": "string"
+  },
+  "routes": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "result",
+     "from_introduction",
+     "from_statements"
+    ],
+    "properties": {
+     "result": {
+      "type": "string"
+     },
+     "from_introduction": {
+      "type": "string"
+     },
+     "from_statements": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "constructions": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "location",
+     "purpose_clear_beforehand",
+     "note"
+    ],
+    "properties": {
+     "location": {
+      "type": "string"
+     },
+     "purpose_clear_beforehand": {
+      "type": "boolean"
+     },
+     "note": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "reconstruction": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "page",
+     "quote",
+     "what_was_missing"
+    ],
+    "properties": {
+     "page": {
+      "type": "integer"
+     },
+     "quote": {
+      "type": "string"
+     },
+     "what_was_missing": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "nothing_new": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "page",
+     "quote",
+     "why"
+    ],
+    "properties": {
+     "page": {
+      "type": "integer"
+     },
+     "quote": {
+      "type": "string"
+     },
+     "why": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Rewrite Mathematical Papers"
-  short_description: "Source-checked rewriting with independent acceptance"
-  default_prompt: "Use $restructure-paper to rewrite this manuscript, checking terminology, statements, contribution, and proofs with independent reviewers."

@@ -1,0 +1,162 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "architecture",
+ "type": "object",
+ "required": [
+  "papers",
+  "synthesis"
+ ],
+ "properties": {
+  "papers": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "key",
+     "pages",
+     "outline",
+     "first_main_statement_page",
+     "first_main_statement_form",
+     "intro_pages",
+     "assembly"
+    ],
+    "properties": {
+     "key": {
+      "type": "string"
+     },
+     "pages": {
+      "type": "integer"
+     },
+     "outline": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "section",
+        "job"
+       ],
+       "properties": {
+        "section": {
+         "type": "string"
+        },
+        "job": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "first_main_statement_page": {
+      "type": "integer"
+     },
+     "first_main_statement_form": {
+      "type": "string",
+      "enum": [
+       "precise",
+       "rough_with_pointer",
+       "none"
+      ]
+     },
+     "notation_before_statement": {
+      "type": "string"
+     },
+     "intro_pages": {
+      "type": "integer"
+     },
+     "intro_parts": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "conventions_location": {
+      "type": "string"
+     },
+     "assembly": {
+      "type": "string",
+      "enum": [
+       "early_deduction",
+       "closing_assembly",
+       "both",
+       "interleaved"
+      ]
+     },
+     "assembly_locator": {
+      "type": "string"
+     },
+     "constructions_and_deferrals": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "synthesis": {
+   "type": "object",
+   "required": [
+    "analogues",
+    "first_main_statement_page_range",
+    "intro_pages_range",
+    "default_architecture"
+   ],
+   "properties": {
+    "length_band": {
+     "type": "string"
+    },
+    "analogues": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "first_main_statement_page_range": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     }
+    },
+    "intro_pages_range": {
+     "type": "array",
+     "items": {
+      "type": "integer"
+     }
+    },
+    "assembly_pattern": {
+     "type": "string"
+    },
+    "disagreements": {
+     "type": "string"
+    },
+    "default_architecture": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "part",
+       "function",
+       "support"
+      ],
+      "properties": {
+       "part": {
+        "type": "string"
+       },
+       "function": {
+        "type": "string"
+       },
+       "support": {
+        "type": "string",
+        "enum": [
+         "unanimous",
+         "majority",
+         "split",
+         "single source"
+        ]
+       },
+       "evidence": {
+        "type": "string"
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

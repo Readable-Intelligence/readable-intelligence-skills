@@ -5,7 +5,7 @@ sketch use must be explained by one of the following:
 
 1. the node itself: its statement introduces the symbol ("Let $m=2^k$", "for every
    $x$", "$y:=\dots$");
-2. its `context` note: a short "notation in force" paragraph shown above the statement;
+2. its `context` note: a short "notation in force" paragraph shown below the statement;
 3. the paper-wide `notation` table, which the modal lists automatically under "Notation
    used here";
 4. a node it depends on, directly or transitively, through a visible arrow.

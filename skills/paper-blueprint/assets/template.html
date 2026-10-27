@@ -105,6 +105,11 @@ button.dep-closebtn:hover { color: var(--fg); }
 .meter { display: inline-flex; gap: 2px; }
 .meter span { width: 1.1rem; height: .7rem; border: 1px solid #777; border-radius: 2px; background: #fff; }
 .block { margin-top: .6rem; }
+/* novelty meter: level 1 is white, so empty cells are told apart by a faint dashed outline */
+.meter.nov span { border: 1px dashed #c8c8c8; }
+.meter.nov span.on { border: 1px solid #555; }
+.novelty-note a { color: #1d5d90; text-decoration: none; border-bottom: 1px dotted #1d5d90; }
+.unverified { color: var(--muted); font-style: italic; font-size: .85em; }
 .block > .hd { font-family: "Lucida Grande", Arial, sans-serif; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: .1rem; }
 details.proof { margin-top: .6rem; }
 details.proof > summary { cursor: pointer; font-style: italic; }
@@ -127,7 +132,7 @@ ol.tex-enum > li { margin: .2rem 0; }
 .item-label { display: inline-block; min-width: 1.6rem; margin-left: -1.6rem; }
 ul { margin: .3rem 0; padding-left: 1.4rem; }
 .math.display { overflow-x: auto; overflow-y: hidden; margin: .4rem 0; }
-.context { margin: .2rem 0 .5rem .4rem; padding: .35rem .7rem; background: #f6f8fa; border-left: .15rem dashed #8a96a3; font-size: .95rem; }
+.context { margin: .5rem 0 .5rem .4rem; padding: .35rem .7rem; background: #f6f8fa; border-left: .15rem dashed #8a96a3; font-size: .95rem; }
 .context .hd { font-family: "Lucida Grande", Arial, sans-serif; font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
 .nrow { display: flex; gap: .8rem; align-items: baseline; margin: .15rem 0; }
 .nsym { min-width: 4.5rem; text-align: right; flex: 0 0 auto; }
@@ -248,6 +253,7 @@ __SCRIPTS__
         if (!n) return;
         tip.innerHTML = "<b>" + esc(n.label + (n.title_plain ? " (" + n.title_plain + ")" : "")) + "</b>" +
           (n.importance != null ? UI.importance + " " + n.importance + "/5" : UI.not_rated) +
+          (n.novelty != null ? " · " + UI.novelty + " " + n.novelty + "/5" : "") +
           (n.summary_plain ? "<br>" + esc(n.summary_plain) : "");
         tip.style.display = "block";
         const x = Math.min(ev.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
@@ -300,13 +306,27 @@ __SCRIPTS__
   function chip(id, part) {
     const n = N[id]; if (!n) return "";
     return '<span class="chip ' + part + '" data-node="' + esc(id) + '" style="background:' + n.fill + ";color:" + n.font +
-      '" title="' + esc((part === "statement" ? UI.used_stmt : UI.used_proof) + (n.title_plain ? " — " + n.title_plain : "")) + '">' +
+      (n.novelty_color ? ";border-color:" + n.novelty_color : "") + '" title="' + esc((part === "statement" ? UI.used_stmt : UI.used_proof) + (n.title_plain ? " — " + n.title_plain : "")) + '">' +
       esc(n.label) + "</span>";
   }
-  function meter(v) {
-    let s = '<span class="meter">';
-    for (let i = 1; i <= 5; i++) s += '<span style="background:' + (v != null && i <= Math.round(v) ? DATA.palette[i - 1] : "#fff") + '"></span>';
+  function meter(v, pal, cls) {
+    pal = pal || DATA.palette;
+    let s = '<span class="meter' + (cls ? " " + cls : "") + '">';
+    for (let i = 1; i <= 5; i++) {
+      const on = v != null && i <= Math.round(v);
+      s += '<span' + (on ? ' class="on"' : "") + ' style="background:' + (on ? pal[i - 1] : "#fff") + '"></span>';
+    }
     return s + "</span>";
+  }
+  function noveltyHtml(n) {
+    if (n.novelty == null) return "";
+    const L = DATA.novelty_levels, v = n.novelty;
+    const name = Number.isInteger(v) ? (L[v] || "") : (L[Math.floor(v)] || "") + " – " + (L[Math.ceil(v)] || "");
+    let h = '<div class="importance">' + meter(v, DATA.novelty_palette, "nov") + "<span><b>" + esc(UI.novelty) + " " + v +
+      "/5</b> · " + esc(name) + "</span></div>";
+    if (n.novelty_note) h += '<div class="block novelty-note"><div class="hd">' + esc(UI.novelty_hd) +
+      (DATA.novelty_date ? " · " + esc(DATA.novelty_date) : "") + "</div>" + n.novelty_note + "</div>";
+    return h;
   }
   function openNode(id, pan) {
     const n = N[id]; if (!n) return;
@@ -323,14 +343,15 @@ __SCRIPTS__
     h += '<div class="thm_meta"><code>' + esc(id) + "</code>" +
       (n.section ? " · §" + esc(n.section) + (n.section_title ? " " + esc(n.section_title) : "") : "") +
       (n.loc ? " · " + esc(n.loc) : "") + (n.main ? " · <b>" + esc(UI.main) + "</b>" : "") + "</div>";
-    if (n.context) h += '<div class="context"><div class="hd">' + esc(UI.context) + "</div>" + n.context + "</div>";
     h += '<div class="thm_thmcontent kind-' + esc(n.kind) + '">' + (n.statement || '<span class="none">' + esc(UI.no_statement) + '</span>') + "</div>";
+    if (n.context) h += '<div class="context"><div class="hd">' + esc(UI.context) + "</div>" + n.context + "</div>";
     if (n.notation && n.notation.length) h += '<details class="proof notation-here"><summary>' + esc(UI.notation_here) +
       " (" + n.notation.length + ")</summary><div>" + n.notation.map((k) => notationRow(DATA.notation[k])).join("") + "</div></details>";
     h += '<div class="importance">' + meter(n.importance) + "<span>" +
       (lvl != null ? "<b>" + esc(UI.importance) + " " + n.importance + "/5</b> · " + esc(lvlName) : "<i>" + esc(UI.not_rated) + "</i>") + "</span></div>";
     if (n.reason) h += '<div class="block"><div class="hd">' + esc(UI.why) + '</div>' + n.reason + "</div>";
     if (n.summary) h += '<div class="block"><div class="hd">' + esc(UI.role) + '</div>' + n.summary + "</div>";
+    h += noveltyHtml(n);
     if (n.proof_sketch) h += '<details class="proof" open><summary>' + esc(UI.sketch) + '</summary><div>' + n.proof_sketch + "</div></details>";
     if (n.proof) h += '<details class="proof"' + (n.proof_sketch ? "" : "") + "><summary>" + (n.proof_raw ? UI.proof_pdf : UI.proof) + "</summary><div>" + n.proof + "</div></details>";
     h += '<div class="block"><div class="hd">' + esc(UI.uses) + '</div>' + (n.uses.length ? '<div class="chips">' + n.uses.map((u) => chip(u[0], u[1])).join("") + "</div>" : '<span class="none">' + esc(UI.nothing) + '</span>') + "</div>";

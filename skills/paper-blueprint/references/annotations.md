@@ -37,6 +37,8 @@ render:                          # defaults for `build` (CLI flags override)
   reduction: typed               # typed (per edge type) | plain (leanblueprint's tred) | none
   rankdir: TB                    # TB | BT | LR | RL
   raw_pdf_proofs: auto           # PDF only: auto = hide extracted proof text when a proof_sketch exists
+novelty_date: 2026-10-26         # date of the literature search for the novelty borders (novelty.md)
+novelty_skipped: "no internet"   # only if the user chose to skip the novelty assessment; `check` stops asking
 nodes:
   <id>: { ...fields below... }
 ```
@@ -52,8 +54,11 @@ All fields are optional. Empty values in the skeleton, such as `importance:` or
 | `reason` | One sentence justifying the importance and citing evidence. |
 | `summary` | Role in the argument, in plain language. Inline LaTeX is allowed. |
 | `proof_sketch` | 2–5 sentences on how the proof goes, shown above the proof. For results only, not definitions. |
+| `novelty` | 1–5, for nodes rated importance ≥ 4 only, set after a literature search (see novelty.md). It is drawn as the node's border, from white (1, known) to deep red (5). Half steps are allowed. |
+| `novelty_note` | Two short paragraphs separated by a blank line: "Statement: …" (at most 70 words) and "Technique: …" (at most 50 words). Write the labels as plain text; the page sets them in italics. Give the verdict and the 1–3 most relevant works, no technical details. Each citation is an inline link, `\href{url}{Author Year, locator}`; no `\cite`. LaTeX allowed. Required with `novelty`. |
+| `novelty_refs` | The record behind the note's links; it is not shown on the page. A list of `{cite, where, url, verified}`, one entry per linked work, with the same `url`. `where` is the theorem / lemma / section number in the cited work, required when `verified: true`. Use `verified: false` when the full text was not accessible; the page then marks that link "(locator not verified)". |
 | `statement` | Replaces the extracted statement (LaTeX). Mandatory for PDF inputs. Keep the paper's mathematics; put added explanations in `context`. |
-| `context` | "Notation in force" note (LaTeX), shown above the statement in a box labelled as added by the blueprint. Use it for section-local setup the statement relies on, for example "As in §3, $m=2^k$ with $k=\lceil\log_2 n\rceil$." Its symbols count as explained for the self-containedness check. |
+| `context` | "Notation in force" note (LaTeX), shown below the statement in a box labelled as added by the blueprint. Use it for section-local setup the statement relies on, for example "As in §3, $m=2^k$ with $k=\lceil\log_2 n\rceil$." Its symbols count as explained for the self-containedness check. |
 | `bound: [sym, …]` | Symbols this node introduces in words that the checker missed ("of order $r$"), or standard notation you judge needs no explanation. They silence the self-containedness check for this node. |
 | `statement_from: <label>` | Copies the running-text paragraph that contains `<label>` as the statement. Exact LaTeX for TeX inputs; trim it afterwards if it is too long. |
 | `proof` | Replaces the extracted proof. LaTeX by default; set `proof_format: text` for plain text. |
@@ -144,6 +149,23 @@ Add an implicit dependency ("by the previous lemma", "as in the proof above"):
 ```yaml
   prop:clock:
     add_proof_uses: [lem:pulses]
+```
+
+The novelty assessment of a key result (step 6, novelty.md). The cited work below is a
+placeholder:
+```yaml
+  lem:lifting:
+    novelty: 3
+    novelty_note: |
+      Statement: new in this form, but a quantitative version of the classical lifting fact
+      in \href{https://arxiv.org/abs/<id>}{Smith 2019, Lemma 2.4}.
+
+      Technique: standard Hensel-type lifting, applied to … instead of … .
+    novelty_refs:
+      - cite: "A. Smith, Lifting lemmas, J. Number Theory 200 (2019)"
+        where: "Lemma 2.4"
+        url: "https://arxiv.org/abs/<id>"
+        verified: true
 ```
 
 A section-long proof with no `proof` environment, or one that extraction missed. Make

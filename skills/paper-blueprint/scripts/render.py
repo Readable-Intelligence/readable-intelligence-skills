@@ -33,6 +33,11 @@ PALETTES = {
 }
 LEVEL_NAMES = {1: "background / routine", 2: "technical", 3: "supporting",
                4: "key step", 5: "main result / central idea"}
+# Novelty border of the key results (importance >= 4): white (known) -> deep red; index 0 = novelty 1.
+NOVELTY_REDS = ["#ffffff", "#f8b4b4", "#ef6461", "#d01c1f", "#860010"]
+NOVELTY_PENWIDTH = "4"
+NOVELTY_NAMES = {1: "known", 2: "routine variant", 3: "new combination",
+                 4: "substantially new", 5: "no close precedent"}
 UI = {
     "en": {
         "page": "dependency graph", "search": "Find a result…", "edges": "all edges",
@@ -55,12 +60,19 @@ UI = {
         "centre": "centre in graph", "unrated": "not rated",
         "context": "Notation in force (added by the blueprint)", "notation_here": "Notation used here",
         "glossary": "Notation", "glossary_tip": "Paper-wide notation", "glossary_empty": "No notation table.",
-        "levels": LEVEL_NAMES,
+        "novelty": "Novelty", "novelty_hd": "Novelty (literature search)",
+        "unverified": "locator not verified",
+        "border": "Border colour", "border_dd": "novelty of a key result (importance 4–5) relative to the "
+                                                "literature, in its statement and its proof technique, judged "
+                                                "from a literature search (white = known, deeper red = more "
+                                                "novel):",
+        "searched": "literature searched",
+        "levels": LEVEL_NAMES, "novelty_levels": NOVELTY_NAMES,
     },
 }
 
 
-def legend_html(ui: dict, pal: list[str]) -> str:
+def legend_html(ui: dict, pal: list[str], novelty: bool = False, novelty_date: str = "") -> str:
     rows = [("boxes", "boxes_dd"), ("ellipses", "ellipses_dd"), ("double", "double_dd"),
             ("dashed", "dashed_dd"), ("solid", "solid_dd"), ("fill", "fill_dd")]
     out = [f'    <span id="legend_title" class="title">{html.escape(ui["legend"])}',
@@ -73,6 +85,17 @@ def legend_html(ui: dict, pal: list[str]) -> str:
         f'<span class="swatch-label">{i} – {html.escape(ui["levels"][i])}</span><br>' for i in range(5, 0, -1))
     out.append(f'      <div class="scale">{scale}<span class="swatch" style="background:#fff;border-style:dashed">'
                f'</span><span class="swatch-label">{html.escape(ui["unrated"])}</span></div>')
+    if novelty:
+        dd = ui["border_dd"]
+        if novelty_date:  # "… (deeper red = more novel; literature searched 2026-10-26):"
+            dd = dd.rstrip(":").rstrip(")") + f"; {html.escape(ui['searched'])} {html.escape(novelty_date)}):"
+        out.append(f"      <dt>{html.escape(ui['border'])}</dt><dd>{dd}</dd>")
+        # drawn on a key-result fill, as in the graph, so that the white border of level 1 shows
+        scale = "".join(
+            f'<span class="swatch" style="background:{pal[3]};border:3px solid {NOVELTY_REDS[i - 1]}"></span>'
+            f'<span class="swatch-label">{i} – {html.escape(ui["novelty_levels"][i])}</span><br>'
+            for i in range(5, 0, -1))
+        out.append(f'      <div class="scale">{scale}</div>')
     out.append(f"      <dt>{html.escape(ui['click'])}</dt><dd>{ui['click_dd']}</dd>")
     out.append("    </dl>")
     return "\n".join(out)
@@ -115,6 +138,36 @@ def importance_colors(imp, palette: list[str]) -> tuple[str, str, str]:
     fill = palette[lo] if lo >= 4 else _mix(palette[lo], palette[lo + 1], t)
     font = "#ffffff" if _luminance(fill) < 0.25 else "#1b1f23"
     return fill, font, palette[4] if v < 4 else "#1b1f23"
+
+
+def _num(x) -> float | None:
+    try:
+        return None if x is None else float(x)
+    except (TypeError, ValueError):
+        return None
+
+
+def novelty_color(nov) -> str | None:
+    """Border colour for a novelty value in [1, 5] (deeper red = more novel); None if not assessed."""
+    v = _num(nov)
+    if v is None:
+        return None
+    v = min(5.0, max(1.0, v))
+    lo = int(v) - 1
+    return NOVELTY_REDS[lo] if lo >= 4 else _mix(NOVELTY_REDS[lo], NOVELTY_REDS[lo + 1], v - int(v))
+
+
+def novelty_note_html(note, refs, conv, ui: dict) -> str:
+    """The note as HTML, with the paragraph labels "Statement" and "Technique" in italics; its inline
+    \\href citations whose `novelty_refs` entry is unverified get a mark."""
+    if not note:
+        return ""
+    out = re.sub(r'(^|<div class="para">)\s*(Statement|Technique):', r"\1<em>\2</em>:", conv(note))
+    for r in refs if isinstance(refs, list) else []:
+        if isinstance(r, dict) and r.get("verified") is False and r.get("url"):
+            link = r'(<a href="' + re.escape(html.escape(str(r["url"]))) + r'"[^>]*>.*?</a>)'
+            out = re.sub(link, r'\1<span class="unverified"> (' + html.escape(ui["unverified"]) + ")</span>", out)
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -164,6 +217,10 @@ def build_dot(m: Model, edges: dict, palette: list[str], label_style: str, macro
         }
         if n.get("main"):
             attrs["peripheries"] = "2"
+        nov = novelty_color(n.get("novelty"))
+        if nov:
+            attrs["color"] = nov
+            attrs["penwidth"] = NOVELTY_PENWIDTH
         if n.get("importance") is None:
             attrs["style"] = "filled,dashed"
         out.append(f"  {_dot_str(nid)} [" + ", ".join(f"{k}={_dot_str(str(v))}" for k, v in attrs.items()) + "];")
@@ -343,6 +400,9 @@ def render(m: Model, out_dir: str, palette: str = "blues", label_style: str = "b
             "context": conv(n.get("context")) if n.get("context") else "",
             "notation": m.notation_for(nid),
             "importance": float(n["importance"]) if n.get("importance") is not None else None,
+            "novelty": _num(n.get("novelty")),
+            "novelty_color": novelty_color(n.get("novelty")),
+            "novelty_note": novelty_note_html(n.get("novelty_note"), n.get("novelty_refs"), conv, ui),
             "main": bool(n.get("main")),
             "fill": fill, "font": font, "border": border,
             "uses": m.uses[nid], "used_by": m.used_by[nid],
@@ -363,7 +423,10 @@ def render(m: Model, out_dir: str, palette: str = "blues", label_style: str = "b
                       "where": html.escape(str(e["where"])) if e.get("where") else ""} for e in notation],
         "palette": pal,
         "levels": ui["levels"],
-        "ui": {k: v for k, v in ui.items() if k != "levels"},
+        "novelty_palette": NOVELTY_REDS,
+        "novelty_levels": ui["novelty_levels"],
+        "novelty_date": str(m.ann.get("novelty_date") or ""),
+        "ui": {k: v for k, v in ui.items() if k not in ("levels", "novelty_levels")},
         "reduced": reduce,
         "source": os.path.basename(ex["source"].get("main") or ex["source"].get("path") or ""),
     }
@@ -379,7 +442,8 @@ def render(m: Model, out_dir: str, palette: str = "blues", label_style: str = "b
     page = (tpl.replace("__TITLE__", html.escape(paper_title))
                .replace("__MATHJAX_CONFIG__", mathjax_config(ex, m.macros, inline_assets))
                .replace("__MATHJAX__", mj)
-               .replace("__LEGEND__", legend_html(ui, pal))
+               .replace("__LEGEND__", legend_html(ui, pal, any(nd["novelty"] is not None for nd in nodes.values()),
+                                                  str(m.ann.get("novelty_date") or "")))
                .replace("__UI_PAGE__", html.escape(ui["page"]))
                .replace("__UI_SEARCH__", html.escape(ui["search"]))
                .replace("__UI_EDGES_TIP__", html.escape(ui["edges_tip"]))

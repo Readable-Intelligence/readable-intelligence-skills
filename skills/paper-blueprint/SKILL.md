@@ -1,6 +1,6 @@
 ---
 name: paper-blueprint
-description: Turn a natural-language math / theoretical-CS paper (LaTeX source, a directory or archive of .tex files, or a PDF) into a Lean-blueprint-style interactive dependency graph — one HTML page where every definition/lemma/theorem is a node, dashed/solid arrows show statement/proof dependencies, clicking a node shows its statement, proof and role, and node colour encodes how crucial the result is to the paper's main argument (darker = more crucial), judged by you. Everything it writes — explanations, notation table, page labels — is in English. No formalization involved. Use this whenever the user wants a blueprint, dependency graph, proof map, lemma tree, "logical structure" or roadmap of a paper, or asks which lemmas are the key steps — even if they never say "blueprint".
+description: Turn a natural-language math / theoretical-CS paper (LaTeX source, a directory or archive of .tex files, or a PDF) into a Lean-blueprint-style interactive dependency graph — one HTML page where every definition/lemma/theorem is a node, dashed/solid arrows show statement/proof dependencies, clicking a node shows its statement, proof and role, and node colour encodes how crucial the result is to the paper's main argument (darker = more crucial), judged by you. For the key results (importance 4–5), a node border from white (known) to deep red (no close precedent) encodes their novelty relative to the literature, in statement and proof technique, judged from a literature search (needs internet) and explained in a short note that links the closest prior work inline by exact theorem number. Everything it writes — explanations, notation table, page labels — is in English. No formalization involved. Use this whenever the user wants a blueprint, dependency graph, proof map, lemma tree, "logical structure" or roadmap of a paper, or asks which lemmas are the key steps — even if they never say "blueprint".
 ---
 
 # Paper blueprint
@@ -16,12 +16,19 @@ dependency graph (leanblueprint / plastexdepgraph):
 The Lean colours for formalization status are replaced by one judgement: the
 **importance** of each node, shown as a light-to-dark fill.
 
+The key results (importance 4–5) get a second judgement once the graph is final:
+- their **novelty** relative to the literature, in the statement and in the proof technique;
+- it is shown as a border from white (known) to deep red (no close precedent);
+- it comes from a literature search, and is explained in a short note: a Statement
+  paragraph and a Technique paragraph, linking the closest prior work inline by exact
+  theorem number.
+
 The work is split in two:
 - **Scripts do the mechanical part**: theorem environments, proofs, labels, `\ref`s and
   hyperref links, numbering, the graph and the rendering.
 - **You do what needs understanding**: repair the skeleton where mechanical extraction
-  falls short, judge importance, and write the short explanations a reader sees. For
-  PDFs you also rewrite statements in LaTeX.
+  falls short, judge importance, research the novelty of the key results, and write the
+  short explanations a reader sees. For PDFs you also rewrite statements in LaTeX.
 
 The importance judgement is the point of the exercise. Colours assigned by degree counts
 or proof length would point readers at the wrong steps.
@@ -39,6 +46,8 @@ The work directory (default `<paper-name>-blueprint/` next to the paper) holds:
 - `annotations.yaml`: your input; the durable artifact.
 - `digest.md`: an overview for you, refreshed by `digest` and `build`.
 - `index.html`: the result.
+- `novelty-brief.md`, `novelty-log.md`, `refs/`: the novelty assessment of step 6 (a
+  worksheet written by `novelty`, your search log, and fetched cited works).
 
 ## Workflow
 
@@ -209,7 +218,42 @@ paper up (`$S fetch-arxiv <id> -o <workdir>/refs` for arXiv) only when a node ca
 read without a specific definition or equation from it. Then import just that piece,
 marked with its source (self-contained.md, "Cited works").
 
-### 6. Check, build, look
+### 6. Assess the novelty of the key results (needs internet)
+Do this only once the nodes and every importance rating are final (steps 3–5). Until it is
+done, `check` lists each node rated 4 or more as "no novelty assessment"; that is expected
+in steps 3–5. Read `references/novelty.md` (the 1–5 scale, the search procedure, exact
+citations). Then:
+
+1. **Check internet access.** Run one test search with your web search tool if you have
+   one, and run `python3 $S net-check`. If neither reaches the web, **stop and ask the
+   user** (novelty.md §3):
+   - "enable internet access, then continue" (recommended);
+   - "skip the novelty assessment" (set top-level `novelty_skipped`);
+   - "assess offline, unverified".
+
+   Do not skip it silently, and do not cite from memory. A subagent or non-interactive
+   run hands the question to its caller, as in step 0.
+2. **Write the worksheet.** Run `python3 $S novelty <workdir>`. It writes `novelty-brief.md`,
+   which holds each key result's statement, proof sketch and proof, the works the paper
+   cites inside it, and what the running text says about it.
+3. **Research every key result**, one by one or with parallel subagents (novelty.md §§4–7
+   and §9):
+   - search the literature for the statement, for the proof technique, and for
+     equivalent formulations in other fields;
+   - open the closest works and find each precise theorem number (`$S ref-index`,
+     `$S lit-search`);
+   - log the search in `novelty-log.md`.
+4. **Fill in the fields.** For each key result, set `novelty` (1–5) and `novelty_note`.
+   The note has two short paragraphs, "Statement: …" and "Technique: …". It gives the
+   verdict and the one to three most relevant works, each linked inline as
+   `\href{url}{Author Year, locator}`, with no technical details (novelty.md §7). Also set
+   `novelty_refs`: the record behind the links, one entry per linked work, with `where`
+   and `verified`; the page does not show it. Set top-level `novelty_date` to the date of
+   the search.
+5. **Calibrate across the key results** (novelty.md §8), then run `check` until no novelty
+   problem is left.
+
+### 7. Check, build, look
 ```bash
 python3 $S check <workdir>      # repeat until "ok"; suggestions are optional
 python3 $S build <workdir>      # writes index.html, graph.dot, refreshes digest.md
@@ -232,6 +276,8 @@ python3 <skill-dir>/scripts/screenshot.py <workdir>/index.html <workdir>/shot.pn
 Then look at the screenshots:
 - Do the dark nodes form a readable spine?
 - Are the labels legible? Use `short:` (plain text, `$…$` allowed) for long titles.
+- Does every key result carry a novelty border? Level 1 is a white ring on the fill. Does
+  its modal show the two-paragraph note with working inline links?
 
 Build options (or `render:` in annotations):
 - `--palette reds|greens|purples|greys|viridis`
@@ -241,12 +287,15 @@ Build options (or `render:` in annotations):
 - `--all-edges` (no reduction)
 - `--offline`: a self-contained ~4 MB file; without it d3 and MathJax load from a CDN.
 
-### 7. Hand over
+### 8. Hand over
 Tell the user:
 - **Where the page is** (`<workdir>/index.html`) and how to open it. A double-click
   works, with internet unless built `--offline`. Remotely or in Codespaces, use
   `python3 -m http.server 8000 -d <workdir>` and open the forwarded port.
 - **The spine**: the main result(s) and the 4–5 rated steps, one line each.
+- **Novelty**: for each key result, its rating and the closest prior work, one line each.
+  Also the search date, and any locator left unverified (`verified: false`). If the
+  assessment was skipped or done offline, say so and why.
 - **What you changed by hand**: nodes added or dropped, notable edges.
 - **Caveats**: reconstructed numbering, judgement calls you were unsure about, and any
   remaining self-containedness gaps (for example notation the paper never defines).
@@ -261,3 +310,8 @@ discard them.
 - Sources that already use leanblueprint's `\uses{…}` are respected.
 - For 60+ nodes, work section by section in steps 2–4, but calibrate importance globally
   at the end.
+- Novelty borders run from white to red. Keep a non-red fill palette (the default
+  `blues`, or `greens`, `purples`, `greys`); with `reds` or `oranges` the borders are hard
+  to see.
+- When an importance rating changes after step 6, update the novelty fields to match:
+  assess a node newly rated 4 or more, and remove them from a node rated below 4.

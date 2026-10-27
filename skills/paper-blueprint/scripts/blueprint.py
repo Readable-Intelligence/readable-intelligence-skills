@@ -11,6 +11,12 @@
   fetch-arxiv ID -o DIR        download a cited paper's arXiv source (to import definitions it supplies)
   pages   PDF [3-5,9]          render PDF pages to PNG + text (to read a PDF as images)
 
+novelty assessment of the key results (references/novelty.md; needs internet):
+  net-check                    can this machine reach arXiv / OpenAlex?
+  novelty WORKDIR              write novelty-brief.md: the nodes rated >= 4 and what the paper says about them
+  lit-search QUERY …           search arXiv and OpenAlex for prior work
+  ref-index SOURCE -o DIR      list a cited work's numbered results (exact theorem numbers)
+
 PAPER may be a .tex file, a directory of LaTeX sources, a source archive (.tar.gz/.zip,
 e.g. an arXiv e-print), or a .pdf.
 """
@@ -277,6 +283,8 @@ def annotation_skeleton(ex: dict) -> str:
         "# Written by the agent (see references/annotations.md in the paper-blueprint skill).",
         "# Every shown node needs `importance` (1-5) and a one-sentence `reason`;",
         "# `summary` (role in the argument) is strongly recommended.",
+        "# Once nodes and importance are final, nodes rated >= 4 get `novelty` (1-5), `novelty_note`",
+        "# and `novelty_refs` from a literature search (references/novelty.md).",
         "",
         "main: []            # ids of the paper's main result(s)",
         "",
@@ -363,6 +371,8 @@ def write_digest(wd: str, m: Model) -> str:
                  + (f" · parent {n['parent']}" if n.get("parent") else ""))
         if n.get("importance") is not None:
             L.append(f"- importance {n['importance']}: {n.get('reason') or ''}")
+        if n.get("novelty") is not None:
+            L.append(f"- novelty {n['novelty']}: {short_preview(n.get('novelty_note'), 200)}")
         L.append(f"- statement: {short_preview(n.get('statement'), 420)}")
     hidden = [n for n in m.order if n in m.nodes and n not in m.visible]
     if hidden:
@@ -475,13 +485,21 @@ def cmd_check(args):
             print("  - " + p)
     if probs:
         scope = [p for p in probs if "not self-contained" in p]
-        print(f"{len(probs)} problem(s) to fix" + (f" ({len(scope)} self-containedness)" if scope else "") + ":")
-        for p in [p for p in probs if p not in scope] + scope:
+        nov = [p for p in probs if "no novelty assessment" in p]
+        print(f"{len(probs)} problem(s) to fix" + (f" ({len(scope)} self-containedness)" if scope else "")
+              + (f" ({len(nov)} novelty pending)" if nov else "") + ":")
+        for p in [p for p in probs if p not in scope and p not in nov] + scope + nov:
             print("  - " + p)
         if scope:
             print("  (see references/self-contained.md for how to resolve self-containedness problems)")
+        if nov:
+            print("  (novelty is assessed in SKILL.md step 6, after nodes and importance are final; "
+                  "expected to be pending before then)")
         return 1
-    print(f"ok: {len(m.visible)} nodes, {len(m.edges)} edges, all rated")
+    assessed = sum(1 for nid in m.visible if m.nodes[nid].get("novelty") is not None)
+    print(f"ok: {len(m.visible)} nodes, {len(m.edges)} edges, all rated"
+          + (f", novelty assessed for {assessed} key result(s)" if assessed else "")
+          + (" (novelty assessment skipped)" if ann.get("novelty_skipped") else ""))
     return 0
 
 
@@ -543,6 +561,164 @@ def cmd_reader(args):
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     print(f"wrote {out} ({len(m.visible)} nodes, {len(entries)} notation entries)")
+    return 0
+
+
+NOVELTY_BRIEF = "novelty-brief.md"
+
+
+def _safe_stdout():
+    """Titles and abstracts of cited works carry arbitrary Unicode; never crash on a narrow console encoding."""
+    for s in (sys.stdout, sys.stderr):
+        try:
+            s.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
+
+def _loc_text(loc: dict | None) -> str:
+    loc = loc or {}
+    return f"p.{loc['page']}" if loc.get("page") else f"{loc.get('file', '')}:{loc.get('line', '')}"
+
+
+def cmd_novelty(args):
+    """Write novelty-brief.md: the key results to assess, with what the paper itself says and cites about them."""
+    ex, ann = load(args.workdir)
+    m = Model(ex, ann)
+    targets = [nid for nid in m.visible if m.needs_novelty(nid)]
+    unrated = [nid for nid in m.visible if m.nodes[nid].get("importance") is None]
+    refs, bib = ex.get("references") or {}, ex.get("bibliography") or {}
+
+    def ref_line(k):
+        r = refs.get(k, {})
+        ids = ", ".join(x for x in (f"arXiv:{r['arxiv']}" if r.get("arxiv") else "",
+                                    f"doi:{r['doi']}" if r.get("doi") else "") if x)
+        return f"[{r.get('label') or bib.get(k) or k}] `{k}` {short_preview(r.get('text'), 260)}" + \
+            (f" — {ids}" if ids else "")
+    L = [f"# Novelty brief — {latex2html.plain(ann.get('title') or ex.get('title') or '')}", "",
+         "The key results (importance >= 4). For each, assess its novelty against the literature, for the "
+         "statement and for the proof technique: one rating 1-5, a `novelty_note`, and `novelty_refs` with "
+         "exact theorem numbers (references/novelty.md). Below is what the blueprint says about each node, what "
+         "the paper cites inside it and what its running text says about it. These are leads only: verify them, "
+         "and search beyond the paper's bibliography.", ""]
+    if unrated:
+        L += [f"**Warning:** {len(unrated)} shown node(s) have no importance yet ({', '.join(unrated[:10])}). "
+              "Finish SKILL.md steps 4-5 first; the set of key results is not final.", ""]
+    if ann.get("novelty_skipped"):
+        L += [f"**Note:** top-level `novelty_skipped` is set ({ann['novelty_skipped']}).", ""]
+    L += ["## Paper", f"- title: {latex2html.plain(ex.get('title') or '')}",
+          f"- authors: {latex2html.plain(ex.get('authors') or '') or '?'}",
+          f"- source: {ex['source']['type']} `{ex['source'].get('main') or ex['source'].get('path')}`"]
+    if ex.get("abstract"):
+        L += ["", "Abstract: " + short_preview(ex["abstract"], 2000)]
+    for nid in targets:
+        n = m.nodes[nid]
+        L += ["", f"## `{nid}` — {m.label_text(nid)}"
+              + (f" ({latex2html.plain(n['title'], m.macros)})" if n.get("title") else "")]
+        L.append(f"- importance {n['importance']}" + (" · **main result**" if n.get("main") else "")
+                 + f" · {n.get('kind')} · §{n.get('section') or '-'} · {_loc_text(n.get('loc'))}")
+        L.append("- status: " + (f"assessed, novelty {n['novelty']}" if n.get("novelty") is not None else "pending"))
+        if n.get("reason"):
+            L.append(f"- why it matters: {n['reason']}")
+        if n.get("summary"):
+            L.append(f"- role: {short_preview(n['summary'], 600)}")
+        uses = ", ".join(f"`{a}`{' (statement)' if p == 'statement' else ''}" for a, p in m.uses[nid])
+        L.append(f"- uses: {uses or 'nothing'}")
+        if n.get("context"):
+            L += ["", "Context note:", "", str(n["context"]).strip()]
+        L += ["", "Statement:", "", str(n.get("statement") or "(none)").strip()]
+        if n.get("proof_sketch"):
+            L += ["", "Proof sketch:", "", str(n["proof_sketch"]).strip()]
+        if n.get("proof"):
+            L += ["", f"Proof (first {args.proof_chars} characters):", "",
+                  short_preview(str(n["proof"]), args.proof_chars)]
+        cites = n.get("cites") or {}
+        keys = list(dict.fromkeys((cites.get("statement") or []) + (cites.get("proof") or [])))
+        if keys:
+            L += ["", "Cited inside this node:"] + [f"- {ref_line(k)}" for k in keys]
+        mentions = [r for r in ex.get("prose_refs", []) if m.resolve(r["label"]) == nid]
+        if mentions:
+            L += ["", "What the running text says around references to it:"]
+            L += [f"- {_loc_text(r.get('loc'))}: {short_preview(r.get('context'), 400)}" for r in mentions[:10]]
+        if n.get("novelty_note"):
+            L += ["", f"Current assessment (novelty {n.get('novelty')}):", "", str(n["novelty_note"]).strip()]
+    if refs:
+        L += ["", "## The paper's bibliography (leads, not conclusions)"]
+        L += [f"- {ref_line(k)}" for k in refs]
+    path = os.path.join(args.workdir, NOVELTY_BRIEF)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(L) + "\n")
+    print(f"wrote {path}: {len(targets)} key result(s) to assess")
+    for nid in targets:
+        n = m.nodes[nid]
+        print(f"  {nid:28s} importance {n['importance']:<4} " +
+              (f"novelty {n['novelty']}" if n.get("novelty") is not None else "pending"))
+    if unrated:
+        print(f"  warning: {len(unrated)} node(s) not rated yet; the list of key results is not final")
+    return 0
+
+
+def cmd_net_check(args):
+    """Can this shell reach the literature services?  (A web-search tool of the agent is a separate route.)"""
+    from literature import net_check
+    _safe_stdout()
+    res = net_check()
+    for name, ok, info in res:
+        print(f"{name:12s}: {'ok' if ok else 'FAILED'}  {info}")
+    if any(ok for _, ok, _ in res):
+        print("network: available — the novelty assessment can run (`lit-search`, `ref-index`, your web tools)")
+        return 0
+    print("network: not reachable from this shell. Unless you have another web route (a web search / fetch "
+          "tool that works), ask the user before going on (SKILL.md step 6).")
+    return 1
+
+
+def cmd_lit_search(args):
+    """Prior-work search on arXiv and OpenAlex: authors, year, title, venue, link, abstract."""
+    from literature import search_arxiv, search_openalex
+    _safe_stdout()
+    q = " ".join(args.query)
+    for name, fn in (("arXiv", search_arxiv), ("OpenAlex", search_openalex)):
+        if args.source not in ("both", name.lower()):
+            continue
+        try:
+            hits = fn(q, args.n, args.before)
+        except Exception as exc:
+            print(f"## {name}: failed ({str(exc).splitlines()[0][:160]})\n")
+            continue
+        print(f"## {name}: {len(hits)} result(s) for {q!r}" + (f" up to {args.before}" if args.before else ""))
+        for h in hits:
+            print(f"- {h['authors']} ({h['year']}). {h['title']}. {h['venue']}")
+            print(f"  {h['url']}   {h['ids']}")
+            if h["abstract"] and args.abstract:
+                print("  > " + short_preview(h["abstract"], args.abstract))
+        print()
+    return 0
+
+
+def cmd_ref_index(args):
+    """Numbered results of a cited work (Theorem 3.2, Lemma 4.1, …) so that a citation names the right one."""
+    from literature import fetch_text, numbered_results
+    _safe_stdout()
+    text, origin = fetch_text(args.source)
+    os.makedirs(args.out, exist_ok=True)
+    slug = re.sub(r"[^A-Za-z0-9.]+", "_", args.source.split("://")[-1]).strip("_")[:80] or "source"
+    path = os.path.join(args.out, slug + ".txt")
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(f"source: {origin}\n\n{text}")
+    res = numbered_results(text)
+    words = [w.lower() for w in args.grep or []]
+    shown = [r for r in res if all(w in " ".join((r["kind"], r["number"], r["title"], r["text"])).lower()
+                                   for w in words)]
+    print(f"source : {origin}")
+    print(f"text   : {path} ({len(text)} characters)")
+    print(f"results: {len(res)} numbered heads" + (f"; {len(shown)} contain {' '.join(args.grep)!r}" if words else ""))
+    for r in shown:
+        head = f"{r['kind']} {r['number']}" + (f" ({r['title']})" if r["title"] else "") + \
+            (f" [p.{r['page']}]" if r["page"] else "")
+        print(f"- {head}: {short_preview(r['text'], args.chars)}")
+    if not res:
+        print("  no numbered heads recognised; search the saved text, or read the PDF with your own tools")
     return 0
 
 
@@ -629,6 +805,25 @@ def main(argv=None):
     p.add_argument("-o", "--out", help="output dir (default: ./<paper>-blueprint/pages)")
     p.add_argument("--dpi", type=int, default=110)
     p.set_defaults(fn=cmd_pages)
+    p = sub.add_parser("net-check", help="can this machine reach arXiv / OpenAlex (novelty assessment)?")
+    p.set_defaults(fn=cmd_net_check)
+    p = sub.add_parser("novelty", help="write novelty-brief.md: the key results (importance >= 4) to assess")
+    p.add_argument("workdir")
+    p.add_argument("--proof-chars", type=int, default=1500, help="how much of each extracted proof to include")
+    p.set_defaults(fn=cmd_novelty)
+    p = sub.add_parser("lit-search", help="search arXiv and OpenAlex for prior work")
+    p.add_argument("query", nargs="+", help="search words; quote a phrase inside the query: '\"exact phrase\" word'")
+    p.add_argument("--source", choices=["both", "arxiv", "openalex"], default="both")
+    p.add_argument("-n", type=int, default=8, help="results per source (default 8)")
+    p.add_argument("--before", help="only work up to this date (YYYY, YYYY-MM or YYYY-MM-DD), e.g. the paper's date")
+    p.add_argument("--abstract", type=int, default=300, help="characters of each abstract to show (0: none)")
+    p.set_defaults(fn=cmd_lit_search)
+    p = sub.add_parser("ref-index", help="list a cited work's numbered results, for exact theorem numbers")
+    p.add_argument("source", help="arXiv id, URL (HTML or PDF), or a local .pdf/.html/.txt")
+    p.add_argument("-o", "--out", required=True, help="e.g. <workdir>/refs (the full text is saved there)")
+    p.add_argument("--grep", nargs="+", help="only results whose head or text contains all these words")
+    p.add_argument("--chars", type=int, default=220, help="characters of each result's text to show")
+    p.set_defaults(fn=cmd_ref_index)
     p = sub.add_parser("build", help="write index.html")
     p.add_argument("workdir")
     p.add_argument("--out", help="output directory (default: the work directory)")

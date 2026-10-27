@@ -12,8 +12,11 @@ NODE_FIELDS = {
     "aliases", "uses", "proof_uses", "add_uses", "add_proof_uses", "remove_uses",
     "remove_proof_uses", "shape", "new", "section", "statement_format", "parent", "after",
     "used_by", "statement_from", "section_title", "page", "before", "context", "bound",
-    "proof_format",
+    "proof_format", "novelty", "novelty_note", "novelty_refs",
 }
+NOVELTY_MIN_IMPORTANCE = 4  # results rated at least this get a novelty assessment (references/novelty.md)
+NOVELTY_MAX_WORDS = {"Statement": 70, "Technique": 50}  # per paragraph of `novelty_note`
+NOVELTY_MAX_LINKS = 3  # cited works per paragraph
 
 
 def load_annotations(path: str | None) -> dict:
@@ -426,6 +429,23 @@ class Model:
                     probs.append(f"{nid}: importance '{imp}' is not a number")
             if imp is not None and not n.get("reason"):
                 probs.append(f"{nid}: importance given without `reason`")
+            nov = n.get("novelty")
+            if nov is not None:
+                v = _float(nov)
+                if v is None:
+                    probs.append(f"{nid}: novelty '{nov}' is not a number")
+                elif not 1 <= v <= 5:
+                    probs.append(f"{nid}: novelty {nov} outside 1..5")
+                if not n.get("novelty_note"):
+                    probs.append(f"{nid}: novelty given without `novelty_note`")
+                else:
+                    probs.extend(f"{nid}: {p}" for p in _novelty_note_problems(str(n["novelty_note"]),
+                                                                               n.get("novelty_refs")))
+                probs.extend(f"{nid}: {p}" for p in _novelty_ref_problems(n.get("novelty_refs")))
+            elif self.needs_novelty(nid) and not self.ann.get("novelty_skipped"):
+                probs.append(f"{nid}: no novelty assessment (importance {imp}) — add `novelty`, `novelty_note` "
+                             "and `novelty_refs` (references/novelty.md), or set top-level `novelty_skipped` "
+                             "if the user chose to skip it")
             if n.get("statement_format") == "text":
                 probs.append(f"{nid}: statement is raw PDF text; rewrite it in LaTeX (annotation `statement:`)")
             if not self.uses[nid] and not self.used_by[nid] and len(self.visible) > 1:
@@ -447,12 +467,19 @@ class Model:
                 probs.append(f"{nid}: not self-contained — {part} uses {desc}. Fix: add_uses/add_proof_uses "
                              "to the node that defines it, a `context:` note, a top-level `notation:` "
                              "entry, or `bound:` if the statement does introduce it")
+        if self.ann.get("novelty_date") and not re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", str(self.ann["novelty_date"])):
+            probs.append(f"novelty_date: '{self.ann['novelty_date']}' should be YYYY-MM-DD (the date of the search)")
         for k, v in (self.ann.get("macros") or {}).items():
             if not re.fullmatch(r"[A-Za-z]+", str(k)):
                 probs.append(f"macros: '{k}' is not a valid macro name (letters only, no backslash)")
             if not isinstance(v, (str, list)):
                 probs.append(f"macros: value of '{k}' should be a string or [body, nargs]")
         return probs
+
+    def needs_novelty(self, nid: str) -> bool:
+        """A shown node rated importance >= 4: a key result whose novelty is assessed."""
+        v = _float(self.nodes[nid].get("importance"))
+        return nid in self.visible and v is not None and v >= NOVELTY_MIN_IMPORTANCE
 
     # ------------------------------------------------------------------
     # self-containedness
@@ -650,6 +677,16 @@ class Model:
                 out.append(f"{nid}: no proof_sketch" + (" (PDF proofs are shown as raw text)" if pdf else ""))
             if not n.get("summary"):
                 out.append(f"{nid}: no summary")
+            if n.get("novelty") is not None and not self.needs_novelty(nid):
+                out.append(f"{nid}: has a novelty rating but importance below {NOVELTY_MIN_IMPORTANCE}; "
+                           "novelty is assessed for key results only — keep it only if deliberate")
+            if n.get("novelty") is not None and not n.get("novelty_refs"):
+                out.append(f"{nid}: novelty rated without `novelty_refs`; record there the works the note links")
+            linked = set(_note_links(str(n.get("novelty_note") or "")))
+            for r in n.get("novelty_refs") or []:
+                if isinstance(r, dict) and r.get("url") and str(r["url"]) not in linked:
+                    out.append(f"{nid}: novelty_refs entry {str(r.get('cite'))[:40]!r} is not linked in the note; "
+                               "keep only the works the note cites (other evidence belongs in novelty-log.md)")
             orig = next((x.get("statement") for x in self.ex.get("nodes", []) if x["id"] == nid), None)
             if self.ex["source"]["type"] == "tex" and orig and n.get("statement") and \
                     re.sub(r"\s+", "", orig) != re.sub(r"\s+", "", str(n["statement"])):
@@ -666,6 +703,77 @@ def _head_symbols(tex: str, macros: dict) -> set:
         toks = [t for t, k in S._tokens(part) if k == "base"]
         if toks:
             out.add(toks[0])
+    return out
+
+
+def _float(x) -> float | None:
+    try:
+        return None if x is None else float(x)
+    except (TypeError, ValueError):
+        return None
+
+
+def _note_links(note: str) -> list[str]:
+    """URLs of the inline `\\href{url}{text}` citations in a novelty note."""
+    return [u.strip() for u in re.findall(r"\\href\s*\{([^}]*)\}", note)]
+
+
+def _word_count(tex: str) -> int:
+    t = re.sub(r"\\href\s*\{[^}]*\}", "", tex)          # keep a link's text, drop its URL
+    t = re.sub(r"\$[^$]*\$", " x ", t)                   # a formula counts as one word
+    t = re.sub(r"\\[A-Za-z]+\*?", " ", t)
+    return len(re.findall(r"[A-Za-z0-9][\w'’.–-]*", t))
+
+
+def _novelty_note_problems(note: str, refs) -> list[str]:
+    """Two short paragraphs, "Statement: …" and "Technique: …", whose cited works are linked inline
+    and recorded in `novelty_refs` (references/novelty.md §7)."""
+    out = []
+    paras = [p.strip() for p in re.split(r"\n\s*\n", note) if p.strip()]
+    heads = [p.split(":", 1)[0] for p in paras]
+    if heads != ["Statement", "Technique"]:
+        out.append("`novelty_note` must be two paragraphs separated by a blank line: \"Statement: …\" "
+                   "then \"Technique: …\"")
+    for head, p in zip(heads, paras):
+        limit = NOVELTY_MAX_WORDS.get(head, max(NOVELTY_MAX_WORDS.values()))
+        words = _word_count(p)
+        if words > limit:
+            out.append(f"`novelty_note` {head} paragraph has {words} words (at most {limit}): keep the verdict "
+                       "and the one to three most relevant works, no technical details (novelty.md §7)")
+        if len(_note_links(p)) > NOVELTY_MAX_LINKS:
+            out.append(f"`novelty_note` {head} paragraph cites {len(_note_links(p))} works (at most "
+                       f"{NOVELTY_MAX_LINKS}): keep the most relevant ones")
+    recorded = {str(r.get("url")).strip() for r in refs or [] if isinstance(r, dict) and r.get("url")}
+    for u in _note_links(note):
+        if u not in recorded:
+            out.append(f"`novelty_note` links {u}, which has no `novelty_refs` entry (record its `where` and "
+                       "`verified` there)")
+    if not _note_links(note) and re.search(r"\b(1[89]|20)\d\d\b", note):
+        out.append("`novelty_note` cites works without links: write each citation as "
+                   "\\href{url}{Author Year, locator}")
+    return out
+
+
+def _novelty_ref_problems(refs) -> list[str]:
+    """Each `novelty_refs` entry needs `cite`, an explicit `verified`, and `where` when verified."""
+    if refs is None:
+        return []
+    if not isinstance(refs, list):
+        return ["`novelty_refs` should be a list of {cite, where, url, verified}"]
+    out = []
+    for k, r in enumerate(refs, 1):
+        if not isinstance(r, dict) or not r.get("cite"):
+            out.append(f"novelty_refs[{k}] needs `cite`")
+            continue
+        name = f"novelty_refs[{k}] ({str(r['cite'])[:40]})"
+        if not isinstance(r.get("verified"), bool):
+            out.append(f"{name}: set `verified: true` (you read the cited result in the work itself) or "
+                       "`verified: false` (full text not accessible)")
+        elif r["verified"] and not r.get("where"):
+            out.append(f"{name}: `where` (theorem / lemma / section number in the cited work) is required "
+                       "when `verified: true`")
+        if r.get("url") and not re.match(r"https?://", str(r["url"])):
+            out.append(f"{name}: `url` must start with http:// or https://")
     return out
 
 

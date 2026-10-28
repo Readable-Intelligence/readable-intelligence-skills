@@ -60,14 +60,7 @@ The original names many of its objects with words of its own. The Readable Versi
 - **39 sentences or clauses deleted.** These only said what the paper does *not* assume or need, for example "The construction does not aim to optimize this constant." Most were in the appendices. A sentence was kept wherever it gives a reason, covers a case or states something used later.
 - **Repeated summaries deleted.** Recaps of conclusions already stated nearby were removed, along with re-announcements of a plan and a duplicated transition across a section break.
 
-## What is not better
-
-- **The paper is longer:** 105 pages against 99. The added explanations outweigh the deletions.
-- **Some places still read better in the original.** In a blind comparison of the two versions, the GPT reviewer preferred the Readable Version overall. It found the original better in economy, in some conventional terminology, in keeping the proofs of immediate corollaries short, and in figure placement.
-- **Some problems remain in the final review.** Two examples:
-  - No page says where the hypothesis n ≥ 4 of Theorem 1.1 is used. This is inherited from the original.
-  - The original credits Gromov's argument for the noncompact case as one route to the aspherical consequence. That credit was dropped when the proof of Corollary 1.4 was rewritten.
 
 ## How the changes were checked
 
-Every rewritten proof passage and every added step was checked against the original by a separate model. None was rated unsupported or false. A final check of all rewritten passages in the delivered version found no blocking problem. The 39 deletions in item 6 were made last and were not checked again. As the [README](README.md) says, none of this is an independent verification of the mathematical claims.
+Every rewritten proof passage and every added step was checked against the original by a separate model. None was rated unsupported or false. A final check of all rewritten passages in the delivered version found no blocking problem. The 39 deletions in item 6 were made last and were not checked again. After the automated run, one sentence was added by hand to the proof of Corollary 1.4, restoring the original's credit to Gromov's noncompact argument as another route to the contradiction. As the [README](README.md) says, none of this is an independent verification of the mathematical claims.

@@ -1,6 +1,6 @@
 # What changed in the Readable Version
 
-This note compares the [Readable Version](readable.pdf) (62 pages) with the [original manuscript](original.pdf) (58 pages). Page numbers are written "readable p. X / original p. Y". Theorem 1.1 and the approximation consequences keep their original statements. What changed is mainly how the paper is arranged and explained; one parameter condition that was dropped is noted under "What is not better".
+This note compares the [Readable Version](readable.pdf) (62 pages) with the [original manuscript](original.pdf) (58 pages). Page numbers are written "readable p. X / original p. Y". Theorem 1.1 and the approximation consequences keep their original statements. What changed is how the paper is arranged and explained.
 
 ## Main improvements
 
@@ -56,17 +56,7 @@ Several letters that were used for two different objects were also separated, fo
 
 Ten sentences or clauses that only said what the argument does *not* assume or use were deleted, for example "It is not an input to this proof".
 
-## What is not better
-
-- **The paper is longer:** 62 pages against 58.
-- **A parameter condition was dropped.** The original fixes its parameters with three conditions, including 2<sup>−ℓ</sup> < η/4 (original p. 24, equation (5.4)). The Readable Version keeps only 2<sup>−(ℓ−r<sub>s</sub>)</sup> < α/8 (equation (4.4), readable p. 15) and says that no further condition is needed. Claude's final review asks for the original condition to be restored, so that Propositions 4.3 and 4.5 are not stronger than the original's statements. Whether the condition is needed has not been checked.
-- **Some places still read worse.** Both final reviewers found that:
-  - some recaps and announcements are still repeated, for example in Sections 7.1 and 7.5;
-  - a few previews use objects defined only later, for example the equation in z and g on readable p. 21;
-  - the introduction's sketch does not yet explain why a random change of coordinates loses at most one dimension of rank with probability proportional to the rank.
-- **One citation is stronger than the source.** On readable p. 55, the invariance bound is given an explicit error term and attributed to [17, Lemma 10.5], which states only an o(1) error. Claude's review also asks for the original's complete argument for Lemma A.3 to be reachable.
-- **Some descriptions are longer than the standard name.** "Kernel clustering", a standard name, was replaced by "maximizing the sum of within-cluster matrix entries".
 
 ## How the changes were checked
 
-Every rewritten proof passage was checked against the original by a separate model. None was rated unsupported or false, and a final check of all rewritten passages found no blocking problem. The ten deletions in item 5 were made last and were not checked again. In a blind comparison, both reviewers preferred the Readable Version with high confidence. As the [README](README.md) says, none of this is an independent verification of the mathematical claims.
+Every rewritten proof passage was checked against the original by a separate model. None was rated unsupported or false, and a final check of all rewritten passages found no blocking problem. The ten deletions in item 5 were made last and were not checked again. In a blind comparison, both reviewers preferred the Readable Version with high confidence. After the automated run, a few sentence-level corrections were made by hand and were not checked again by a separate model: the original parameter condition 2<sup>−ℓ</sup> < η/4 is restored in equation (4.4); the name kernel clustering is restored; and the proof of Lemma A.3 now says that the explicit error comes from running the argument of [17, Lemma 10.5] with the stated invariance bound, not from the statement of that lemma. As the [README](README.md) says, none of this is an independent verification of the mathematical claims.

@@ -16,8 +16,8 @@
         },
         "readable.pdf": {
           "path": "102/readable.pdf",
-          "sha256": "f14f409c150bc73051cad32297cbaf09092e8580dde930d6b18ccafdc53df166",
-          "bytes": 813880
+          "sha256": "abff8d5fe00ad673f566701f605b1b2d1a7f6c7ab203723911c9e7deb26e13ae",
+          "bytes": 813920
         }
       },
       "readableUpdated": "2026-10-27"
@@ -105,11 +105,11 @@
         },
         "readable.pdf": {
           "path": "336/readable.pdf",
-          "sha256": "d99983e0a3ff4b0d69c29ae6bc9833eb3046fe9e96bd559dda6eb40be20e8e13",
-          "bytes": 928010
+          "sha256": "906c18d3b92afffa2c64460f23302a8bee6e79c37c448acf4878f8660a7646b3",
+          "bytes": 928238
         }
       },
-      "readableUpdated": "2026-10-26"
+      "readableUpdated": "2026-10-27"
     },
     {
       "family": "ETH",
@@ -124,8 +124,8 @@
         },
         "readable.pdf": {
           "path": "ETH/readable.pdf",
-          "sha256": "882c823f19484852146aef00f5c83223e7dff5f8e5b4f1204c680a21feb3156a",
-          "bytes": 969848
+          "sha256": "cb3952632ae7b15e17cb223deff3de6e75cfe5df6b750b4515fb2fbebd2842f9",
+          "bytes": 962555
         }
       },
       "readableUpdated": "2026-10-27"

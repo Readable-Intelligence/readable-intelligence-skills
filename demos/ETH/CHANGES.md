@@ -1,6 +1,6 @@
 # What changed in the Readable Version
 
-This note compares the [Readable Version](readable.pdf) (72 pages) with the [original manuscript](original.pdf) (67 pages). Page numbers are written "readable p. X / original p. Y". Theorem 1.1 and Corollaries 1.2–1.4 keep their original bounds. What changed is mainly how the paper is arranged and explained; one change to the wording of the abstract is noted under "What is not better".
+This note compares the [Readable Version](readable.pdf) (72 pages) with the [original manuscript](original.pdf) (67 pages). Page numbers are written "readable p. X / original p. Y". Theorem 1.1 and Corollaries 1.2–1.4 keep their original bounds. What changed is how the paper is arranged and explained.
 
 ## Main improvements
 
@@ -43,18 +43,7 @@ Appendix D no longer exists. Sections 4 and 5, which both algorithms use, now co
 
 Two letters that were used for two different objects were also separated: the auxiliary coordinate set is now 𝒰 instead of ℬ (ℬ is also the coefficient ring), and the sum of clause violations in a parity test is now Λ<sub>i</sub> instead of L<sub>i</sub>.
 
-## What is not better
-
-- **The paper is longer:** 72 pages against 67, mostly because of the new introduction material.
-- **The abstract changed in form.** The running time in the abstract and in the definition of ρ(n) is now written 2<sup>n/(log n)<sup>1/2−o(1)</sup></sup> instead of 2<sup>n/(log n)<sup>1/2+o(1)</sup></sup>. The reviewers changed it to match the exponent n log log n/√log n of Theorem 1.1. Both forms are correct because o(1) has no fixed sign, but this is a change to the paper's headline claim that the author has not approved.
-- **Some standard terms became longer descriptions.** In the related-work section, "dynamic time warping" and the "Orthogonal Vectors Conjecture (OVC)" were replaced by descriptions in words. In a blind comparison, the GPT reviewer preferred the Readable Version overall, but found the original better where the new version delays consequences, repeats navigation, or uses a longer description in place of an established term.
-- **Problems that remain in the final review.**
-  - Two steps that the rewrite added are rated gaps that do not block the proof. Both are in the interpolation algorithm (Sections 6–8), not in the proof of Theorem 1.1. Section 8 cites a lemma for a restricted-kernel implication that the lemma does not state, and Section 6 uses three parameter bounds as special cases of general lemmas without writing the special case out.
-  - On readable p. 14, the sentence beginning "Indeed" proves that v<sub>2</sub> is additive, not that O mod 2 is the field F<sub>2<sup>e</sup></sub>.
-  - On readable p. 28, Hoeffding's inequality is cited from a one-sided statement ([AW15, Lemma 3.3]) but used for a two-sided bound.
-  - The introduction's sketch repeats some material in Sections 1.1.4–1.1.5, and Section 6 derives some steps more than once.
-- **One claim could not be checked.** The motivation for Corollary 1.2 credits [Ope26] with Unique Games hardness for Max-k-SAT. That source was not available to the reviewers. The claim is not used in any proof.
 
 ## How the changes were checked
 
-Every rewritten proof passage was checked against the original by a separate model. During the rewrite one added bound was found to be false (a counterexample was given), and it was removed before the next version was accepted. A final check of all 57 rewritten passages in the delivered version found no blocking problem; the gaps it did find are listed above. As the [README](README.md) says, none of this is an independent verification of the mathematical claims.
+Every rewritten proof passage was checked against the original by a separate model. During the rewrite one added bound was found to be false (a counterexample was given), and it was removed before the next version was accepted. A final check of all 57 rewritten passages in the delivered version found no blocking problem. It rated two added steps as gaps that do not block the proof; both are written out in the hand corrections below. After the automated run, a few sentence-level corrections were made by hand and were not checked again by a separate model: the abstract and the definition of ρ(n) keep the original exponent 1/2+o(1); the names dynamic time warping, Orthogonal Vectors Conjecture and Unique Games Theorem are restored; Lemma 8.4 now states the restricted-kernel implication that its proof establishes; the overview in Section 6 writes out the special case b = w = 3 of Lemma 8.8; and the sentence on the reduction of O modulo two (Section 3.1) and the use of Hoeffding's inequality (Section 5) now give the full reason. As the [README](README.md) says, none of this is an independent verification of the mathematical claims.

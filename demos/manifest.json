@@ -16,11 +16,11 @@
         },
         "readable.pdf": {
           "path": "102/readable.pdf",
-          "sha256": "7d4e0284b9b96eb38e3665a9985f311a5785544514830700804374aec16fb10c",
-          "bytes": 715030
+          "sha256": "f14f409c150bc73051cad32297cbaf09092e8580dde930d6b18ccafdc53df166",
+          "bytes": 813880
         }
       },
-      "readableUpdated": "2026-10-19"
+      "readableUpdated": "2026-10-27"
     },
     {
       "family": "103",

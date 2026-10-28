@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-10-26",
+  "updated": "2026-10-27",
   "upstreamRepository": "https://github.com/openai/math",
   "upstreamRevision": "adc7f1241b42e322a6451854ab7e4b4c146bf78a",
   "papers": [
@@ -110,6 +110,25 @@
         }
       },
       "readableUpdated": "2026-10-26"
+    },
+    {
+      "family": "ETH",
+      "title": "The Exponential Time Hypothesis is False",
+      "upstreamRevision": "42907c9e999cc00d6abe7a50bfc1023250edd1b9",
+      "originalSource": "https://github.com/openai/math/blob/42907c9e999cc00d6abe7a50bfc1023250edd1b9/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf",
+      "files": {
+        "original.pdf": {
+          "path": "ETH/original.pdf",
+          "sha256": "5b1612dc2eebb2cad5b4cbe62d1fed2982f01ab1908c26f70010a651487e8123",
+          "bytes": 887884
+        },
+        "readable.pdf": {
+          "path": "ETH/readable.pdf",
+          "sha256": "882c823f19484852146aef00f5c83223e7dff5f8e5b4f1204c680a21feb3156a",
+          "bytes": 969848
+        }
+      },
+      "readableUpdated": "2026-10-27"
     }
   ]
 }

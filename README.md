@@ -6,7 +6,7 @@
 
 [![Website](https://img.shields.io/badge/website-readable--intelligence.com-1f6feb)](https://readable-intelligence.com)
 [![Skill](https://img.shields.io/badge/skill-restructure--paper-8250df)](skills/restructure-paper/SKILL.md)
-[![Demos](https://img.shields.io/badge/demo%20papers-6-2da44e)](#demo-papers)
+[![Demos](https://img.shields.io/badge/demo%20papers-7-2da44e)](#demo-papers)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 [Website](https://readable-intelligence.com) ·
@@ -20,7 +20,7 @@
 
 ---
 
-This is the public contribution repository for [Readable Intelligence](https://readable-intelligence.com). It holds our paper-rewriting skill and six demo paper pairs.
+This is the public contribution repository for [Readable Intelligence](https://readable-intelligence.com). It holds our paper-rewriting skill and seven demo paper pairs.
 
 ## Current skill
 
@@ -49,6 +49,7 @@ Each pair below is the original manuscript next to its Readable Version. Website
 | 167 | A power saving for planar unit distances | [PDF](demos/167/original.pdf) | [PDF](demos/167/readable.pdf) |
 | 260 | The spacetime Penrose inequality and enclosing area | [PDF](demos/260/original.pdf) | [PDF](demos/260/readable.pdf) |
 | 336 | Positive scalar curvature and uniform codimension-two width | [PDF](demos/336/original.pdf) | [PDF](demos/336/readable.pdf) |
+| ETH | The Exponential Time Hypothesis is False | [PDF](demos/ETH/original.pdf) | [PDF](demos/ETH/readable.pdf) |
 
 The full upstream collection of 722 manuscripts lives at [openai/math](https://github.com/openai/math).
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-10-27",
+  "updated": "2026-10-28",
   "upstreamRepository": "https://github.com/openai/math",
   "upstreamRevision": "adc7f1241b42e322a6451854ab7e4b4c146bf78a",
   "papers": [
@@ -34,11 +34,11 @@
         },
         "readable.pdf": {
           "path": "103/readable.pdf",
-          "sha256": "492db8a0339d32e533f00564c699d297ae52bbf762c0b1b2421606ccf24fbef1",
-          "bytes": 1037007
+          "sha256": "1d33c925d3e1717be1564c658cd0e2ff119e081127aacba7cf5a0b031544c2cb",
+          "bytes": 1080693
         }
       },
-      "readableUpdated": "2026-10-19"
+      "readableUpdated": "2026-10-28"
     },
     {
       "family": "107",
@@ -70,11 +70,11 @@
         },
         "readable.pdf": {
           "path": "167/readable.pdf",
-          "sha256": "c8f636512f823c2275fc87fcf84790adabf8efcb50a3af6d185cefc041319112",
-          "bytes": 686249
+          "sha256": "3c5dc24dca1d04e9ac02d453325ed8c46c4cd6b07f230dce28d18c1f125609e7",
+          "bytes": 706598
         }
       },
-      "readableUpdated": "2026-10-19"
+      "readableUpdated": "2026-10-28"
     },
     {
       "family": "260",

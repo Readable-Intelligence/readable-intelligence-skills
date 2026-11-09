@@ -1,0 +1,62 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype,booktabs,enumitem}
+\usepackage{needspace}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,patterns}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage[capitalise,noabbrev,nameinlink]{cleveref}
+\ifdefined\pdftrailerid\pdftrailerid{}\fi
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\1}{\mathbf 1}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\KL}{D_{\mathrm{KL}}}
+\DeclareMathOperator{\TV}{TV}
+\numberwithin{equation}{section}
+\setlist[enumerate]{itemsep=3pt,topsep=5pt}
+\setlist[itemize]{itemsep=3pt,topsep=5pt}
+\title{A power saving for planar unit distances}
+\author{OpenAI}
+\hypersetup{pdftitle={A power saving for planar unit distances},pdfauthor={OpenAI}}
+\date{September 23, 2026}
+\AddToHook{cmd/thebibliography/after}{\addcontentsline{toc}{section}{\refname}}
+\begin{document}
+\maketitle
+\begin{abstract}
+We prove a power saving for the planar unit-distance problem: for some absolute \(\beta<4/3\), every set of \(n\) points in the Euclidean plane determines \(O(n^\beta)\) unordered pairs at unit distance. This improves the exponent \(4/3\) in the bound of Spencer, Szemer\'edi and Trotter. The proof argues by contradiction from a sequence of near-extremal configurations. Random cuttings, degree trimming and an induced bipartite subgraph maximizing its retained edge fraction divided by the \(27/50\)-th power of the product of its two retained vertex fractions give an unbalanced point--circle incidence graph with controlled degrees and an expansion property. An entropy argument resamples a point from its answers to a short sequence of coordinate tests. After algebraic specialization, heights and the product formula over a number field containing the coordinates measure the variation of unit-edge directions over all absolute values. Comparing pairs of edges at points and centers produces a bipartite graph on two copies of a smaller point set, with a number of edges nearly quadratic in the size of the set. Each edge joins distinct neighbors of a common unit-circle center and carries the ratio of the directions from that center to its two points. These ratios have heights tending to infinity uniformly over the edges, while their alternating products around 4-cycles have uniformly negligible height in comparison. After a further deletion of pairs on unit circles containing at least \(n^{3/10}\) points of the smaller set, an algebraic argument with derivations and independent square roots, using quadratic Kummer theory, rules out the resulting sequence of graphs.
+\end{abstract}
+\input{sections/00-introduction}
+\input{sections/01-incidence}
+\input{sections/02-prediction}
+\input{sections/03-heights}
+\input{sections/04-budgets}
+\input{sections/05-common-levels}
+\input{sections/06-extraction}
+\input{sections/07-algebra}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

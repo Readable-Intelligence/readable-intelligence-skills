@@ -1,0 +1,154 @@
+\section{Singleton coordinates with zero advice slopes}
+\label{sec:zero-advice}
+
+Proposition~\ref{prop:matrix-decoding} converts high acceptance of the
+matrix test into agreement between two local strategies supplied with
+correlated linear advice.  We now bound the value of this advice
+experiment on a NO parity instance.  The use of vanishing advice is part
+of the smooth outer-game framework of
+\cite[Sections~3.3--3.4]{KMS17}.  We give the full local reconstruction
+argument for the present occurrence-indexed questions.  The key is to
+identify singleton coordinates on which both advice slopes vanish.
+After fixing the data outside those coordinates, their question pairs
+have the ordinary independent equation--variable law.  Each side can
+then reconstruct its original advice input from its own remaining
+questions and the fixed data.  This defines strategies for an ordinary
+parallel repetition, whose value bounds the original agreement.
+
+We prove Lemma~\ref{lem:zero-advice} for the experiment in
+Definition~\ref{def:projected-advice}, with $k>1$ an integer cube and
+$\beta=k^{-2/3}$.  The distinct variable IDs in each equation make its
+ordinary equation--variable game $G_{\mathcal E}$ a projection game;
+Equation~\eqref{eq:base-game-gap} gives its value at most $14/15$ when
+$\OPT(\mathcal E)\le4/5$.
+
+\begin{proof}[Proof of Lemma~\ref{lem:zero-advice}]
+Fix an arbitrary pair of local randomized strategies in the advice
+experiment.  We first condition on $A$ and combine the two visible
+advice maps into
+\[
+ D_O=(T_O,S_O):L_O\longrightarrow E_A,
+ \qquad E_A=W\oplus\im A.
+\]
+Conditional on the questions and projection choices, the intercept
+$c_O$ and all block slope columns of $D_O$ are independent uniform
+elements of $E_A$.  Indeed, the columns of $T_O$ and $M_O$ are
+independent and uniform, and applying $A$ to a uniform column gives a
+uniform element of $\im A$.  This coefficient law depends only on
+whether a block is an equation or a singleton, and not on any equation
+ID, variable ID, or selected position.  In particular, $c_O$ is
+independent of all block data.
+
+Let $I\subseteq[k]$ consist of the coordinates $i$ projected to a singleton
+whose advice slope $d_i\in E_A$ is zero.  Conditional on $A$,
+the indicators of membership in $I$ are independent, with common probability
+\begin{equation}
+ p_A=\frac{\beta}{\abs{E_A}}
+     =\beta\,2^{-\dim W-\rank A}.
+ \label{eq:zero-advice-probability}
+\end{equation}
+More precisely, for every equation occurrence $e$ and position
+$j\in[3]$,
+\begin{equation}
+ \Pr[e_i=e,\ i\text{ is a singleton at position }j,\ d_i=0\mid A]
+ =\omega_e\,\frac{\beta}{3\abs{E_A}}.
+ \label{eq:zero-advice-joint-law}
+\end{equation}
+Thus, conditional on belonging to $I$, a coordinate has precisely the
+ordinary equation--variable distribution.
+
+For the analysis, let $R$ consist
+of $A$, $I$, the original intercept $c_O$, and the following data for
+every $i\notin I$: its equation occurrence, whether the block was
+retained or projected, the selected position in the latter case, and
+its advice slope columns.  No witness, decoder output, agreement event,
+or response randomness is included in $R$.
+
+For each value $R=r$ of positive probability, regard the set
+$I$ recorded in $r$ as fixed.  When $I$ is nonempty, we will use $r$
+as constant data when defining two strategies for
+$G_{\mathcal E}^{\otimes\abs{I}}$.
+Each strategy will reconstruct one original advice input from its own
+product-game questions, apply the corresponding original response rule,
+and retain the answers in the slots $I$.
+
+Conditional on $R=r$, the pairs
+\[
+ (e_i,v_{e_i,j_i}),\qquad i\in I,
+\]
+are independent question pairs of $G_{\mathcal E}$.  Indeed, conditional
+on $A$, the coordinate data are independent, and
+Equation~\eqref{eq:zero-advice-joint-law} shows that conditioning on $I$
+preserves the ordinary law in each coordinate in $I$.  The outside
+coordinate data and the independent intercept impose no further
+condition on these pairs.
+
+We now verify the two reconstructions, including the affine intercept
+shared across the blocks.  An equation with right-hand side $b_e$ has actual
+bits $x,y,b_e t_0+x+y$.  Pulling back a singleton slope $d_i$ thus
+produces the two slopes
+\begin{equation}
+ (d_i,0),\quad (0,d_i),\quad (d_i,d_i)
+ \label{eq:zero-advice-padded-slopes}
+\end{equation}
+at positions one, two, and three, respectively.  The intercept of
+$D_U=D_O\bar\pi$ is
+\begin{equation}
+ c_U=c_O+
+ \sum_{\substack{i\text{ projected to a singleton}\\j_i=3}}
+ b_{e_i}d_i.
+ \label{eq:zero-advice-intercept}
+\end{equation}
+For a coordinate in $I$, every slope in
+Equation~\eqref{eq:zero-advice-padded-slopes} is zero and its contribution to
+Equation~\eqref{eq:zero-advice-intercept} is zero.  All remaining terms in
+that equation are determined by $r$.
+
+The equation side receives its occurrences $e_i$ for $i\in I$.
+Together with $r$, they specify all of $U$.  Its two advice slopes in
+each block in $I$ are zero, while $r$ determines every other slope and
+the full intercept.  These coefficients reconstruct both padded advice
+maps without using any selected position or variable question in $I$.
+The variable side receives the variable question for each $i\in I$.
+Together with $r$, these specify all of $O$.  Its singleton
+slopes in $I$ are zero, and $r$ supplies every other slope and the original
+intercept.  These coefficients reconstruct its two advice maps without
+using any equation in $I$.  Repeated IDs across different blocks cause no
+additional restriction: questions were sampled independently with
+replacement, and answers use the local copies specified in
+Section~\ref{sec:game}.
+
+These reconstructions define the promised product-game strategies:
+each side applies its original response rule to the reconstructed
+input and retains its answers in the slots $I$, in their original
+order.  Their equation answers are satisfying triples because the
+original answers are valid.  For every realization of the questions in $I$ and response randomness, full agreement in the advice
+experiment implies acceptance in every slot in $I$.  If $I=\varnothing$,
+the conditional success probability is at most one.  Otherwise,
+\[
+ \Pr[\bar\pi a_U=a_O\mid R=r]
+ \le \val(G_{\mathcal E}^{\otimes\abs{I}})
+ \le \left(1-\frac{1}{3600}\right)^{\abs{I}}.
+\]
+The first inequality uses the strategies just constructed and the
+conditional product law.  The second uses
+Theorem~\ref{thm:repetition} and Equation~\eqref{eq:base-game-gap}.
+The original response rules are evaluated only at their original
+local inputs; $r$ indexes the auxiliary product-game strategies.
+Thus the final bound holds for every $r$, including $I=\varnothing$
+when its right-hand side is interpreted as one.
+
+Finally, conditional on $A$, the size of $I$ has distribution
+$\operatorname{Binomial}(k,p_A)$.  Averaging the preceding inequality
+first over $R$ conditional on $A$, and then over $A$, gives
+\begin{align*}
+ \Pr\bigl[\bar\pi(a_U)=a_O\bigr]
+ &\le \E_A\left(1-\frac{p_A}{3600}\right)^k\\
+ &\le\left(1-\frac{\beta\,2^{-\dim W-r_{\rm s}}}{3600}\right)^k\\
+ &\le \exp\!\left(
+ -\frac{k\beta\,2^{-\dim W-r_{\rm s}}}{3600}
+ \right),
+\end{align*}
+since $\rank A\le r_{\rm s}$.  Substituting
+$k\beta=k^{1/3}$ proves Equation~\eqref{eq:zero-advice-agreement-bound}.
+\end{proof}

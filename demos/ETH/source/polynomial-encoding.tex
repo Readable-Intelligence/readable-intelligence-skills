@@ -1,0 +1,397 @@
+\section{Encoding sparse polynomial systems}\label{sec:tensor-encoding}
+We prove Lemma~\ref{lem:tensor-sparse-query}. The first step represents
+each equation by an integer polynomial modulo a power of two. Truncating
+the product across all equations keeps its total input degree linear
+in the number of variables. The proof in
+Section~\ref{subsec:tensor-sparse-proof} then encodes its monomials
+as tensor indices and applies Theorem~\ref{thm:tensor-contraction}.
+
+Recall the common-zero count $N(\mathcal P)$ from
+\eqref{eq:common-zero-count}.
+In the lift below, $m_{\mathrm{test}}$ denotes the number of equations,
+and each $P_i$ has degree at most $k$. The list of its monomials
+is supplied over $\mathbb F_2$.
+
+\subsection{An integer polynomial for one equation}\label{subsec:rational-lift}
+On Boolean inputs we may replace each positive power $x_v^j$ by $x_v$.
+Combine duplicate monomials modulo two. If $\mathcal M_i$ is the
+resulting list of variable sets for $P_i$, define its integer lift by
+\[
+ L_i(\vec X)=\sum_{M\in\mathcal M_i}\prod_{v\in M}X_v .
+\]
+The empty monomial is $1$ and the empty sum is $0$. The value $L_i(x)$
+counts the monomials equal to one, so $P_i(x)=0$ precisely when
+$L_i(x)$ is even. Write $I_i=\bigcup_{M\in\mathcal M_i}M$. Its scope size is at most $k$ times its monomial-list length,
+while its degree is at most $k$.
+
+Set $\ell=n+1$. Since $0\le N(\mathcal P)\le2^n<2^\ell$, it suffices
+to obtain its residue modulo $2^\ell$. We first represent the
+evenness indicator by an integer polynomial modulo this power of two.
+Multiplying $m_{\mathrm{test}}$ such indicators directly would give
+only a quadratic degree bound; the form of the next lemma will let us
+control the degree across all equations together.
+
+Put $h(Y)=Y(Y-1)$. Its value is even at every integer $Y$.
+Writing the indicator in powers of $h$ exposes one factor of two for
+each copy of $h$ in the product.
+
+\begin{lemma}\label{lem:rational-idempotent}
+For every integer $\ell\ge1$, one can compute polynomials
+$e_0,\ldots,e_{\ell-1}\in\mathbb Z[Y]$, each of degree at most one,
+such that
+\begin{equation}\label{eq:idempotent-expansion}
+ p_\ell(Y)=\sum_{j=0}^{\ell-1}e_j(Y)h(Y)^j,
+ \qquad
+ p_\ell(y)\equiv\mathds{1}_{\{2\mid y\}}\pmod{2^\ell}
+ \quad(y\in\mathbb Z).
+\end{equation}
+The coefficients of the $e_j$ have $\poly(\ell)$ bits, and the
+construction uses $\poly(\ell)$ bit operations and $\poly(\ell)$
+bits of space.
+\end{lemma}
+\begin{proof}
+Let $F_\ell$ be the modulus-amplifying polynomial of Beigel and
+Tarui~\cite[Section~2.3]{BT94}. Chan and Williams apply $F_\ell$ to
+sums of clause-violation indicators to count satisfying assignments
+deterministically~\cite[Theorem~2.5 and proof of Theorem~1.6]{CW21}.
+We need the indicator of even parity, so we take its complement:
+\begin{equation}\label{eq:binary-indicator}
+ p_\ell(Y)=1-F_\ell(Y)=(1-Y)^\ell
+       \sum_{j=0}^{\ell-1}\binom{\ell+j-1}{j}Y^j.
+\end{equation}
+The finite sum is the inverse of $(1-Y)^\ell$ modulo $Y^\ell$.
+Indeed, the coefficient of $Y^j$ in $(1+Y+Y^2+\cdots)^\ell$
+counts $\ell$-tuples of nonnegative integers summing to $j$ and equals
+$\binom{\ell+j-1}{j}$. Therefore
+\[
+ p_\ell(Y)\equiv1\pmod{Y^\ell},
+ \qquad
+ p_\ell(Y)\equiv0\pmod{(1-Y)^\ell}.
+\]
+For even $y$, the first congruence gives $p_\ell(y)\equiv1\pmod{2^\ell}$.
+For odd $y$, the second gives $p_\ell(y)\equiv0\pmod{2^\ell}$.
+
+The polynomial $p_\ell$ has integer coefficients and degree less
+than $2\ell$. Successive division by the monic quadratic
+$h=Y^2-Y$ writes it uniquely as
+$\sum_{j<\ell}e_jh^j$, with integer remainders $e_j$ of degree
+less than two. Lemma~\ref{lem:rational-lift-height} in
+Appendix~\ref{app:arithmetic} bounds their coefficients and proves
+the $\poly(\ell)$ bit-operation bound for this construction.
+\end{proof}
+
+\subsection{Keeping the product degree linear}\label{subsec:total-order}
+The full product $\prod_{i=1}^{m_{\mathrm{test}}} p_\ell(L_i(\vec{X}))$ has degree at most
+$km_{\mathrm{test}}(2\ell-1)$. Each factor $h(y)$ contributes a factor of two at
+integer arguments, so a term containing at least $\ell$ such factors
+can be discarded modulo $2^\ell$. This lets us retain only terms
+whose total power of $h$ is less than $\ell$, across all equations together.
+Introduce a formal variable $V$ to record that power, using the same
+$V$ for every equation. Its exponent records a guaranteed power of two
+dividing the corresponding term at integer arguments. It is not an
+additional Boolean variable to be summed over.
+For the rational computation we use the coefficient algebra
+\[
+ \mathcal E_\ell=\mathbb Q[V]/(V^\ell).
+\]
+In this algebra every multiplication discards powers $V^s$ with
+$s\ge\ell$. Once the product is formed, we add its retained
+coefficients using the linear map
+\[
+ \mathcal S_\ell\!\left(\sum_{s=0}^{\ell-1}b_sV^s\right)
+ =\sum_{s=0}^{\ell-1}b_s .
+\]
+This map need not preserve products, so it is applied only after the
+factors have been multiplied. We use the same notation for polynomial
+coefficients $b_s$.
+
+\begin{lemma}\label{lem:total-order}
+Let $m_{\mathrm{test}}\ge0$ and $\ell\ge1$ be integers. For integers
+$y_1,\ldots,y_{m_{\mathrm{test}}}$, put
+\[
+ B_i(V)=\sum_{j=0}^{\ell-1}e_j(y_i)h(y_i)^jV^j.
+\]
+Then
+\[
+ \mathcal S_\ell\!\Bigl(\prod_{i=1}^{m_{\mathrm{test}}} B_i(V)\bmod V^\ell\Bigr)
+ \equiv\prod_{i=1}^{m_{\mathrm{test}}}\mathds{1}_{\{2\mid y_i\}}\pmod{2^\ell}.
+\]
+Independently, for any nonnegative integer $d_*$, if the $y_i$ are
+polynomials over $\mathbb Q$ in any common collection of inputs,
+each of total degree at most $d_*$,
+then each retained coefficient of $V^s$, and hence their sum, has
+total input degree at most
+$d_*(m_{\mathrm{test}}+2(\ell-1))$.
+\end{lemma}
+\begin{proof}
+Before truncation, a term contributing to the coefficient of $V^s$
+has the form
+\[
+ \prod_{i=1}^{m_{\mathrm{test}}} e_{j_i}(y_i)h(y_i)^{j_i},
+ \qquad \sum_{i=1}^{m_{\mathrm{test}}} j_i=s.
+\]
+At integer arguments it is divisible by $2^s$. Dropping every
+coefficient with $s\ge\ell$ therefore leaves the sum of coefficients
+unchanged modulo $2^\ell$. Without truncation, that sum is
+$\prod_i p_\ell(y_i)$, which has the required congruence by
+Lemma~\ref{lem:rational-idempotent}.
+Truncating after each multiplication gives the same result as
+truncating the full product: every later factor has nonnegative
+$V$-degree, so a discarded term can never return to degree below
+$\ell$. This also explains why the coefficient sum is taken at
+the end; it is the retained total orders that have the required
+congruence.
+
+For polynomial arguments, every retained term has
+$\sum_i j_i\le\ell-1$. Since $\deg e_{j_i}\le1$ and $\deg h=2$,
+its degree is at most
+\[
+ \sum_{i=1}^{m_{\mathrm{test}}} d_*(1+2j_i)
+ \le d_*(m_{\mathrm{test}}+2(\ell-1)).
+\]
+The bound holds coefficient by coefficient, as well as for their sum.
+\end{proof}
+
+To see why the truncation uses the total order across all equations,
+take $\ell=2$. Then
+\[
+ p_2(Y)=1-3Y^2+2Y^3=(1-Y)+(2Y-1)h(Y).
+\]
+For two equations, multiplication modulo $V^2$, followed by
+$\mathcal S_2$, retains
+\[
+ (1-y_1)(1-y_2)
+ +(2y_1-1)h(y_1)(1-y_2)
+ +(1-y_1)(2y_2-1)h(y_2).
+\]
+Its degree is at most four. The omitted term
+$(2y_1-1)(2y_2-1)h(y_1)h(y_2)$ has degree six, but is divisible
+by four at integer inputs.
+
+
+\subsection{From the retained monomials to a network}\label{subsec:tensor-sparse-proof}
+\begin{proof}[Proof of Lemma~\ref{lem:tensor-sparse-query}]
+The network will sum coefficients of incidence monomials, with
+test vertices supplying those coefficients and variable vertices
+supplying their sums over Boolean values.
+Put $\lambda=\lceil\log_2 n\rceil$ and
+$\nu=\lceil\log_2\lambda\rceil$.
+We will apply Theorem~\ref{thm:tensor-contraction} with $s=n\nu$,
+so we need $O_{k,c}(n\nu)$ wires and maximum degree at most
+$\lceil(n\nu)^{9/10}\rceil$. Each vertex will stand for a
+group of tests or of free variables, and its degree will be at most the
+number of incidences in its group. Each test already reads only
+polylogarithmically many variables, but a single variable may belong to
+all $a$ scopes. We first fix the high-incidence variables in all
+possible ways. Afterwards every free variable lies in only
+polylogarithmically many scopes. After grouping, this will bound the
+degrees on both sides by $n^{3/4}\lambda^{O_{k,c}(1)}$, below the
+required maximum for all sufficiently large $n$.
+Within each monomial replace positive powers of a variable by its
+first power, and combine duplicate monomials modulo two. The scope
+of test $i$ consists of the variables in its remaining monomials.
+It has size at most $k\lambda^c$.
+Let $N_0$ be the sum of the scope sizes, counting a pair $(i,v)$
+once if variable $v$ belongs to test $i$. Thus $N_0\le ak\lambda^c\le ckn\lambda^c$, since $a\le cn$.
+Fix, in all possible ways, the variables belonging to more than
+\[
+ D_*=\max\{1,\lceil N_0/n\rceil\}\lceil\sqrt{\lambda}\rceil
+\]
+scopes. There are at most $n/\sqrt{\lambda}$ such variables. Their
+assignments partition the original count into at most
+$2^{n/\sqrt{\lambda}}$ branch counts. On each branch substitute the
+fixed bits and combine duplicate monomials again. The free scope
+$I_i$ of test $i$ still has size at most $k\lambda^c$, and each free
+variable appears in at most $D_*=\lambda^{O_{k,c}(1)}$ scopes. Free
+variables absent from every scope remain declared. A constant-one
+equation makes the branch count zero. We may discard constant-zero
+equations, and if none remain the answer for the branch is two to the
+power of its number of free variables. Below $a$ denotes the number
+of remaining equations and $n$ the original variable count.
+
+\paragraph{The polynomial on the incidences.}
+Give each pair $(i,v)$ with $v\in I_i$ its own indeterminate
+$z_{iv}$. Write $z_i=(z_{iv})_{v\in I_i}$. Form
+$\widetilde L_i(z_i)$ by summing the remaining monomials of the
+normalized branch polynomial with integer coefficients, using $z_{iv}$
+for $x_v$. We use the ring
+\[
+ \mathcal B=(\mathbb Z/2^p\mathbb Z)[V]/(V^\ell),
+ \qquad p=\ell=n+1 .
+\]
+Take $h(Y)=Y(Y-1)$ and the integer polynomials $e_j$ from
+Lemma~\ref{lem:rational-idempotent}. Reduce their coefficients
+modulo $2^p$, and form the factor
+\[
+ B_i(z_i,V)=\sum_{j=0}^{\ell-1}
+   e_j(\widetilde L_i(z_i))\,h(\widetilde L_i(z_i))^j V^j .
+\]
+Let $\overline B_i$ be its multilinear representative in the $z_i$,
+obtained in each coefficient of $V$ by replacing each positive
+power of an incidence indeterminate by its first power. It agrees
+with $B_i$ on every Boolean assignment to $z_i$. Define
+$F(z,V)=\prod_i\overline B_i(z_i,V)$ in $\mathcal B[z]$. The
+incidence indeterminates for different tests are disjoint, so $F$
+is multilinear even before substituting the same Boolean $x_v$ for
+all copies of variable $v$.
+
+The coefficient of $V^j$ in $\overline B_i$ has incidence degree
+at most $k(1+2j)$, since $\deg e_j\le1$, $\deg h=2$, and
+multilinearization only lowers monomial degrees. Multiplication in
+$\mathcal B$ retains only terms with $\sum_i j_i\le\ell-1$.
+Consequently every incidence monomial in $F$ has degree at most
+\begin{equation}\label{eq:sharp-incidence-degree}
+ K=k\bigl(a+2(\ell-1)\bigr)=O_{k,c}(n).
+\end{equation}
+Over $\mathcal B$, use the same coefficient-sum formula
+$\mathcal S_\ell(\sum_{j<\ell}b_jV^j)=\sum_{j<\ell}b_j$, now with
+$b_j\in\mathbb Z/2^p\mathbb Z$. At $z_{iv}=x_v$, the multilinearized factor
+$\overline B_i$ agrees with $B_i$ for the normalized branch polynomial.
+The integer $\widetilde L_i((x_v)_{v\in I_i})$ has the same parity
+as the original $P_i$ evaluated at $x$ and the fixed bits. Applying
+Lemma~\ref{lem:total-order} to these integers shows that the branch
+count is congruent modulo $2^p$ to
+\begin{equation}\label{eq:sharp-branch-residue}
+ \mathcal S_\ell\left(\sum_x F\bigl((z_{iv}=x_v)_{iv},V\bigr)\right),
+\end{equation}
+where $x$ runs over all free Boolean assignments. We apply the
+coefficient-sum map after multiplying the test factors in the
+truncated ring.
+
+\paragraph{Indexing the monomials.}
+Giving each incidence its own wire would use up to
+$N_0\le ckn\lambda^c$ wires, while the claimed exponent allows only
+$O_{k,c}(n\nu)$. A monomial of $F$ selects at most $K$ incidences.
+We group the tests and the free variables, fix how many selected
+incidences join each pair of groups, and let the wires between two
+groups index the subsets of that size. The sizes are enumerated
+separately as an array $(d_{gh})$, with one entry per pair of groups;
+by \eqref{eq:sharp-wire-budget} below the binary subset indices give
+the $O_{k,c}(n\nu)$ wire bound. We choose
+$J=\lceil n^{1/4}\rceil$ groups on each side so that the $J^2$
+array entries cost only $2^{O_{k,c}(\sqrt n\log n)}$ choices,
+while each group has few enough incidences to meet the
+maximum-degree bound.
+Partition the tests and the free variables separately into these
+$J$ groups, with sizes differing by at most one on each side. Write $\mathcal T_g$ for a test group and
+$\mathcal X_h$ for a variable group. A group contains
+$O_c(n^{3/4})$ objects, so the number of its incidences is at most
+$n^{3/4}\lambda^{O_{k,c}(1)}$ on either side. Let $N_{gh}$ be the
+number of incidences from $\mathcal T_g$ to $\mathcal X_h$ and let
+$N=\sum_{g,h}N_{gh}\le N_0$.
+
+For an incidence monomial let $d_{gh}$ be the number of its
+selected incidences joining groups $g,h$. Enumerate arrays of
+integers $(d_{gh})$ with $0\le d_{gh}\le N_{gh}$ and
+$\sum_{g,h}d_{gh}\le K$. There are at most
+\[
+ (K+1)^{J^2}=2^{O_{k,c}(\sqrt n\log n)}
+\]
+arrays, which can be enumerated using $J^2$ counters. For a fixed
+array there are
+\[
+ C_{gh}=\binom{N_{gh}}{d_{gh}}
+\]
+subsets of the specified size for this pair. Draw
+$\lceil\log_2 C_{gh}\rceil$ Boolean wires between the two group
+vertices to index them in lexicographic order. For $C_{gh}=1$
+both endpoints use the unique subset (possibly the entire incidence
+set) with no wires. Any unused bit string gives tensor entry zero.
+To decode a valid index, take the incidences in order and count the
+possible completions with or without each incidence using binomial
+coefficients. These have polynomial bit length, so decoding uses
+polynomial time and space.
+
+The union of the subsets over all pairs specifies a squarefree
+monomial of degree at most $K$ in $N$ indeterminates. Including
+all monomials of this degree bound gives the upper bound
+$\binom{N+K}{K}$ by stars and bars. Thus the number
+of wires $M$ in the network for this array satisfies
+\begin{align}
+ M &\le J^2+\log_2\prod_{g,h} C_{gh}
+      \le J^2+\log_2\binom{N+K}{K} \notag\\
+   &\le J^2+K\log_2\!\left(\frac{\mathrm e(N+K)}{K}\right)
+      = O_{k,c}(n\nu).
+ \label{eq:sharp-wire-budget}
+\end{align}
+Here $K=\Theta_{k,c}(n)$ and $N\le n\lambda^{O_{k,c}(1)}$.
+Also $\lceil\log_2 C_{gh}\rceil\le N_{gh}$, so the degree of each
+vertex is at most its number of incidences,
+$n^{3/4}\lambda^{O_{k,c}(1)}$.
+
+\paragraph{Tensor entries and contraction.}
+A valid assignment of wire bits determines a subset $S_i\subseteq I_i$
+at each test. Write $z_{i,S_i}=\prod_{v\in S_i}z_{iv}$. The entry
+at a test group $g$ is the coefficient of its indicated monomial
+in $\prod_{i\in\mathcal T_g}\overline B_i(z_i,V)$. Since the $z_i$
+are disjoint, this is
+\[
+ \prod_{i\in\mathcal T_g}[z_{i,S_i}]\overline B_i(z_i,V)
+ \qquad\text{in }\mathcal B.
+\]
+For a variable group $h$, put $b_v=|\{i:v\in S_i\}|$
+for $v\in\mathcal X_h$. Its entry is
+\[
+ \sum_{x\in\{0,1\}^{\mathcal X_h}}
+        \prod_{v\in\mathcal X_h}x_v^{b_v}
+   =2^{|\{v\in\mathcal X_h:b_v=0\}|}\pmod{2^p}.
+\]
+Indeed a positive exponent requires $x_v=1$ and a zero exponent
+leaves $x_v$ free. This includes variables outside all test scopes.
+
+Each monomial of $F$ occurs in exactly one array and has exactly
+one valid index at each group pair. Its coefficient in $F$ is the
+product of the test-group coefficients. After the incidences with
+the same $v$ are set equal, its sum over Boolean assignments is
+the product of the variable-group entries. By
+\eqref{eq:sharp-incidence-degree}, summing over these arrays exhausts
+all monomials. Consequently the element of $\mathcal B$ inside
+$\mathcal S_\ell$ in \eqref{eq:sharp-branch-residue} is the sum of
+the contractions of these bipartite networks.
+
+To evaluate one test-side coefficient, let $\mathbf1_T$ be the
+Boolean vector on $I_i$ with support $T\subseteq S_i$. At
+$\mathbf1_T$, the multilinear polynomial evaluates to the sum of its
+coefficients indexed by subsets of $T$, and it agrees there with
+$B_i$. Inverting this subset sum gives
+\[
+ [z_{i,S_i}]\overline B_i(z_i,V)=
+ \sum_{T\subseteq S_i}(-1)^{|S_i|-|T|}B_i(\mathbf1_T,V)
+ \qquad\text{in }\mathcal B.
+\]
+Each term costs polynomially many bit operations. Evaluate
+$\widetilde L_i(\mathbf1_T)$ from the listed monomials and use the
+polynomials $e_j$ of Lemma~\ref{lem:rational-idempotent}, which
+are constructible in polynomial time. Store the $\ell$ coefficients
+of $B_i(\mathbf1_T,V)$ modulo $2^p$. There are at most
+$2^{|S_i|}\le 2^{k\lambda^c}$ subsets to process. Sum one test
+at a time and multiply the resulting coefficients in $\mathcal B$
+over the group. This evaluates a test-group entry in
+$2^{\lambda^{O_{k,c}(1)}}$ bit operations and polynomial space.
+The variable-side entries and checks for invalid wire indices take
+polynomial time. The graph, degree array, and entry procedures have
+polynomial-size descriptions.
+
+Apply Theorem~\ref{thm:tensor-contraction} with size parameter
+$s=n\nu$, root precision $p=n+1$, and truncation order $\ell=n+1$.
+The graph has $2J$ vertices and $O_{k,c}(s)$ wires by
+\eqref{eq:sharp-wire-budget}. For all sufficiently large $n$ its
+maximum degree is at most $\lceil s^{9/10}\rceil$, its precision
+and truncation order are $O(s)$, and its entry-evaluation time is
+at most $2^{O_{k,c}(s^{9/10})}$. Each contraction then takes
+$n^{O_{k,c}(1)}2^{O_{k,c}(s/\sqrt{\log s})}$ bit operations and
+polynomial space. Here $s/\sqrt{\log s}=O(n\nu/\sqrt\lambda)$.
+The high-incidence branches and degree arrays multiply the
+running time by at most
+\[
+ 2^{\,n/\sqrt{\lambda}+O_{k,c}(\sqrt n\log n)}.
+\]
+Both terms in this exponent are $O_{k,c}(n\nu/\sqrt{\lambda})$.
+Process the branches and arrays sequentially. On each branch,
+sum the contractions in $\mathcal B$ and apply $\mathcal S_\ell$.
+Adding the branch residues modulo $2^{n+1}$ gives the original
+count, since it lies between $0$ and $2^n$. This proves the
+claimed bounds, using direct enumeration for bounded exceptional
+sizes.
+\end{proof}
+

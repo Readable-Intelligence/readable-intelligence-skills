@@ -1,0 +1,381 @@
+\section{Introduction}\label{sec:introduction}
+
+A lower bound for scalar curvature is a local condition. Gromov's
+macroscopic dimension conjecture predicts a global consequence: at a
+controlled scale, two dimensions can be collapsed. We prove the
+quantitative form of this assertion for arbitrary complete manifolds
+in dimensions at least four.
+
+For a metric space \(X\) and an integer \(d\ge0\), define its
+\emph{Urysohn \(d\)-width} by
+\[
+ \UW_d(X)=\inf_f\ \sup_{y\in K}\diam_X f^{-1}(y),
+\]
+where the infimum runs over continuous maps \(f:X\to K\) to simplicial
+complexes of dimension at most \(d\). The complexes have their usual
+polyhedral topology. The diameter is that of the entire fiber, including
+all its components; empty fibers may be omitted.
+
+\begin{theorem}\label{thm:main}
+For every integer \(n\ge4\), there is a finite constant \(C_n\) such
+that every connected complete smooth Riemannian \(n\)-manifold
+\((M,g)\), without boundary and with \(\Scal_g\ge1\), admits a
+continuous map \(f:M\to K\) to a simplicial complex of dimension at
+most \(n-2\) satisfying
+\[
+ \diam_g f^{-1}(y)\le C_n\qquad(y\in K).
+\]
+
+\end{theorem}
+
+Thus \(\UW_{n-2}(M,g)\le C_n\). The constant is independent of \(M\), its topology, and its geometry.
+The theorem applies to compact and noncompact manifolds. If
+\(\Scal_g\ge\sigma^2>0\), applying the theorem to \(\sigma^2g\) gives
+\(\UW_{n-2}(M,g)\le C_n/\sigma\).
+
+For a closed connected Riemannian manifold, let
+\(\operatorname{FillRad}(M,g)\) be Gromov's filling radius
+\citep{gromov1983Filling}, defined by the Kuratowski embedding and the
+fundamental class, with coefficients in
+\(\Z\) if \(M\) is orientable and in \(\Z_2\) otherwise
+\citep[Definition~3.1]{nabutovskyRotmanSabourau2021}.
+The next corollary gives the closed-manifold case in dimensions at least
+four of Gromov's filling-radius Conjecture~\(A^{-}\)
+\citep[\S3]{gromov2017Dozen}.
+
+\begin{corollary}[Closed-manifold filling-radius bound]
+\label{cor:filling-radius}
+Let \((M,g)\) be a closed connected smooth Riemannian \(n\)-manifold
+with \(n\ge4\). If \(\Scal_g\ge\sigma^2\), where \(\sigma>0\), then
+\[
+ \operatorname{FillRad}(M,g)\le \frac{C_n}{2\sigma},
+\]
+where \(C_n\) is the constant in Theorem~\ref{thm:main}.
+\end{corollary}
+
+
+
+For the closed-cover consequence we also use the \emph{continuous
+macroscopic dimension}: $\dim_{\mathrm{mc}}X\le d$ means that there is a
+continuous map to a simplicial complex of dimension at most $d$, with its uniform simplex metric
+and a finite uniform bound on the diameters of its entire fibers.
+Each simplex has the same standard Euclidean shape and edge length.
+
+\begin{corollary}[Continuous macroscopic dimension of universal covers]
+\label{cover:main}
+Let $(M,h)$ be a closed connected smooth Riemannian manifold of
+dimension $n\ge2$ with positive scalar curvature.  Let $\widetilde h$ be the lift of $h$ to its universal cover
+$\widetilde M$. Then
+\[
+ \dim_{\mathrm{mc}}(\widetilde M,\widetilde h)\le n-2.
+\]
+\end{corollary}
+
+\begin{corollary}[Aspherical obstruction]\label{cor:aspherical}
+A closed smooth aspherical manifold of dimension \(n\ge4\) admits
+no Riemannian metric of strictly positive scalar curvature.
+\end{corollary}
+
+
+
+An independent proof in every dimension follows from the stronger
+rational-inessentiality theorem of
+\citet[Theorem~1.1 and Corollary~1.2]{openai2026RationalInessentiality}.
+
+\subsection{History and significance}
+
+Gromov introduced macroscopic dimension in his study of positive scalar
+curvature \citep[\S2]{gromov1996}. His quantitative conjecture already asks
+whether a complete manifold with a positive scalar-curvature lower bound
+can be mapped continuously to a polyhedron of codimension two with all
+point inverses bounded at the curvature scale
+\citep[\S\(2\frac12\)]{gromov1996}; see also
+\citep[p.~3180, Comments after Conjecture~3.2]{gromov2019Mean}.
+The diameter condition concerns each entire fiber, including all its
+components. In the universal cover of a closed manifold the corresponding
+macroscopic-dimension assertion asks only for some finite bound.
+The continuous invariant and the version requiring a Lipschitz map to a
+uniformly metrized complex are distinct
+\citep[Definitions~1.1--1.2, Theorem~6.3 and the following Example]{dranishnikov2014}.
+
+The pointwise curvature hypothesis cannot be replaced by its fixed-scale
+macroscopic counterpart \citep[Definition~1.3]{kumarSen2026Width}: at a
+prescribed radius \(r>0\), the macroscopic scalar curvature at a point is
+the scalar curvature of the simply connected space form of the same
+dimension whose \(r\)-balls have the volume of the \(r\)-ball about a lift
+of the point in the universal cover of the concentric \(2r\)-ball. Kumar and Sen
+construct closed manifolds in
+every dimension at least four with a prescribed positive fixed-scale
+macroscopic scalar-curvature lower bound and arbitrarily large
+Urysohn codimension-two width \citep[Theorem~A]{kumarSen2026Width}.
+
+The low-dimensional cases have a substantial earlier history.
+Gromov and Lawson obtained geometric width bounds for closed orientable
+three-manifolds \citep[Corollary~10.11]{gromovLawson1983}, and Bolotov proved that the
+universal cover of a closed three-manifold cannot have macroscopic
+dimension two \citep{bolotov2003}.
+For closed three-manifolds with positive scalar curvature, Liokumovich
+and Maximo constructed Morse functions with curvature-scale bounds for
+the areas and ambient diameters of connected level components
+\citep[Theorem~1.1]{liokumovichMaximo2023}.
+Liokumovich and Wang constructed proper Morse functions on
+complete noncompact three-manifolds with uniformly positive scalar
+curvature, with uniform diameter bounds for connected level components
+\citep[Theorem~1.1]{liokumovichWang2023}.
+We use that result and an explicit passage to the graph obtained by collapsing each connected level component to a point for the
+three-dimensional closed-cover consequence; the surface case follows
+from the Bonnet--Myers argument.
+
+The aspherical obstruction in dimensions four and five was established
+by Chodosh and Li \citep[Theorem~2]{chodoshLi}, with an independent
+proof in dimension five by Gromov
+\citep[\S7, Main Corollary]{gromov2020Aspherical}.
+
+For the macroscopic-dimension conjecture, Bolotov proved the closed spin
+case under the Strong Novikov Conjecture and a cohomological-dimension condition
+\citep{bolotov2009}. Bolotov and Dranishnikov then obtained the
+codimension-two conclusion for closed spin manifolds under the
+Strong Novikov Conjecture and
+injectivity of the connective-to-periodic real K-homology map
+\citep[Theorem~4.3]{bolotovDranishnikov2010}.
+For closed orientable totally non-spin manifolds of dimension at least
+five, they also showed that a macroscopic dimension drop by one implies
+a drop by two \citep[Theorem~3.4]{bolotovDranishnikov2016}.
+Daher and Dranishnikov established the analogous implication for closed
+orientable totally non-spin four-manifolds with residually finite
+fundamental group
+\citep[Theorem~3.3]{daherDranishnikov2019}.
+These topological advances concern universal covers and finite bounds;
+the present quantitative statement is formulated for arbitrary complete
+manifolds with a bound depending only on dimension after scalar normalization.
+
+
+The geometric method uses the minimal-hypersurface approach of Schoen
+and Yau, in which stability and the Gauss equation pass scalar-curvature
+information to hypersurfaces \citep[Section~1]{schoenYau1979Structure},
+and the torical symmetrization mechanism described by Gromov
+\citep[Section~2]{gromov2018Metric}. Gromov's \(\mu\)-bubble method
+uses prescribed mean curvature to localize the hypersurfaces entering
+scalar-curvature descent \citep[\S\(5\frac56\)]{gromov1996}.
+The weighted variational formulation and its relation to warped-circle
+geometry and stability are developed by Chodosh and Li
+\citep[Section~3 and Remark~11]{chodoshLi}.
+
+Removing singular regions while retaining scalar-curvature information
+is also central to Lohkamp's splitting theory
+\citep[\S1.2 and Theorem~3.15]{lohkamp2022SplittingsII}.
+In the construction below, function updates exclude singular points from
+the regions where the next scalar bound is required; the support of the
+minimizer's perimeter measure and both retained sides are then regularized together.
+
+Recent results also address quantitative width and singular descent.
+Antonelli proves width bounds under a positive scalar-curvature lower
+bound, an almost-nonnegative Ricci lower bound, and uniform noncollapse,
+with constants depending on the volume lower bound
+\citep[Theorem~1.4]{antonelli2026Volume}.
+Bi and Zhu develop singular scalar-curvature descent for enlargeability
+obstructions and cubical-width inequalities
+\citep[Theorem~B and Section~4]{biZhu2026}.
+Rather than continuing the descent on a single hypersurface, the present
+construction keeps both sides of every cut as well as its boundary support, through
+countably many cuts.
+
+\subsection{The proof and its main constructions}
+
+The proof of \Cref{thm:main} constructs separating sets with a bound
+on their intersections. Fix a length \(D\), depending only on \(n\),
+and a separated net \((x_i)\) whose closed \(D\)-balls cover \(M\)
+and whose closed \(2D\)-balls are locally finite. Give each center a
+label. Since the cuts insert cylinders, we record original positions
+by a continuous collapse \(q:M\to M\) with \(d_g(q(x),x)<1\).
+The required separating set for label \(i\) separates the \(q\)-preimages of
+the inner ball and the exterior of the outer ball; no \(n-1\)
+distinct separating sets may meet. These are the partitions of
+\Cref{topology:partitions}. To see why they suffice, thicken the separating sets
+simultaneously without increasing their multiplicity
+(\Cref{topology:thicken}), and choose continuous sign coordinates
+\(t_i:M\to[0,1]\) with transitions inside these neighborhoods,
+equal to one on the inner preimage and zero on the outer exterior
+preimage. At most \(n-2\) coordinates are
+fractional at any point, so the coordinate map lands in an
+\((n-2)\)-dimensional cubical complex. Some coordinate is always one;
+equality of coordinate vectors therefore confines the collapse images
+of an entire fiber to the same outer ball. Section~\ref{sec:width-map}
+triangulates this map and obtains
+\[
+ C_n=4D+2.
+\]
+
+Each label carries a function \(\mu\), which supplies the prescribed weighted mean curvature of
+its cut and obeys \(2|\grad\mu|\le a\mu^2+\Pi\), with a coefficient
+\(a\in[.60,.63]\) fixed at each stage and a positive
+\emph{potential} \(\Pi\); the scalar lower bound required for the cuts
+contains a multiple of the sum of these potentials
+(\Cref{component:invariant}). A function with constant potential \(p\)
+needs length at least \(2\pi/\sqrt{ap}\) to pass from \(+\infty\) to
+\(-\infty\). Since the sum of the potentials must be finite, for
+infinitely many labels the potentials cannot
+have a common positive lower bound, so the corresponding required
+separations can be arbitrarily large. We obtain them by stretching the
+metric while keeping \(D\) fixed. For a metric \(h\) and a smooth
+function \(t\), the weighted scalar curvature is
+\begin{equation}\label{intro:weighted-scalar}
+ S^{h}_1(t)=\Scal_h+2\Delta_h t-|\dd t|_h^2.
+\end{equation}
+By \Cref{rounds:torus-curvature}, \(S^{h}_1(t)-|\dd t|_h^2/k\) is the
+scalar curvature of \(h+e^{-2t/k}(\dd\theta_1^2+\cdots+\dd\theta_k^2)\)
+on \(M\times\T^k\); thus \(S^{h}_1(t)\) is the limit of these
+scalar curvatures as \(k\to\infty\).
+The local graph deformation of \Cref{step:main} increases \(h\) and
+\(t\), retaining a positive quadratic term \(t^2\) in a lower bound for \(S^{h}_1(t)\). Its loss is charged
+to the decrease of \(\tr_hh_0\), for a background metric \(h_0\)
+fixed throughout a round, plus an arbitrarily small quadratic loss. The
+deformation is driven by the forcing function \(F(x,t)\) of \Cref{forcing:derivative-bounds},
+whose height derivative \(F_x\) is either at most \(b_0t^2\) or
+compensated by its \(t\)-dependence, \(-FF_t\ge P_0F_x\); the constants
+of \(F\) are fixed before the local geometry and the error tolerance.
+The trace starts at \(n\) and remains positive, so its decrements
+telescope independently of the number of overlapping balls.
+Rescaling between rounds restores the positive quadratic term while keeping
+a fixed positive reserve in original units. Each label stops after
+finitely many rounds, and the changes are supported in its original
+outer ball, so the construction stabilizes on compact sets
+(\Cref{rounds:wide}). Splitting the increments of \(t\) among finitely
+many circle warping functions on each compact region converts the resulting bound
+into ordinary scalar-curvature control.
+
+The descent uses weighted \(\mu\)-bubbles and torical symmetrization.
+To obtain partitions, we retain both sides of each cut as well as its
+boundary support, attaching cylinders to the sides to replace their boundaries by complete ends.
+The connected components in \Cref{component:category} have product identifications that make later cuts
+compatible at intersections (\Cref{component:split}). Besides the usual
+boundary stability inequality, this requires a bound on each retained
+side. Deleting subsets from a minimizing Caccioppoli set controls the
+mean-curvature term at its cylinder interface and gives the required scalar
+form bound (\Cref{cut:side-estimate,cut:raw-domination}). The first cut
+uses an extra radial label to give compact boundary and side components
+before cylinder attachment (see below); after it, a common constant perturbation of the prescribed weighted mean curvature
+ensures uniqueness of minimizing Caccioppoli sets on components and their
+Euclidean products. Uniqueness then forces the cuts to converge to
+the corresponding end base products at infinity
+(\Cref{cut:generic-uniqueness,cut:end-convergence}), allowing the
+subsequent regularization to make their ends exactly compatible.
+
+The curvature requirement is adapted to the intersections we must
+exclude. Each remaining label has a function \(\mu\) and two prescribed
+open sets whose closures lie in the interiors of \(\{\mu=+\infty\}\)
+and \(\{\mu=-\infty\}\), respectively, where its future sign is fixed;
+call the label undecided outside these prescribed open sets.
+On a component of base dimension \(m\), we require a positive lower bound
+for the stabilized scalar curvature, the scalar curvature of the component
+metric warped with all circle factors accumulated so far
+(\Cref{rounds:torus-curvature}), only where at least \(m-1\) labels remain
+undecided.
+A side keeps its dimension and loses the processed label, whereas
+a boundary loses both one dimension and that label. Thus every new
+required region projects into the old one
+(\Cref{component:invariant,component:counts}). This restriction also permits
+singular cuts: their singular sets have dimension at most \(m-8\).
+Smooth approximations to the remaining functions admit generic
+thresholds with at most \(m-8\) equalities at any singular point.
+The strict inequalities select signs to force nearby, leaving fewer
+than \(m-2\) labels undecided. Enlarging enough of the corresponding
+prescribed open sets therefore removes the singular set from the region with at least
+\(m-2\) remaining undecided labels, which contains the projections of
+all new required regions
+(\Cref{local:smooth-approximations,enlargement:global}).
+
+Forcing these additional signs costs potentials concentrated in thin
+annuli around singular pieces. On the boundary and on both joined sides,
+with matching interface traces, estimates for inverse-square potentials bound each such potential by
+a fixed fraction of the reserved gradient form plus a local \(L^2\) error
+(\Cref{local:sharp}); the reserved form is a fixed part of the gradient
+terms left over in the boundary and side stability forms (\Cref{cut:reserve}). To combine the additions without spending
+this reserve once per piece, \Cref{enlargement:maximum} uses compactness:
+on a compact region the bounded old potential acts on the limiting
+test function, while the shrinking potential acts on the concentrating
+remainder. The total form coefficient is therefore bounded by the
+larger of the previous and local coefficients, up to an arbitrarily
+small error. The extensions in
+\Cref{enlargement:global} preserve this bound throughout the component
+diagram. The regularization in \Cref{regular:step} can then approximate
+the cut closely near the required regions, smooth the interfaces, and use
+compatible positive supersolutions to restore the pointwise scalar
+bound by adding circle factors. These constructions prove the finite
+cutting theorem, \Cref{finite:cut}.
+
+For the countable iteration, the analysis on each component needs one
+finite warping function list on the entire complete component: it supplies the
+positive injectivity radius and uniform bounds on curvature and all its
+covariant derivatives on the whole component and polynomial weighted volume growth
+used for the barriers, the uniqueness of minimizing Caccioppoli sets, and the
+bounded solution of the elliptic equation (\Cref{component:geometry,countable:locality}). The first, radial cut gives
+compact boundary and side components before cylinder attachment; on a
+noncompact manifold, alternating signs along a proper radial function
+enforce this confinement (\Cref{countable:initial}). Their collapse
+images stay in those compact regions, so only finitely many original
+outer balls and supports of the logarithms of warping functions meet each image.
+\Cref{countable:locality,countable:step} preserve finite lists through
+the incident end base diagrams: all other labels remain forced, and their
+potentials form a summable list of spatial constants which the
+approximations reproduce exactly. The finite cutting argument can
+therefore be iterated with summable stage losses. An intersection of
+\(n-1\) distinct separating sets would give a complete one-dimensional component.
+Its required count is zero, so the positive scalar bound holds
+everywhere. The finite warped-product formula then yields a differential
+inequality with a negative quadratic upper bound on its arclength universal cover which is impossible on
+the whole line (\Cref{countable:dimension-one}). This gives the
+intersection bound in \Cref{countable:construction}.
+
+Section~\ref{sec:reconstruction} puts these partitions on one fixed
+copy of \(M\). Truncate the analytic cylinders and compress each
+inserted finite collar into an arbitrarily thin old collar, preserving
+all earlier separating sets and signs. The displacement errors are summable in
+the original metric, and the change for a center label is confined to
+a fixed-radius original ball about that center. Local finiteness makes
+both the collapse maps and the partitions eventually unchanged near
+each point. This gives the continuous collapse and locally finite
+separating sets used above; locally finite coordinate supports ensure continuity
+of the width map in the ordinary polyhedral topology.
+
+The three corollaries are proved in Section~\ref{sec:closed-covers}.
+For \Cref{cover:main} in dimensions at least four, apply the theorem
+to the normalized lifted metric and realize the coordinate complex
+with the uniform simplex metric; local finiteness preserves continuity
+and the conversion preserves fibers (\Cref{cover:uniform}). Dimension
+two uses Bonnet--Myers. In the noncompact three-dimensional case,
+\Cref{cover:level-quotient} makes the bounded level components supplied by
+Liokumovich and Wang into entire fibers of a map to the graph obtained by collapsing each connected level component to a point.
+The filling-radius corollary follows from Gromov's comparison
+\(\operatorname{FillRad}\le\tfrac12\UW_{n-1}\).
+For the aspherical obstruction, the width bound on the universal cover
+contradicts Gromov's observation that a complete uniformly contractible
+\(n\)-manifold, such as the universal cover of a closed aspherical
+\(n\)-manifold, admits no continuous map with uniformly bounded fibers
+to a polyhedron of dimension less than \(n\).
+
+\paragraph{Organization.}
+Section~\ref{sec:width-map} deduces \Cref{thm:main} from the partition
+statement, \Cref{topology:partitions}. Sections~\ref{forcing:section},
+\ref{step:section} and~\ref{sec:rounds} stretch the metric: the
+function with quadratic derivative bounds, the local stretching step, and the rounds of
+\Cref{rounds:wide}. Section~\ref{sec:finite-cuts} introduces components,
+the analytic invariant and the finite cutting theorem, \Cref{finite:cut}.
+Its proof occupies the appendices: component geometry and finite
+reconstructions in Appendix~\ref{sec:components}, weighted minimizing cuts
+in Appendix~\ref{sec:cut}, exclusion of singular points from the required regions in
+Appendices~\ref{sec:local} and~\ref{sec:enlargement-global}, and
+regularization in Appendix~\ref{sec:regularization}.
+Section~\ref{sec:countable} adapts this construction to countably many
+labels and proves the intersection bound, \Cref{countable:construction}.
+Section~\ref{sec:reconstruction} proves \Cref{topology:partitions}, and
+Section~\ref{sec:closed-covers} proves the three corollaries.
+
+\begin{convention}\label{conv:signs}
+The Laplacian is \(\Delta=\Div\grad\), and round spheres have positive
+scalar curvature. For a hypersurface with unit normal \(\nu\), its
+second fundamental form is
+\(B(v,w)=\langle\nabla_v\nu,w\rangle\), and its mean curvature is
+\(\tr B\). Integration and divergence use Riemannian densities. Distances in the final fiber bound are always
+measured in the original metric \(g\).
+\end{convention}

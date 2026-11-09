@@ -1,0 +1,111 @@
+\section{Counting arbitrary formulas by interpolation}\label{sec:interpolation-return}
+The rational counting routine gives the following bound on arbitrary
+formulas. We first count one sparse formula and then sum over the
+leaves of Lemma~\ref{lem:sparsify}.
+
+\begin{proposition}\label{prop:interpolation-bound}
+For each fixed $k\ge2$, the interpolation algorithm counts the
+satisfying assignments of a $k$-CNF on $n\ge20$ declared variables
+with $m$ clauses in $(n+m)^{O_k(1)}2^{O_k(\rho(n))}$ bit operations
+and $(n+m)^{O_k(1)}$ bits of space.
+\end{proposition}
+
+\subsection{Counting one sparse formula}\label{subsec:count-sparse}
+Suppose $n\ge20$ and $1\le m\le Bn$, where $B$ is bounded by a fixed
+power of $\log n$ depending only on $k$. Construct the initial matrix
+by Lemma~\ref{lem:sparse-checks}. This uses
+$\exp((\log n)^{O_k(1)})$ bit operations and polynomial space.
+Both $P$ and $D_0$ are $(\log n)^{O_k(1)}$, so every candidate in
+Lemma~\ref{lem:greedy-hashes} is an instance of
+Theorem~\ref{thm:overview-sparse-polynomials} with a single fixed
+$c=c(k)$. This applies to discarded candidates as well as the final
+system: the counter requires only the number, degree and sparsity of
+the equations. Expanding each row and combining monomials costs
+polynomial time and space for fixed $k$.
+
+At most $3n(2m)^P+1=\exp((\log n)^{O_k(1)})$ calls suffice, including
+one final count. Each call takes
+$2^{O_k(n(\log\log n)^2/\sqrt{\log n})}$ bit operations. Since any
+fixed power of $\log n$ is $o(n(\log\log n)^2/\sqrt{\log n})$, the
+total time, including construction and candidate comparisons, is
+\begin{equation}\label{eq:sparse-formula-cost}
+ (n+m)^{O_k(1)}2^{O_k(n(\log\log n)^2/\sqrt{\log n})}.
+\end{equation}
+The final count is $\#F$ by the greedy lemma. A formula with no clauses
+or containing an empty clause is handled directly. Candidates are
+examined sequentially; only the current rows, a candidate, the best
+row and its count need be kept in addition to the counter's polynomial
+working space.
+
+\subsection{Returning to a general formula}\label{subsec:general-reduction}
+
+We use disjoint sparsification to partition the satisfying
+assignments among sparse formulas on the same $n$ declared
+variables. The preceding algorithm counts each of these formulas.
+The parameter $\sigma$ controls a tradeoff: making it smaller reduces
+the number of formulas but increases their occurrence bound $B$.
+Our solver permits $B$ to grow as a fixed power of $\log n$, so we
+can let $\sigma$ tend to zero while keeping both the number of
+formulas and the cost per formula within the desired time bound.
+
+Lemma~\ref{lem:sparsify}, proved in Appendix~\ref{app:sparsify},
+supplies the disjoint leaves and their occurrence bound.
+
+\begin{proof}[Proof of Proposition~\ref{prop:interpolation-bound}]
+We first normalize the input in $(n+m)^{O_k(1)}$ time by deleting repeated
+literals, tautological clauses, duplicate clauses, and clauses
+containing another clause. We retain all $n$ declared variables.
+An empty clause gives count zero, and a formula with no clauses
+gives count $2^n$. We handle $n<20$ by exhaustive search.
+For $n\ge20$, we next select the sparsification parameter. Define
+\[
+ \lambda_n=\lceil\log_2 n\rceil,\qquad
+ \nu_n=\lceil\log_2\lambda_n\rceil,\qquad
+ s=\left\lfloor\frac{\sqrt{\lambda_n}}{\nu_n^2}\right\rfloor.
+\]
+We compute $s$ by integer comparisons, taking the largest
+nonnegative integer satisfying $s^2\nu_n^4\le\lambda_n$.
+If $s<2$, we use exhaustive search;
+$\sqrt{\lambda_n}/\nu_n^2$ tends to infinity, so there are only
+finitely many such sizes. Otherwise we apply Lemma~\ref{lem:sparsify}
+with $\sigma=1/s$. The tree has at most
+$2^{n/s}\operatorname{poly}_k(n,s)$ nodes, and its leaves have
+occurrence bound
+\[
+ B=O_k\bigl((s\log s)^{k-1}\bigr)=(\log n)^{O_k(1)}.
+\]
+Each leaf uses the original $n$ variables and has at most $Bn$
+nonempty clauses. We count each leaf by the sparse-formula algorithm
+of Section~\ref{subsec:count-sparse}, whose running time is given by
+\eqref{eq:sparse-formula-cost}. Leaves with no clauses or containing
+an empty clause are handled directly.
+The clause count in that application is the number of clauses in
+the leaf; $m$ in the final bound remains the input clause count.
+
+For $s\ge2$, the floor in its definition gives
+\[
+ \frac ns=O\!\left(\frac{n\nu_n^2}{\sqrt{\lambda_n}}\right)
+ =O(\rho(n)).
+\]
+Thus both the number of leaves and the time to count each leaf
+have exponent $O_k(\rho(n))$. Their polynomial factors, together
+with normalization and the work at the tree nodes, are bounded by
+$(n+m)^{O_k(1)}$. The total number of bit operations is therefore
+\[
+ (n+m)^{O_k(1)}2^{O_k(\rho(n))}.
+\]
+The finite exhaustive-search cases are absorbed in the constants.
+All parameters, initial checks, and additional rows are computed
+by the deterministic procedures above; every counting query uses
+the common-zero algorithm of Theorem~\ref{thm:overview-sparse-polynomials}.
+
+To bound the space used by the full algorithm, we traverse the
+sparsification tree depth first and count one leaf at a time.
+The current path has $\poly_k(n,s)$ nodes, and each normalized
+formula has a $\poly_k(n)$-bit encoding. Since
+$s\le\sqrt{\lceil\log_2 n\rceil}$, storing this path and counting one
+leaf use $\poly_k(n,m)$ bits. Disjointness keeps the sum of the
+processed leaf counts between zero and $2^n$, so its accumulator
+uses at most $n+1$ bits. Thus the total space is $\poly_k(n,m)$ bits.
+\end{proof}
+

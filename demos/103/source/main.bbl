@@ -1,0 +1,215 @@
+\begin{thebibliography}{10}
+
+\bibitem{AhmadinejadKelnerMurtaghPeeblesSidfordVadhan2020}
+AmirMahdi Ahmadinejad, Jonathan Kelner, Jack Murtagh, John Peebles, Aaron
+  Sidford, and Salil Vadhan.
+\newblock High-precision estimation of random walks in small space.
+\newblock In {\em 61st IEEE Annual Symposium on Foundations of Computer Science
+  (FOCS 2020)}, pages 1295--1306. IEEE, 2020.
+\newblock Full version: arXiv:1912.04524.
+
+\bibitem{AjtaiKomlosSzemeredi1987}
+Mikl{\'o}s Ajtai, J{\'a}nos Koml{\'o}s, and Endre Szemer{\'e}di.
+\newblock Deterministic simulation in {LOGSPACE}.
+\newblock In {\em Proceedings of the Nineteenth Annual ACM Symposium on Theory
+  of Computing}, pages 132--140. Association for Computing Machinery, 1987.
+
+\bibitem{AleliunasKLLR1979}
+Romas Aleliunas, Richard~M. Karp, Richard~J. Lipton, L{\'a}szl{\'o} Lov{\'a}sz,
+  and Charles Rackoff.
+\newblock Random walks, universal traversal sequences, and the complexity of
+  maze problems.
+\newblock In {\em 20th Annual Symposium on Foundations of Computer Science},
+  pages 218--223. IEEE, 1979.
+
+\bibitem{ArmoniTaShmaWigdersonZhou2000}
+Roy Armoni, Amnon Ta-Shma, Avi Wigderson, and Shiyu Zhou.
+\newblock An {$O(\log(n)^{4/3})$} space algorithm for {$(s,t)$} connectivity in
+  undirected graphs.
+\newblock {\em Journal of the ACM}, 47(2):294--311, 2000.
+
+\bibitem{Avizienis1963}
+Algirdas Avizienis.
+\newblock On a flexible implementation of digital computer arithmetic.
+\newblock In C.~M. Popplewell, editor, {\em Information Processing 1962}, pages
+  664--670. North-Holland, 1963.
+
+\bibitem{BabaiNisanSzegedy1992}
+L{\'a}szl{\'o} Babai, Noam Nisan, and M{\'a}ri{\'o} Szegedy.
+\newblock Multiparty protocols, pseudorandom generators for logspace, and
+  time-space trade-offs.
+\newblock {\em Journal of Computer and System Sciences}, 45(2):204--232, 1992.
+
+\bibitem{BorodinCookPippenger1983}
+Allan Borodin, Stephen Cook, and Nicholas Pippenger.
+\newblock Parallel computation for well-endowed rings and space-bounded
+  probabilistic machines.
+\newblock {\em Information and Control}, 58(1--3):113--136, 1983.
+
+\bibitem{BravermanCohenGarg2020}
+Mark Braverman, Gil Cohen, and Sumegha Garg.
+\newblock Pseudorandom pseudo-distributions with near-optimal error for
+  read-once branching programs.
+\newblock {\em SIAM Journal on Computing}, 49(5):STOC18--242--STOC18--299,
+  2020.
+
+\bibitem{BuhrmanCleveKouckyLoffSpeelman2014}
+Harry Buhrman, Richard Cleve, Michal Kouck{\'y}, Bruno Loff, and Florian
+  Speelman.
+\newblock Computing with a full memory: Catalytic space.
+\newblock In {\em Proceedings of the 46th Annual ACM Symposium on Theory of
+  Computing}, pages 857--866. Association for Computing Machinery, 2014.
+
+\bibitem{CaiChakaravarthyVanMelkebeek2006}
+Jin-Yi Cai, Venkatesan~T. Chakaravarthy, and Dieter van Melkebeek.
+\newblock Time-space tradeoff in derandomizing probabilistic logspace.
+\newblock {\em Theory of Computing Systems}, 39(1):189--208, 2006.
+
+\bibitem{CarterWegman1979}
+J.~Lawrence Carter and Mark~N. Wegman.
+\newblock Universal classes of hash functions.
+\newblock {\em Journal of Computer and System Sciences}, 18(2):143--154, 1979.
+
+\bibitem{ChenCohenDoronKhaskelbergTaShma2026}
+Ben Chen, Gil Cohen, Dean Doron, Yuval Khaskelberg, and Amnon Ta-Shma.
+\newblock Improved error reduction for weighted {PRGs}.
+\newblock In {\em Approximation, Randomization, and Combinatorial Optimization.
+  Algorithms and Techniques (APPROX/RANDOM 2026)}, volume 392 of {\em Leibniz
+  International Proceedings in Informatics}, pages 39:1--39:23. Schloss
+  Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik, 2026.
+
+\bibitem{ChengHoza2022}
+Kuan Cheng and William~M. Hoza.
+\newblock Hitting sets give two-sided derandomization of small space.
+\newblock {\em Theory of Computing}, 18(21):1--32, 2022.
+
+\bibitem{ChengWu2026SC}
+Kuan Cheng and Ruiyang Wu.
+\newblock {SC} derandomization for regular {ROBPs} and models beyond {BPL},
+  2026.
+\newblock Version 1, September 20, 2026.
+
+\bibitem{CohenDoronRenardSberloTaShma2021}
+Gil Cohen, Dean Doron, Oren Renard, Ori Sberlo, and Amnon Ta-Shma.
+\newblock Error reduction for weighted {PRGs} against read once branching
+  programs.
+\newblock In {\em 36th Computational Complexity Conference (CCC 2021)}, volume
+  200 of {\em Leibniz International Proceedings in Informatics}, pages
+  22:1--22:17. Schloss Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik, 2021.
+
+\bibitem{CohenDoronSberloTaShma2023}
+Gil Cohen, Dean Doron, Ori Sberlo, and Amnon Ta-Shma.
+\newblock Approximating iterated multiplication of stochastic matrices in small
+  space.
+\newblock In {\em Proceedings of the 55th Annual ACM Symposium on Theory of
+  Computing}, pages 35--45. Association for Computing Machinery, 2023.
+
+\bibitem{CookMcKenzie1987}
+Stephen~A. Cook and Pierre McKenzie.
+\newblock Problems complete for deterministic logarithmic space.
+\newblock {\em Journal of Algorithms}, 8(3):385--394, 1987.
+
+\bibitem{Gill1977}
+John Gill.
+\newblock Computational complexity of probabilistic {Turing} machines.
+\newblock {\em SIAM Journal on Computing}, 6(4):675--695, 1977.
+
+\bibitem{Hoza2021}
+William~M. Hoza.
+\newblock Better pseudodistributions and derandomization for space-bounded
+  computation.
+\newblock In {\em Approximation, Randomization, and Combinatorial Optimization.
+  Algorithms and Techniques (APPROX/RANDOM 2021)}, volume 207 of {\em Leibniz
+  International Proceedings in Informatics}, pages 28:1--28:23. Schloss
+  Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik, 2021.
+
+\bibitem{LMT2000}
+Klaus-J{\"o}rn Lange, Pierre McKenzie, and Alain Tapp.
+\newblock Reversible space equals deterministic space.
+\newblock {\em Journal of Computer and System Sciences}, 60(2):354--367, 2000.
+
+\bibitem{Nisan1992}
+Noam Nisan.
+\newblock Pseudorandom generators for space-bounded computation.
+\newblock {\em Combinatorica}, 12(4):449--461, 1992.
+
+\bibitem{Nisan1994RLinSC}
+Noam Nisan.
+\newblock {$\mathrm{RL}\subseteq\mathrm{SC}$}.
+\newblock {\em Computational Complexity}, 4(1):1--11, 1994.
+
+\bibitem{NisanSzemerediWigderson1992}
+Noam Nisan, Endre Szemer{\'e}di, and Avi Wigderson.
+\newblock Undirected connectivity in {$O(\log^{1.5} n)$} space.
+\newblock In {\em Proceedings of the 33rd Annual Symposium on Foundations of
+  Computer Science}, FOCS '92, pages 24--29. IEEE Computer Society, 1992.
+
+\bibitem{NisanZuckerman1996}
+Noam Nisan and David Zuckerman.
+\newblock Randomness is linear in space.
+\newblock {\em Journal of Computer and System Sciences}, 52(1):43--52, 1996.
+
+\bibitem{PyneRazZhan2023}
+Edward Pyne, Ran Raz, and Wei Zhan.
+\newblock Certified hardness vs. randomness for log-space.
+\newblock In {\em 64th IEEE Annual Symposium on Foundations of Computer Science
+  (FOCS 2023)}, pages 989--1007. IEEE, 2023.
+\newblock Full version: arXiv:2303.16413.
+
+\bibitem{PyneTell2026}
+Edward Pyne and Roei Tell.
+\newblock Using hardness vs randomness to design low-space algorithms.
+\newblock Electronic Colloquium on Computational Complexity, Report TR26-045,
+  2026.
+
+\bibitem{Reingold2005}
+Omer Reingold.
+\newblock Undirected {ST}-connectivity in log-space.
+\newblock In {\em Proceedings of the Thirty-Seventh Annual ACM Symposium on
+  Theory of Computing}, STOC '05, pages 376--385. ACM, 2005.
+
+\bibitem{Reingold2008}
+Omer Reingold.
+\newblock Undirected connectivity in log-space.
+\newblock {\em Journal of the ACM}, 55(4):17:1--17:24, 2008.
+
+\bibitem{RTV2006}
+Omer Reingold, Luca Trevisan, and Salil Vadhan.
+\newblock Pseudorandom walks on regular digraphs and the {RL} vs. {L} problem.
+\newblock In {\em Proceedings of the 38th Annual ACM Symposium on Theory of
+  Computing}, pages 457--466. Association for Computing Machinery, 2006.
+
+\bibitem{Riesz1927}
+Marcel Riesz.
+\newblock Sur les maxima des formes bilin{\'e}aires et sur les fonctionnelles
+  lin{\'e}aires.
+\newblock {\em Acta Mathematica}, 49:465--497, 1927.
+
+\bibitem{SaksZhou1999}
+Michael Saks and Shiyu Zhou.
+\newblock {$\mathrm{BP}_{\mathrm H}\mathrm{SPACE}(S)\subseteq
+  \mathrm{DSPACE}(S^{3/2})$}.
+\newblock {\em Journal of Computer and System Sciences}, 58(2):376--403, 1999.
+
+\bibitem{Schwartz1980}
+Jacob~T. Schwartz.
+\newblock Fast probabilistic algorithms for verification of polynomial
+  identities.
+\newblock {\em Journal of the ACM}, 27(4):701--717, 1980.
+
+\bibitem{Shalom1999}
+Yehuda Shalom.
+\newblock Bounded generation and {Kazhdan}'s property {(T)}.
+\newblock {\em Publications Math{\'e}matiques de l'IH{\'E}S}, 90:145--168,
+  1999.
+
+\bibitem{Thorin1948}
+G.~O. Thorin.
+\newblock {\em Convexity theorems generalizing those of {M. Riesz} and
+  {Hadamard} with some applications}.
+\newblock PhD thesis, Lund University, 1948.
+\newblock Russian translation by Yu. T. Medvedev, \emph{Matematika} 1 (1957),
+  no.~3, 43--78. \href{https://www.mathnet.ru/eng/mat17}{Translation and
+  bibliographic record}.
+
+\end{thebibliography}

@@ -1,0 +1,222 @@
+\section{Introduction}\label{sec:introduction}
+
+For a finite set \(X\subset\R^2\), write
+\[
+ u(X)=\#\bigl\{\{x,y\}\subset X:\ \norm{x-y}_2=1\bigr\},
+ \qquad
+ u(n)=\max_{\substack{X\subset\R^2\\ |X|=n}}u(X).
+\]
+Thus pairs are unordered and their endpoints are distinct. We prove a fixed
+power saving over the exponent \(4/3\).
+
+\begin{theorem}\label{thm:main}
+There are absolute constants \(0<C<\infty\) and \(1\le\beta<4/3\) such that
+\(u(n)\le Cn^\beta\) for every nonnegative integer \(n\).
+\end{theorem}
+
+\Cref{thm:main} gives a positive answer to the question whether this upper
+exponent can be lowered by a fixed amount: equivalently,
+\(u(n)=O(n^{4/3-\delta})\) for an absolute \(\delta>0\).
+
+\subsection{The unit-distance problem and earlier methods}
+
+Erd\H{o}s introduced the repeated-distance problem in 1946
+\cite{erdos1946}. Rescaling a configuration turns any specified positive
+distance into a unit distance, so the problem concerns the largest possible
+multiplicity of one distance. His lattice construction gives the lower bound
+\(n^{1+c/\log\log n}\) for a positive constant \(c\) and sufficiently large
+\(n\) \cite[Theorem~2]{erdos1946}.
+Spencer, Szemer\'edi and Trotter established the upper bound
+\(u(n)=O(n^{4/3})\) in 1984 \cite{sst1984}.
+Sz\'ekely gave a crossing-number proof and a general incidence theorem
+for families of curves \cite[Theorems~4 and~8]{Szekely1997}.
+The crossing inequality was developed independently by Ajtai,
+Chv\'atal, Newborn and Szemer\'edi and by Leighton
+\cite{ajtaiEtAl1982,leighton1983}.
+Sz\'ekely's incidence theorem applies to points and unit circles using two elementary
+properties: two unit circles meet in at most two points, and two points
+belong to at most two unit circles.
+Later work improved the leading constant
+\cite{agostonPalvolgyi2022} and described the structure of configurations
+near the extremal incidence scale \cite{katzSilier2026}.
+Pach, Raz and Solymosi connected the problem to rigidity and obtained
+a logarithmic improvement conditional on a rigidity conjecture
+\cite[Conjecture~7 and Theorem~8]{pachRazSolymosi2026}.
+
+The historical unit-distance conjecture of Erd\H{o}s proposed the stronger
+bound \(u(n)=n^{1+o(1)}\). An OpenAI construction disproved it by giving
+at least \(n^{1+\varepsilon}\) unit distances, for some fixed
+\(\varepsilon>0\), along an unbounded sequence of sizes
+\cite[Theorem~1.1]{openaiUnitLower2026}. Alon et al.\ gave a simplified
+account and explained the construction's number-theoretic ancestry
+\cite[Sections~1.2--1.3]{alonEtAl2026}. They credit the class-group
+ideas to Michel, Soundararajan, Ellenberg and Venkatesh. The construction
+combines these ideas with Golod--Shafarevich
+number-field towers having prescribed splitting, including the
+tower-cutting method of Hajir, Maire and Ramakrishna
+\cite{ellenbergVenkatesh2007,golodShafarevich1964,hajirMaireRamakrishna2021}.
+Sawin sharpened the construction to \(u(n)\gg n^{1.014114}\) along an
+unbounded sequence of sizes \cite[Theorem~1]{sawin2026}.
+These are construction lower bounds. Theorem~\ref{thm:main} bounds every
+configuration from above, leaving a gap between the known exponents.
+
+Our proof begins with the same point--circle incidence interpretation.
+Random cuttings isolate a piece of the incidence graph with controlled
+degrees; their sampled-cell construction belongs to the framework of
+Clarkson and Clarkson--Shor \cite{Clarkson1987,ClarksonShor1989}.
+The next ingredient is information: two points sampled as neighbors of
+one center share little information. Entropy methods already played a
+role in the distinct-distance estimates of Tardos and Katz--Tardos
+\cite{Tardos2003,KatzTardos}. In particular, the conditional-copy
+argument of Katz--Tardos retains the marginal law when resampling
+within a class. Here that principle enters a short-history prediction
+lemma, proved in \Cref{sec:prediction}, in which the tests are drawn
+independently of the vertices and only the criterion for accepting the
+outcome of a test at a point may depend on a neighboring center.
+
+The arithmetic input is the normalized product formula
+\cite{ProductFormula}: for a nonzero algebraic number, the sum of its
+logarithmic absolute values over all places of a number field containing
+it, with the normalized local-degree weights, is zero. We use the associated
+absolute height of algebraic numbers: the weighted sum of the positive
+parts of their logarithmic absolute values. For a unit edge, let \(d\)
+be the coordinate \(z=x+iy\) of its point minus that of its center; the
+corresponding difference in the coordinate \(w=x-iy\) is then
+\(d^{-1}\). This reciprocity is the unit-distance equation itself, and the
+proof uses it, not only the two pair-counting properties of unit circles on
+which Sz\'ekely's incidence theorem rests: points and lines satisfy those
+properties, with one in place of two, and attain the exponent \(4/3\), so no
+argument that uses only them can lower it
+\cite[Section~1.1]{pachRazSolymosi2026}. For two distinct unit edges with a common endpoint and coordinate differences \(d,d'\),
+we have \(d\ne d'\). The product formula applied to \(d/d'\) makes
+the sum over all places, with the same weights, of
+\(\abs{\log\abs{d/d'}_v}\) twice the height of \(d/d'\)
+(\Cref{ht:height}); applied to \((d-d')(d^{-1}-d'^{-1})\), the product
+of the differences of the other two endpoints in the two coordinates, it
+gives the upper bounds for the integrated scores of pairs of edges
+(\Cref{bud:upper,ext:pointwise}). The proof combines these bounds with
+prediction and, at its last stage, with algebraic independence and
+quadratic extensions.
+
+\subsection{The proof in outline}
+
+Suppose that no fixed power saving exists. Set \(t=n^{1/3}\) along a sequence
+of counterexamples, so their ordered unit pairs number \(t^{4-o(1)}\).
+
+\paragraph{Incidence and prediction.}
+Random cuttings and degree trimming in \Cref{sec:incidence} give an
+unbalanced point--circle incidence graph with controlled degrees.
+Maximizing over induced bipartite subgraphs then gives expansion: small vertex sets
+capture few edges, and near-agreement of labels across edges forces
+concentration on one label on both sides.
+For the uniform edge law, sample a center from its marginal and then
+two neighbors independently; this gives an edge pair at a center. The small point
+side and the bound of two common centers per distinct point pair make
+the two point endpoints' mutual information \(o(\log t)\).
+
+Section~\ref{sec:prediction} uses this information bound to resample
+a point conditional on its answers to a short history of coordinate
+tests. A history can be fixed so that the resampled point preserves
+acceptance by a neighboring center at an independent fresh test, up to
+a vanishing mean error. Resampling preserves the point marginal,
+while the \(t^{o(1)}\) history classes make recovery of the original
+point unlikely. This supplies a second point for the geometric comparisons.
+
+\paragraph{Height and the bounded alternative.}
+Algebraic specialization preserves the unit equations and distinctness
+(\Cref{inc:specialization}), making number-field absolute values
+available. In coordinates \(z=x+iy\), \(w=x-iy\), a unit edge has
+coordinate differences \(d,d^{-1}\). For an absolute value \(v\) and threshold \(s\), record the threshold bit
+\(\1_{\{-\log|d|_v>s\}}\). Let \(f(v,s)\) be the minority-bit
+probability and \(S=\int f\), integrating over thresholds with the
+normalized weights over places. The integrated disagreement of two
+edge bits is twice the height of their coordinate difference ratio.
+
+If \(S\) remained bounded, expansion would transfer height control
+from edge coordinate differences to normalized point coordinates. At a fresh complex
+embedding, this gives positive probability of bounded, separated
+samples. Prediction with quantized coordinates then produces a second,
+separated point approximately satisfying the unit equations at three
+neighbors of the original point. The determinant for three separated
+coordinate differences forces the second point close to the first, a contradiction.
+Thus \(S\to\infty\) (\Cref{ht:bounded}).
+
+\paragraph{Comparing point and center pairs.}
+Section~\ref{sec:heights} gives each vertex two labels recording
+closeness in its two coordinates; their pair is its state. Across an
+edge, exactly one label agrees, and the bit specifies which one, except
+for integrated error \(O(1)=o(S)\). Separate levels with $f\ge\epsilon$ from those with $f<\epsilon$, where $\epsilon=k^{-1/16}$ for a sample size $k\to\infty$. After discarding levels where $f<\epsilon$ and the consistency error is large, expansion supplies a dominant
+coordinate label at each remaining level with $f<\epsilon$. A vertex's exception
+mass is the total weighted length of the levels where it lacks that
+label.
+
+Sections~\ref{sec:budgets} and~\ref{sec:common} compare pairs of edges
+at a point and at a center. Their scores reward certain coordinate
+matches and charge bit disagreement. The product formula gives upper
+bounds for the integrated scores. On levels with $f\ge\epsilon$, prediction and
+the geometry of states agreeing in exactly one coordinate give lower
+bounds in terms of bit variation. A slight adjustment of the rewards
+near bit balance makes the lower bounds a larger multiple of the bit
+variation than the upper bounds. The main terms from levels with $f<\epsilon$ cancel when
+the two orientations are added. This forces bit disagreement on levels with $f\ge\epsilon$ in
+edge pairs at a center to be \(o(S)\). A second comparison, using two points
+resampled from the same history, shows that point exceptions on levels with $f<\epsilon$
+retain a positive fraction of \(S\); otherwise expansion would force
+\(S=o(S)\). These are \Cref{com:variation,com:rare-positive}.
+
+\paragraph{\texorpdfstring{From levels with $f<\epsilon$ to ratios.}{From levels with f<epsilon to ratios.}}
+On the remaining levels with $f<\epsilon$, an edge's bit is determined by its
+exceptional endpoints, apart from negligible errors. Subtracting the
+two bits in an edge pair at a center cancels the center contribution. Thus for point
+endpoints \(p,r\) and center \(q\), the logarithmic absolute values of
+\(\lambda_{pr}=(z_p-z_q)/(z_r-z_q)\) are approximately differences
+of functions of the absolute-value entry obtained by integrating each point's exception indicator over the retained thresholds, with sign $+1$ for minority bit $1$ and $-1$ for minority bit $0$. These functions cancel in
+the alternating product
+\[
+ \frac{\lambda_{pr}\lambda_{p'r'}}{\lambda_{pr'}\lambda_{p'r}}
+\]
+around a 4-cycle.
+
+Section~\ref{sec:extraction} uses a pointwise product-formula bound
+and expansion to control the tail of the exception mass. It removes
+errors in measure weighted by exception mass before selecting a common height
+band. The result is a graph with at least \(t^{2-o(1)}\) edges on
+two copies of a point set of size at most \(t^{1+o(1)}\), whose
+ratio heights are at least \(J/3\), with \(J\to\infty\), and whose
+alternating products around 4-cycles all have height \(o(J)\). Pairs on real unit
+circles containing at least \(t^{9/10}\) points of the set can
+also be removed. This exclusion is needed in the last step.
+
+\paragraph{Differentiation and independent square roots.}
+Section~\ref{sec:algebra} turns the separation of heights into an
+exact obstruction. In an ultraproduct of the number fields, elements
+of height \(o(J)\) form a relatively algebraically closed subfield.
+The alternating products around 4-cycles lie in this subfield, while every edge ratio
+is transcendental over it. Restricting to plane or curve loci of
+minimal total dimension lets us choose a fixed complete bipartite
+pattern with positions whose coordinates have no algebraic relations over the field of locus coefficients beyond the locus equations.
+
+A derivation vanishing on the negligible-height subfield can be chosen
+nonzero on every ratio in this pattern. The relations for alternating products around 4-cycles split
+each ratio's derivative divided by that ratio into a difference of terms
+attached to its endpoints. Differentiating
+\((z_p-z_r)(w_p-w_r)=2-\lambda_{pr}-\lambda_{pr}^{-1}\) therefore
+gives a linear system involving square roots. After one side's
+positions and derivative data are adjoined to the field of locus
+coefficients, a dimension count leaves a point on the other side
+with coordinate transcendence degree equal to the dimension of its locus over that enlarged field. In the function field of that locus, a separate
+simple zero for each radicand proves independence of their square
+classes. When both loci are the same unit circle the radicands are
+squares; this is why that case was excluded earlier.
+
+Quadratic Kummer theory permits independent sign changes of these
+square roots. Solving the first few equations expresses the needed
+derivative terms using only those roots. Changing the sign of an unused
+root then forces an edge ratio's derivative divided by that ratio to vanish,
+contradicting its choice. This excludes every sequence approaching the
+exponent \(4/3\), establishing a fixed positive gap.
+
+Throughout the proof, asymptotic notation refers to the chosen sequence
+\(t\to\infty\). Constants denoted by \(c,C\) may change between occurrences.
+All logarithms are natural. Every appeal to a slowly varying parameter
+will be made after the quantities it must dominate have been specified.

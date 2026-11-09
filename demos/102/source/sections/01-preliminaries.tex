@@ -1,0 +1,106 @@
+\section{Conventions}\label{sec:preliminaries}
+
+\paragraph{Weighted games.}
+Intermediate instances may have loops, repeated constraint occurrences,
+and positive rational weights summing to one. Their value is the maximum
+total weight satisfied by a labeling. Occurrences retain separate IDs
+even if their constraints coincide. All rational numbers are encoded by
+binary numerators and denominators.
+
+A bipartite \emph{projection game} has a question for each vertex on
+either side, finite answer sets, and a map from left answers to right
+answers on each constraint. A strategy chooses one answer to each
+question. Answer sets that depend on the question can be identified
+with fixed alphabets of the same size; we use this for the four
+satisfying triples of a parity equation. Each prover uses only its own
+question. Private or shared randomness independent of the questions
+gives a mixture of deterministic strategies and cannot increase value.
+
+The parallel power \(G^{\otimes t}\) samples \(t\) independent
+constraint occurrences, sends the ordered question tuples, and accepts
+if every coordinate accepts. Answers may depend on the prover's entire
+tuple. Repeated question IDs retain separate coordinate positions and
+separate local answer copies.
+
+\paragraph{Binary linear algebra and Fourier analysis.}
+Except where a larger field is specified, all vector spaces and maps
+are finite-dimensional over \(\F_2\). Write \(\Hom(E,F)\) for the
+space of linear maps and \(E^*=\Hom(E,\F_2)\) for the dual. A subspace
+\(S\le E^*\) restricts to its image \(S|_K\le K^*\) on a subspace
+\(K\le E\); its restriction rank is \(\dim(S|_K)\).
+
+For a real function \(f\) on a binary space \(E\), use normalized
+Fourier coefficients
+\[
+ \widehat f(g)=\E_{x\in E}f(x)(-1)^{g(x)},\qquad
+ f(x)=\sum_{g\in E^*}\widehat f(g)(-1)^{g(x)},\qquad
+ \sum_g|\widehat f(g)|^2=\E_x|f(x)|^2.
+\]
+These identities follow because a nonzero linear functional has equally
+many zero and one values, so its character has mean zero. The characters
+are therefore an orthonormal basis. On a space of matrices, this is
+the entrywise pairing with its dual matrix space; we specify tensor
+notation when defining the Fourier decoder.
+
+\paragraph{Probability and finite constructions.}
+Uniform sampling from a vector space includes zero. Samples are
+independent unless a dependence is stated. For finite probability laws,
+\[
+ \TV(P,Q)=\frac12\sum_x|P(x)-Q(x)|.
+\]
+It bounds the difference of expectations of any \([0,1]\)-valued
+function. We condition only on events of positive probability.
+
+Random experiments describe finite weighted constraint lists.
+The reduction enumerates those lists deterministically. Every auxiliary
+dimension and tuple length is fixed before the input formula varies;
+the final proof checks both this parameter order and the binary
+encoding cost. Since Theorem~\ref{thm:ugc} fixes \(\varepsilon\) and
+\(\delta\), its proof needs only that these parameters and the finite
+data for the equivariant map and noise law exist. We also show that they can be computed from rational
+errors by terminating searches: in the last assertion of
+Lemma~\ref{lem:equivariant-noise}, in the paragraph on effective constants after
+Theorem~\ref{thm:shortcode} (proved at the end of
+Section~\ref{subsec:shortcode-proof}), in the paragraph on effective
+choices in the proof of Theorem~\ref{thm:ugc}, and in
+Section~\ref{subsec:effective-k}. The tuple length \(k\) is taken to be a cube only so that the
+parameter \(\beta=k^{-2/3}\) of the projection experiment is rational in
+the search of Section~\ref{subsec:effective-k}.
+Fourier witnesses and decoders are used only to bound
+game value and need not be efficient.
+
+\subsection{Classical projection-game repetition}
+
+We use the following form of the parallel repetition theorem of
+Dinur and Steurer, for the classical value and the parallel power
+defined above.
+
+\begin{theorem}[Projection-game repetition]
+\label{thm:repetition}
+Let $G$ be a finite bipartite projection game with an arbitrary
+probability distribution on its constraint occurrences, allowing parallel
+occurrences and arbitrary finite question and answer sets.  For its
+independent parallel power $G^{\otimes n}$, every integer $n\ge1$
+and every $0<g<1$ satisfy
+\begin{equation}
+ \val(G)\le 1-g
+ \quad\Longrightarrow\quad
+ \val(G^{\otimes n})\le (1-g^2/16)^n.
+ \label{eq:projection-repetition}
+\end{equation}
+The bound is independent of the question-set and alphabet sizes.
+\end{theorem}
+
+This is Corollary~1.2 of \cite{DS14}.  Their Section~2.1 permits
+nonnegative edge weights and
+parallel edges, and Section~2.2 defines the independent product used
+here.  Thus the theorem applies to any finite weighted question
+distribution in our constructions.  Interchanging the provers, if
+necessary, matches the direction of the projection.  Different answer
+sets can be embedded in one finite alphabet, rejecting answers outside
+the legal set for the question.  Each constraint still has at most one
+accepting reply to a given answer, as required by their definition.
+Replacing an illegal answer by any legal answer cannot decrease success,
+in either the original game or its product, so this embedding preserves
+both values.
+

@@ -1,0 +1,261 @@
+\section{Constructing the parity tests}\label{sec:hashes}\label{subsec:sparse-hashes}
+We prove Lemmas~\ref{lem:sparse-checks} and~\ref{lem:greedy-hashes},
+whose statements and notation are in Section~\ref{subsec:main-reductions}.
+The common-zero counter may be either Lemma~\ref{lem:tensor-sparse-query}, used in
+the main theorem, or Theorem~\ref{thm:overview-sparse-polynomials}, used
+in the interpolation algorithm.
+
+\subsection{Initial tests that exclude small violation sets}
+
+A short random test can miss an assignment violating very few
+clauses. The initial matrix $A^{(0)}$ will reject every nonzero
+violation vector of weight less than $m/P$, so that subsequent
+short tests can detect each remaining nonsatisfying
+assignment with constant probability.
+
+We use the standard edge-based Tanner code: bits are assigned to
+the edges of an expander, and the bits incident to each vertex
+must form a word of a prescribed local linear code
+(see
+Tanner~\cite[Section~II]{Tanner81} for the local constraints and
+Sipser and Spielman~\cite[Sections~IV and~VI]{SS96} for the expander construction).
+The usual local-distance and expansion argument gives the needed
+lower bound on the weight of a nonzero codeword. The proof below
+constructs the graph and local code deterministically, with parameters
+that meet our bounds on the number and length of the tests.
+
+
+\begin{proof}[Proof of Lemma~\ref{lem:sparse-checks}]
+We construct a bipartite graph with between $m$ and $2m$ edges,
+using its edges as temporary binary coordinates. Checks at each vertex
+will force every vertex touched by a nonzero edge to have many nonzero
+incident edges; a mixing bound will then force large total weight.
+At the end, we keep $m$ edge coordinates and fix the rest to zero.
+Let
+\[
+ d_G=\min(m,D_0),
+ \qquad
+ q_G=\min\{2^a:a\in\mathbb Z_{\ge0},\ 2^a d_G\ge m\}.
+\]
+Then $m\le q_Gd_G<2m$. Write $q_G=2^{\ell_G}$ and take two copies
+of $\{0,1\}^{\ell_G}$ as the vertex sets. For each left vertex $u$
+and each edge end $j\in[d_G]$, put an edge from $u$ to $u\oplus s_j$,
+where $\oplus$ denotes bitwise addition modulo $2$ and the shifts
+$s_1,\ldots,s_{d_G}\in\{0,1\}^{\ell_G}$ will be chosen below.
+Edges are indexed by the pairs $(u,j)$; parallel edges remain
+distinct. Every vertex on either side has one incident edge at
+each edge end $j$, so the graph is $d_G$-regular.
+
+To obtain the mixing estimate \eqref{eq:hash-mixing}, we choose
+the shifts so that every parity of a nonempty set of coordinates
+is nearly balanced. For a nonzero vector
+$b\in\{0,1\}^{\ell_G}$, the bit $b\cdot s_j\bmod2$ is the parity
+of those coordinates of $s_j$ where $b$ equals $1$.
+With $\varepsilon=1/(200B\mu)$, we require
+\begin{equation}\label{eq:hash-walsh}
+ \Bigl|\sum_{j=1}^{d_G}(-1)^{b\cdot s_j}\Bigr|
+ \le\varepsilon d_G
+ \qquad
+ \bigl(b\in\{0,1\}^{\ell_G}\setminus\{\vec{0}\}\bigr).
+\end{equation}
+The sum in \eqref{eq:hash-walsh} is the number of indices $j$
+with even parity minus the number with odd parity. Thus, for
+every nonzero $b$, each parity occurs at a fraction of indices
+between $(1-\varepsilon)/2$ and $(1+\varepsilon)/2$.
+A list of shifts with this property is called
+$\varepsilon$-biased~\cite[Definitions~2.1--2.2]{NN93}.
+
+If $q_G=1$, there is no condition to check. Otherwise $d_G=D_0$.
+To show that suitable shifts exist, we choose them independently
+and uniformly at random. For each fixed nonzero $b$, the signs
+$(-1)^{b\cdot s_j}$ are independent and uniform in $\{-1,1\}$.
+The number of indices with even parity and the number with odd
+parity are each a sum of $d_G$ independent uniform bits. Hoeffding's
+inequality~\cite[Lemma~3.3]{AW15}, with $p=1/2$ and
+$k=(1-\varepsilon)d_G/2$, shows that each of the two numbers is at
+most $(1-\varepsilon)d_G/2$ with probability at most
+$\exp(-\varepsilon^2d_G/2)$. Hence the probability of violating
+\eqref{eq:hash-walsh} for this $b$ is at most
+$2\exp(-\varepsilon^2d_G/2)$. A union bound over $b$ gives total
+failure probability at most
+\[
+ 2q_G\exp(-\varepsilon^2d_G/2)
+ =2q_G\exp(-4\mu)<1,
+\]
+where $q_G<2m<2^{\mu+1}$. Exhaustively enumerating the shift tuples
+and checking \eqref{eq:hash-walsh} therefore finds a valid tuple in
+$\exp(O(d_G\log(m+2)))$ time.
+
+We next derive the mixing estimate from \eqref{eq:hash-walsh}.
+Let $\mathsf A_G$ be the $q_G\times q_G$ matrix with
+$\mathsf A_G[u,v]=|\{j\in[d_G]:u\oplus s_j=v\}|$; its entries
+count edges from left vertices $u$ to right vertices $v$.
+Both sides have the same index set $\{0,1\}^{\ell_G}$, on which
+the functions $\chi_b(u)=(-1)^{b\cdot u}$ form an orthogonal basis.
+For every $b,u\in\{0,1\}^{\ell_G}$,
+\[
+ (\mathsf A_G\chi_b)(u)
+ =\sum_{j=1}^{d_G}\chi_b(u\oplus s_j)
+ =\chi_b(u)\sum_{j=1}^{d_G}(-1)^{b\cdot s_j}.
+\]
+Thus each $\chi_b$ is an eigenvector: the constant function
+$\chi_{\vec{0}}$ has eigenvalue $d_G$, while
+\eqref{eq:hash-walsh} bounds all other eigenvalues in absolute value
+by $\varepsilon d_G$.
+For sets $U$ of left vertices and $V$ of right vertices, let
+$e_G(U,V)$ count the edges between them, including multiplicity.
+Decomposing the indicator vectors of $U,V$
+into their constant and orthogonal parts and applying
+Cauchy--Schwarz gives the estimate below. Explicitly, write
+$\mathbf1_U=(|U|/q_G)\mathbf1+u_0$ and
+$\mathbf1_V=(|V|/q_G)\mathbf1+v_0$, where $u_0,v_0$ are
+orthogonal to $\mathbf1$. Regularity makes the two cross terms
+zero, and the character eigenvalue bound gives
+\[
+ |u_0^{\mathsf T}\mathsf A_Gv_0|
+ \le\varepsilon d_G\|u_0\|_2\|v_0\|_2
+ \le\varepsilon d_G\sqrt{|U||V|}.
+\]
+This calculation counts all parallel edges through the entries of
+$\mathsf A_G$, and yields
+\begin{equation}\label{eq:hash-mixing}
+ e_G(U,V)\le
+ \frac{d_G|U||V|}{q_G}
+ +\varepsilon d_G\sqrt{|U||V|}.
+\end{equation}
+
+To specify the local code, we put
+\[
+ c_G=\left\lceil\frac{d_G}{8B}\right\rceil,
+ \qquad \delta=\frac1{100B\mu}.
+\]
+We need a binary matrix $A_{\mathrm{loc}}$ with $c_G$ rows and
+$d_G$ columns such that every nonzero word in its kernel modulo $2$
+has weight at least $\delta d_G$. To prove that such a matrix exists,
+we consider a matrix whose entries are independent uniform bits.
+For each fixed nonzero word, one of
+its nonzero coordinates makes the parity in each row uniform;
+independence of the rows therefore gives probability $2^{-c_G}$
+that the word lies in the kernel.
+Set $h=\lceil\delta d_G\rceil-1$. If $h=0$, there are
+no nonzero words of weight less than $\delta d_G$. Otherwise their
+number is at most
+\[
+ \sum_{j=1}^{h}\binom{d_G}{j}
+ \le(h+1)(2d_G)^h
+ \le(2d_G)^{2h}
+ <2^{d_G/(25B)}.
+\]
+For the last inequality, use $h<\delta d_G$, $d_G\le m<2^\mu$,
+and $\mu+1\le2\mu$. Since $c_G\ge d_G/(8B)$, a union bound shows
+that a suitable $A_{\mathrm{loc}}$ exists. Enumerating the
+$2^{c_Gd_G}$ binary matrices and testing all words of weight less
+than $\delta d_G$ finds one in
+$\exp(\poly(B,\log(m+2)))$ bit operations.
+
+At every vertex on both sides, impose the $c_G$ rows of
+$A_{\mathrm{loc}}$ on its incident edge coordinates, ordered by
+their edge ends. These constraints define a Tanner code with local
+code $C_{\mathrm{loc}}=\ker_{\mathbb F_2}A_{\mathrm{loc}}$.
+Its incidence graph has one bit node for every edge of our graph
+and one local-code node for every vertex; each bit participates
+in the constraints at its two endpoints.
+Consider a nonzero edge word accepted by all these
+checks. Let $U,V$ be the vertices touched by its nonzero edges on
+the two sides, and let $h'$ be its weight. Each vertex in $U\cup V$
+is incident to at least $\delta d_G$ nonzero edges, so
+$h'\ge\delta d_G\max(|U|,|V|)$. Therefore
+\[
+ \delta d_G\sqrt{|U||V|}
+ \le h'\le e_G(U,V)
+ \le\frac{d_G|U||V|}{q_G}
+       +\varepsilon d_G\sqrt{|U||V|}.
+\]
+Both $U$ and $V$ are nonempty. Dividing by
+$d_G\sqrt{|U||V|}$ yields
+$\sqrt{|U||V|}\ge(\delta-\varepsilon)q_G$, and hence
+\[
+ h'\ge\delta(\delta-\varepsilon)q_Gd_G
+ =\frac{q_Gd_G}{20000B^2\mu^2}\ge\frac mP.
+\]
+
+Shorten this Tanner code by keeping any $m$ of the $q_Gd_G$ edge
+coordinates, identifying them with $[m]$, and setting the remaining
+coordinates to zero. Restricting all
+the vertex checks to the retained coordinates gives $A^{(0)}$.
+Any word accepted by $A^{(0)}$ extends by zeros to an accepted edge
+word, so it has the required weight. Every row has at most
+$d_G\le D_0$ nonzero entries. There are $2q_Gc_G$ rows. If $q_G=1$,
+then $d_G=m$ and
+\[
+ 2c_G\le\frac{m}{4B}+2\le\frac n4+2\le3n.
+\]
+If $q_G>1$, then $d_G=D_0\ge8B$, and
+\[
+ 2q_Gc_G\le\frac{q_Gd_G}{4B}+2q_G
+ \le\frac{q_Gd_G}{2B}<\frac mB\le n.
+\]
+The searches over shifts, local matrices, and test words are
+sequential. Storing the current choices and the final rows uses
+$\poly(n,m,B)$ bits of working space.
+\end{proof}
+
+\subsection{Choosing additional equations by counting common zeros}
+After the initial checks, every nonsatisfying assignment still passing
+violates at least $m/P$ clauses. This lets a short random test catch
+each such assignment with constant probability. To make the choice
+deterministic we use the averaging principle underlying conditional
+expectations~\cite{Raghavan88}.
+
+\begin{proof}[Proof of Lemma~\ref{lem:greedy-hashes}]
+At a stage with current matrix $A$, enumerate the ordered lists
+\[
+ \gamma=((e_1,c_1),\ldots,(e_P,c_P))
+ \in\mathcal C:=([m]\times\{0,1\})^P.
+\]
+The list $\gamma$ represents the binary row $h_\gamma$ with
+\[
+ (h_\gamma)_e=
+ \Bigl(\sum_{j:e_j=e}c_j\Bigr)\bmod2
+ \qquad(e\in[m]).
+\]
+There are $(2m)^P$ lists; distinct lists are still counted separately
+when they represent the same row. Write $A;h_\gamma$ for the matrix obtained by appending $h_\gamma$ to $A$.
+
+Fix a nonsatisfying assignment $x$ accepted by $A$. The initial
+rows remain in $A$, so
+$|\operatorname{supp}v(x)|\ge m/P$.
+For a uniform list $\gamma$, the probability that none of
+$e_1,\ldots,e_P$ belongs to this support is at most
+\[
+ (1-1/P)^P\le e^{-1}<1/2.
+\]
+Conditional on the indices hitting the support, choose one hit
+position $j$. After fixing every coefficient except $c_j$, the
+uniform bit $c_j$ makes $h_\gamma\cdot v(x)$ uniform modulo $2$.
+This remains true when some clause indices are repeated.
+Thus, for each such $x$, at least a quarter of the candidate lists
+give a row that rejects $x$.
+
+Summing this bound over the nonsatisfying assignments still passing,
+we find
+\[
+ \mathbb E_\gamma D(A;h_\gamma)\le\tfrac34 D(A).
+\]
+For every candidate, compute $N(A;h_\gamma)$ by counting the common
+zeros of its polynomial system. Append a candidate attaining the
+minimum, breaking ties by enumeration order. Since
+$N(A;h_\gamma)=\#F+D(A;h_\gamma)$ for every $\gamma$, the chosen row
+leaves at most $\tfrac34 D(A)$ nonsatisfying assignments. After $3n$
+rounds at most $(3/4)^{3n}2^n=(27/32)^n<1$ remain; their number is
+an integer, so it is zero. The procedure runs for a fixed number of
+rounds and never needs to know $D(A)$ or $\#F$.
+
+The initial matrix has at most $3n$ rows, and every candidate is
+evaluated with at most $3n$ additional rows. A row listing $s$
+clauses expands, by \eqref{eq:hash-query}, to at most $2^k s$
+monomials on the original variables; duplicates cancel over
+$\mathbb F_2$. These observations give the claimed size and query
+bounds.
+\end{proof}
+

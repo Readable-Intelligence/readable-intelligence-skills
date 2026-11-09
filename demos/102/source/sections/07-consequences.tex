@@ -1,0 +1,313 @@
+\section{Approximation consequences}\label{sec:consequences}
+
+Theorem~\ref{thm:ugc} turns established conditional hardness results
+into NP-hardness results. The underlying conditional reductions and
+approximation thresholds are due to the cited authors. We give the
+additional arguments needed for the exact instance models stated below.
+We also record two results from companion
+manuscripts. For a maximization problem, ratio
+\(r\) means returning value at least \(r\) times the optimum; for a
+minimization problem, factor \(c\) means returning value at most \(c\)
+times the optimum.
+All factors and tolerances below are fixed independently of input size.
+In each reduction using Theorem~\ref{thm:ugc}, they determine the
+Unique Games errors before its alphabet is chosen. If
+\(\mathrm P\ne\mathrm{NP}\), the resulting hardness statements exclude
+deterministic polynomial-time approximations at the indicated strict
+thresholds.
+
+\subsection{Constraint satisfaction and Vertex Cover}
+
+For \textsc{Max-Cut}, which maximizes the number of edges crossing a
+bipartition, Khot, Kindler, Mossel, and O'Donnell's reduction gives
+NP-hardness of approximation at every fixed ratio in
+\((\alpha_{\mathrm{GW}},1)\), where the Goemans--Williamson constant is
+\(\alpha_{\mathrm{GW}}\simeq0.87856\)~\cite[Theorem~1]{KKMO07}.
+This matches the semidefinite approximation threshold of Goemans and
+Williamson~\cite{GW95}. The reduction uses the Majority Is Stablest
+theorem of Mossel, O'Donnell, and Oleszkiewicz~\cite{MOO10}.
+For \textsc{Vertex Cover}, which minimizes the number of vertices
+meeting every edge, Khot and Regev's reduction gives NP-hardness at
+every fixed factor in \((1,2)\)~\cite{KhotRegev2008}.
+
+A constraint satisfaction problem (CSP) is specified here by a finite
+nonempty domain \(D\) and a finite family \(\Lambda\) of Boolean
+predicates on \(D\), of bounded arity. A weighted \(\Lambda\)-instance
+has a finite variable set and a finite collection of predicates from
+\(\Lambda\) applied to tuples of variables, with nonnegative rational
+weights summing to one. An assignment maps the variables to \(D\);
+its value is the total satisfied weight, and \(\operatorname{OPT}\)
+is the maximum of this value over all assignments.
+Raghavendra's theorem characterizes the optimal approximation
+for every fixed language of this form, up to arbitrarily small positive
+error, by a basic semidefinite relaxation
+\cite[Theorem~1.1 and Corollary~1.3]{Raghavendra08}.
+Write \(\operatorname{LC}\) for the value of Raghavendra's LC relaxation,
+as defined in~\cite[Section~4.5]{RaghavendraThesis09}.
+
+The fixed-instance CSP theorem and the ordering reduction use the
+following vertex-wise completeness guarantee.
+
+Orient the constraints of a bipartite game from its left side to its
+right side.  A left vertex is \emph{strongly satisfied} by a labeling
+when every edge incident to it is satisfied.
+
+\begin{lemma}[Simple games with completeness on left vertices]\label{lem:simple-left-vertex-completeness}
+Fix \(0<\zeta,\nu<1\) and integers \(d,H\ge1\).  There are integers
+\(h,R\ge1\), with \(h\ge H\) and \(d\mid h\), and a deterministic
+polynomial-time reduction from \(\mathrm{3SAT}\) to nonempty explicit
+unweighted simple bipartite Unique Games instances
+\(\Phi_\varphi=(A,B,E)\) over \([R]\) with the following properties.
+Every left vertex has degree \(h\).  On a satisfiable input \(\varphi\),
+one labeling strongly satisfies at least \((1-\zeta)|A|\) left vertices.
+On an unsatisfiable input, \(\val(\Phi_\varphi)<\nu\).
+The degree \(h\) and the two errors used in
+Theorem~\ref{thm:ugc} may be chosen from \(\zeta,\nu,d,H\) before that
+theorem supplies the alphabet \(R\).
+\end{lemma}
+
+Appendix~\ref{subsec:left-vertex-completeness-proof} proves this formulation, with
+the errors and left degree chosen before the alphabet.
+
+\begin{corollary}[Raghavendra's consequence]\label{cor:raghavendra-consequence}
+Fix a finite domain \(D\), a finite bounded-arity Boolean predicate
+family \(\Lambda\) on \(D\), and a weighted \(\Lambda\)-instance \(J\)
+in the rational model above.  Suppose
+\(A=\operatorname{OPT}(J)<B=\operatorname{LC}(J)\).
+For every fixed \(0<\eta<(B-A)/2\), it is NP-hard to distinguish
+\(\Lambda\)-instances \(I\) satisfying
+\[
+ \operatorname{OPT}(I)\ge B-\eta
+ \qquad\text{from those satisfying}\qquad
+ \operatorname{OPT}(I)\le A+\eta.
+\]
+\end{corollary}
+The proof in Appendix~\ref{subsec:raghavendra-proof} applies the
+fixed-instance theorem with tolerance $\eta/4$ and changes its fixed
+finite verifier law by total variation less than $\eta/2$.  The latter
+change yields rational weights and changes every assignment value by
+less than $\eta/2$.
+
+
+\subsection{Ordering constraints}
+
+An ordering CSP uses a global order of the input variables, rather than
+an assignment from a fixed finite domain. Fix an integer \(k\ge2\) and
+a nonempty proper subset \(\Pi\subset S_k\), where \(S_k\) is the set
+of permutations of \(\{1,\ldots,k\}\). In the finite
+probability-weighted model of Guruswami, H\aa stad, Manokaran,
+Raghavendra, and Charikar~\cite[Definition~8.2]{GuruswamiEtAl2011OrderingCSP},
+we use an explicitly listed finite variable set \(V\) and a finite list of
+constraint occurrences. Their nonnegative rational weights are encoded
+by binary numerators and denominators and sum to one. Every occurrence is an
+ordered \(k\)-tuple \((v_1,\ldots,v_k)\) of distinct variables,
+satisfied by a linear order \(\prec\) when
+\[
+ v_{\pi(1)}\prec\cdots\prec v_{\pi(k)}
+ \quad\text{for some }\pi\in\Pi.
+\]
+Write \(\OPT_\Pi(I)\) for the maximum satisfied weight. A uniform
+random order satisfies expected weight \(\rho_\Pi=|\Pi|/k!\).
+Since \(\OPT_\Pi(I)\le1\), it is a \(\rho_\Pi\)-approximation.
+For fixed \(k\), conditional expectation gives a deterministic
+polynomial-time algorithm with this guarantee. The end of
+Appendix~\ref{subsec:ordering-transfer-proof} gives the exact
+conditional probabilities and the bit-length bound.
+The size of \(V\) is part
+of the input, so this is not a CSP over the fixed finite domain used
+in the preceding corollary.
+
+\begin{proposition}[Finite ordering transfer]
+\label{prop:finite-ordering-transfer}
+Fix \(k\ge2\) and \(\varnothing\ne\Pi\subsetneq S_k\), put
+\(\rho_\Pi=|\Pi|/k!\), and fix
+\(0<\delta<(1-\rho_\Pi)/2\).  There are integers
+\(q,H\ge1\) and positive rationals \(\zeta,\nu<1\), depending only
+on \(k,\Pi,\delta\), with the following property for every fixed
+integer \(R\ge1\).
+
+Let \(\Phi=(A,B,E)\) be a nonempty explicit unweighted simple
+bipartite Unique Games instance over \([R]\), oriented from \(A\) to
+\(B\), whose common left degree \(h\) satisfies \(h\ge H\) and
+\(q\mid h\).  There is a deterministic transformation, polynomial in
+the explicit size of \(\Phi\) for fixed \(R\), producing an instance \(I\) given by an explicit
+list of \(\Pi\)-ordering constraints on distinct variables within
+each constraint, with nonnegative rational weights, each encoded by
+a binary numerator and a positive binary denominator, summing to one.
+If some labeling strongly satisfies at least
+\((1-\zeta)|A|\) left vertices, then \(\OPT_\Pi(I)\ge1-\delta\).
+If \(\val(\Phi)\le\nu\), then
+\(\OPT_\Pi(I)\le\rho_\Pi+\delta\).
+The constants \(q,H,\zeta,\nu\) are independent of both \(R\) and
+\(h\).
+\end{proposition}
+
+Appendix~\ref{subsec:ordering-transfer-proof} proves the proposition.
+The degree conditions can be supplied by Lemma~\ref{lem:simple-left-vertex-completeness}
+before its alphabet is chosen.
+
+\begin{corollary}[Ordering-CSP consequence]\label{cor:ordering-csp}
+Fix \(k\ge2\) and \(\varnothing\ne\Pi\subsetneq S_k\), and put
+\(\rho_\Pi=|\Pi|/k!\). For every fixed
+\(0<\varepsilon<(1-\rho_\Pi)/2\), it is NP-hard to distinguish finite
+weighted \(\Pi\)-ordering-CSP instances \(I\) satisfying
+\[
+ \OPT_\Pi(I)\ge1-\varepsilon
+ \qquad\text{from those satisfying}\qquad
+ \OPT_\Pi(I)\le\rho_\Pi+\varepsilon.
+\]
+\end{corollary}
+Consequently, approximation at every fixed ratio
+\(r\in(\rho_\Pi,1]\) is NP-hard. Together with the random-ordering
+guarantee, this gives the optimal threshold \(\rho_\Pi\).
+\begin{proof}
+Apply Proposition~\ref{prop:finite-ordering-transfer} with
+\(\delta=\varepsilon\). It uses the local gap and analytic estimates of
+Guruswami et al.~\cite{GuruswamiEtAl2011OrderingCSP} and supplies
+\(q,H,\zeta,\nu\), depending only on \(k,\Pi,\varepsilon\), before any
+alphabet is chosen. Apply Lemma~\ref{lem:simple-left-vertex-completeness} with these
+\(\zeta,\nu\), with \(d=q\), and with the same \(H\). The degree and errors
+are fixed before the alphabet is chosen. Using
+Theorem~\ref{thm:ugc}, it maps each \(\mathrm{3SAT}\) formula \(\varphi\)
+to a simple game with completeness on left vertices \(\Phi_\varphi=(A,B,E)\) over a fixed
+alphabet \([R]\) whose
+common left degree \(h\) satisfies \(h\ge H\) and \(q\mid h\). If
+\(\varphi\) is satisfiable, one labeling strongly satisfies at least
+\((1-\zeta)|A|\) left vertices; otherwise \(\val(\Phi_\varphi)<\nu\).
+These are the hypotheses of
+Proposition~\ref{prop:finite-ordering-transfer} for this fixed \(R\), so
+composing the two reductions gives \(\OPT_\Pi(I)\ge1-\varepsilon\) in the
+first case and \(\OPT_\Pi(I)\le\rho_\Pi+\varepsilon\) in the second. This
+proves the displayed gap for the original predicate \(\Pi\).
+
+For a fixed \(r\in(\rho_\Pi,1]\), choose the positive error still
+smaller so that \(\varepsilon<(r-\rho_\Pi)/(1+r)\). Then
+\(r(1-\varepsilon)>\rho_\Pi+\varepsilon\), so an
+\(r\)-approximation would distinguish the two cases.
+\end{proof}
+
+For \textsc{Maximum Acyclic Subgraph} in the finite weighted
+directed-graph model, take \(k=2\) and \(\Pi=\{12\}\) in one-line
+notation. A constraint \((u,v)\) asks that the edge point forward;
+forward edges form an acyclic subgraph, and every acyclic subgraph has
+a topological order. Its threshold is therefore \(1/2\).
+For \textsc{Betweenness}, the constraint \((a,b,c)\) asks that \(b\)
+lie between \(a\) and \(c\), so \(\Pi=\{123,321\}\subset S_3\) and
+the threshold is \(2/3!=1/3\)
+\cite[Theorem~1.1 and Section~1.2]{GuruswamiEtAl2011OrderingCSP}.
+These finite weighted consequences have near-perfect completeness
+with fixed positive error.
+
+\subsection{Cut, deletion, and clustering consequences}
+
+For the cut problems of Chawla, Krauthgamer, Kumar, Rabani, and
+Sivakumar~\cite[Section~1]{CKKRS2006}, let \(G=(V,E)\) be a finite
+undirected graph with positive rational edge costs \(c_e\), and let
+\(\mathcal D=\{\{s_i,t_i\}:1\le i\le k\}\) contain \(k\ge1\)
+distinct demand pairs with \(s_i\ne t_i\). For \(M\subseteq E\), write
+\(c(M)=\sum_{e\in M}c_e\), and let \(q_{\mathcal D}(M)\) count
+the demand pairs disconnected in \(G-M\).
+Weighted \textsc{Multicut} minimizes \(c(M)\) subject to
+\(q_{\mathcal D}(M)=k\). Their nonuniform \textsc{Sparsest Cut}
+search problem minimizes \(c(M)/q_{\mathcal D}(M)\) over cutsets
+\(M\) with \(q_{\mathcal D}(M)>0\). Only the selected pairs carry
+unit demand; they need not be all vertex pairs.
+
+For weighted Min-\(2\mathrm{CNF}^{\equiv}\) Deletion, the input
+consists of clauses \((\ell\equiv\ell')\) with positive rational
+weights, where \(\ell,\ell'\) are Boolean literals, and an assignment
+pays the total weight of false clauses. The allowed clauses therefore
+express equality or disequality of variables.
+
+In the arbitrary weighted-graph form of \textsc{Correlation Clustering},
+each present edge has a \(+\) or \(-\) label and a nonnegative rational
+weight. A partition into any number of clusters pays for \(+\) edges
+whose endpoints lie in different clusters and \(-\) edges whose
+endpoints lie in the same cluster. Missing edges carry no penalty.
+This is the minimum-disagreements objective of
+\cite[Section~2.1]{DemaineEtAl2006Clustering}.
+
+\begin{corollary}[Cut, deletion, and clustering hardness]
+\label{cor:cut-clustering}
+For every fixed real constant \(C>1\), it is NP-hard to approximate
+weighted \textup{\textsc{Multicut}}, nonuniform \textup{\textsc{Sparsest Cut}}, weighted
+Min-\(2\mathrm{CNF}^{\equiv}\) Deletion, and weighted
+\textup{\textsc{Correlation Clustering}}, in the models above, within factor \(C\).
+For \textup{\textsc{Sparsest Cut}}, this is hardness of the search task under
+polynomial-time Cook reductions: the algorithm must output a cutset,
+not only an estimate of the optimum.
+\end{corollary}
+\begin{proof}
+Corollary~1.3 of \cite{CKKRS2006} gives the first three conclusions
+under its ordinary edge-value Unique Games hypothesis.
+For a requested factor \(C\), use its hardness statement at any fixed
+larger factor \(L\): a \(C\)-approximation would also be an
+\(L\)-approximation.
+To supply that hypothesis, orient the bipartite constraints of
+Theorem~\ref{thm:ugc} left-to-right, renumber its fixed alphabet as
+\([d]\) with \(d=2^s\ge2\), and give its edges equal weights summing
+to one. The unique 2-prover games of \cite[Section~1.2]{CKKRS2006} have the
+same number of questions on each side, so pad the smaller vertex side
+with isolated questions if needed; this preserves both value and
+polynomial size. The search-version
+qualification for \textsc{Sparsest Cut} is in Section~1.3 of the
+cited source.
+
+For \textsc{Correlation Clustering}, the hard \textsc{Multicut}
+instances in~\cite[Section~2.1]{CKKRS2006} have distinct antipodal
+demand pairs inside \(d\)-cubes, while the edges of the Multicut graph
+are cube edges or join different cubes. Lemma~1.5 of that source, which makes the game regular, does not
+change \(d\), so \(d\ge2\) there. Antipodal vertices of a \(d\)-cube
+differ in all \(d\ge2\) coordinates, whereas a cube edge joins vertices
+that differ in exactly one; edges between cubes cannot join
+a same-cube demand pair either. Thus the demand pairs are nonedges. The transformation of
+Demaine, Emanuel, Fiat, and Immorlica
+\cite[Theorem~4.7 and Corollary~4.8]{DemaineEtAl2006Clustering}
+therefore creates no opposite-signed parallel edges. It preserves the
+optimum and converts every clustering into a multicut of no greater
+cost, so the same fixed-factor hardness transfers.
+To see the conversion explicitly, put \(W_+=\sum_{e\in E}c_e\).
+Keep the original edges as positive edges with their costs, and give
+each demand pair a negative edge of weight \(W_++1\).
+If a clustering separates every demand pair, its crossing positive
+edges form a multicut of exactly its disagreement cost.  If it leaves
+a demand pair together, its cost exceeds \(W_+\); returning all
+original edges is then a multicut of smaller cost.  Conversely, the
+connected components left by a multicut form a clustering of cost at
+most that multicut's cost.  Taking minima in both directions proves
+equality of optima.  The sums and the added weights have polynomial
+binary length, so this also preserves the rational input model.
+\end{proof}
+
+The separate manuscript
+\cite[Theorem~1.1]{OpenAIUniformSparsest2026} proves
+NP-hardness at every fixed factor \(C>1\) for the bipartition objective with
+nonnegative rational capacities and exactly unit demand between every
+pair of distinct vertices.
+
+\paragraph{Kernel clustering.}
+A separate companion application concerns the following maximization
+problem. For \emph{identity-target kernel clustering}, fix an integer \(k\ge3\).
+An input is an explicitly represented rational symmetric matrix
+\(A=(a_{pq})_{p,q=1}^N\succeq0\) with \(A\mathbf1=0\), where
+\(\mathbf1\) is the all-ones vector.
+An assignment \(\sigma:\{1,\ldots,N\}\to\{1,\ldots,k\}\) has value
+\[
+ \val_A(\sigma)=\sum_{p,q=1}^N
+ a_{pq}\mathbf1_{\{\sigma(p)=\sigma(q)\}},
+ \qquad
+ \OPT_k(A)=\max_\sigma\val_A(\sigma).
+\]
+The sum includes ordered pairs and the diagonal; empty clusters are
+allowed, and there is no normalization by cluster size. A loss factor
+\(\alpha\ge1\) means returning value at least \(\OPT_k(A)/\alpha\).
+The Gaussian propeller companion uses Theorem~\ref{thm:ugc} to prove
+NP-hardness of achieving every fixed loss factor
+\[
+ 1\le\alpha<\alpha_k,
+ \qquad \alpha_k=\frac{8\pi}{9}\left(1-\frac1k\right),
+\]
+for each fixed \(k\ge3\)
+\cite[Theorem~6.1]{OpenAIGaussianPropeller2026}.
+This is strict hardness below the rounding factor
+\(\alpha_k\).

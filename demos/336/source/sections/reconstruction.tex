@@ -1,0 +1,191 @@
+\section{Reconstructing the partitions on the original manifold}
+\label{sec:reconstruction}
+
+We prove \Cref{topology:partitions}, the partition statement used in
+Section~\ref{sec:width-map}. Keep the original metric $g$, its distance
+$d_0$, the centers, and the ball pairs fixed there. The finite-stage
+separating sets and proper collapses are supplied by \Cref{countable:construction}.
+Only finite truncations of the analytic product ends enter the
+reconstruction. The choice of homeomorphisms below makes every change
+for a center label lie in its original ball of radius $2D+2$; local
+finiteness of those balls then gives the limit on one copy of $M$.
+
+\begin{proof}[Proof of \Cref{topology:partitions}]
+Choose positive numbers $\eps_0,\eps_1,\ldots$ with
+$\sum_{r\ge0}\eps_r<1$, and use $\eps_j$ as the error of
+\Cref{component:small-displacement} for the split of label $j$, the transition
+from analytic stage $j$ to $j+1$ in \Cref{countable:construction}.  In this
+proof only, $X_r$ denotes the reconstruction after the radial label $0$ and
+the center labels $1,\ldots,r$ have been split; it is $X_{r+1}$ in the
+indexing of \Cref{countable:construction,component:reconstruction}.  Thus the
+passage from $X_r$ to $X_{r+1}$ splits the center label $i=r+1$, with
+error $\eps_i=\eps_{r+1}$.
+For a finite reconstruction write
+\[
+ q_r:X_r\longrightarrow M,\qquad
+ H_r:X_r\longrightarrow M,\qquad
+ Q_r=q_r\circ H_r^{-1}.
+\]
+The map $q_r$ is the proper collapse of
+\cref{component:reconstruction}, whereas $H_r$ is a homeomorphism to a
+fixed copy of the original manifold.  We maintain
+\begin{equation}\label{topology:finite-error}
+ d_0(Q_r(x),x)\le E_r,
+ \qquad E_r\le\sum_{j=0}^{r}\eps_j<1.
+\end{equation}
+Separating sets and their two closed sides will also be viewed on this fixed copy
+using $H_r$.
+
+For the radial stage, the cut has a locally finite family of compact
+components.  Choose pairwise disjoint, locally finite collars of these
+components on which the collapse varies by less than $\eps_0$ in each
+normal segment.  Compactness of each component and continuity of the
+collapse permit the collars to be this small, independently from one
+component to another.  Compress the finite inserted cylinders into
+these collars.  Since their supports are disjoint, the displacement
+bound is $\eps_0$, rather than a sum over components.  This constructs
+$H_0$ and proves \eqref{topology:finite-error} initially.  The finite
+length of an inserted cylinder may be arbitrarily large; its length
+does not impose a lower bound on the width of the collar into which it
+is compressed.
+
+Fix $r\ge0$ and put $i=r+1$. First raise any old finite
+truncation levels needed for the new compatible defining functions.  Denote the
+resulting reconstruction by $\widehat X_r$.  The truncation level
+reparameterization
+\[
+ \Phi_r:\widehat X_r\longrightarrow X_r
+\]
+preserves collapse and every old separating set and signed side.  Indeed, on an
+old product end the collapse is independent of the normal coordinate,
+and an increasing change of that coordinate preserves its sign and its
+zero section.  Compatible products of these changes agree at corners.
+Thus we may set
+\begin{equation}\label{topology:horizon}
+ \widehat q_r=q_r\circ \Phi_r,\qquad
+ \widehat H_r=H_r\circ \Phi_r,
+ \qquad
+ \widehat q_r\circ\widehat H_r^{-1}=Q_r.
+\end{equation}
+In particular, increasing a truncation level contributes no displacement on the
+fixed copy.
+
+The new separating set lies over $B_0(x_i,2D)$.  Choose its collar strip $S_i$ in
+$\widehat X_r$ so that
+\begin{equation}\label{topology:strip}
+ S_i\subset\widehat q_r^{-1}\bigl(B_0(x_i,2D+1)\bigr),
+\end{equation}
+and so that collapse oscillation along every segment used by the
+compression is less than the error assigned to this stage.  These
+choices are possible because the relevant separating set components in a finite
+reconstruction are compact and locally finite.  More specifically,
+their union lies in the inverse image of the compact ball
+$\overline B_0(x_i,2D)$ under the proper finite collapse; hence only
+finitely many components are involved in this label stage.
+
+Choose these strips using the collars in the proof of
+\Cref{component:reconstruction}. That construction applies after the
+truncation levels have been raised beyond the product thresholds: the new
+defining function is regular on each old end base and independent of its
+old signed normal coordinates. Its collar flow and the resulting
+compression preserve every old separating set and signed side and their
+intersections, including the radial ones. Decrease the componentwise strip widths to satisfy
+\eqref{topology:strip} and the prescribed collapse oscillation, as
+permitted by \Cref{component:small-displacement}.
+Let
+\[
+ c_r:X_{r+1}\longrightarrow\widehat X_r
+ \quad\hbox{and}\quad
+ h_r:X_{r+1}\longrightarrow\widehat X_r
+\]
+be, respectively, the new cylinder collapse and the homeomorphism that
+compresses those cylinders into the chosen strips.  They agree off
+the inverse image of $S_i$. Figure~\ref{fig:topology-compression} shows
+the two maps schematically in a normal coordinate: $c_r$ collapses the
+inserted interval, while $h_r$ compresses it into the chosen old collar.
+Define
+\begin{equation}\label{topology:recursion}
+ q_{r+1}=\widehat q_r\circ c_r,
+ \qquad H_{r+1}=\widehat H_r\circ h_r,
+ \qquad
+ Q_{r+1}=\widehat q_r\circ c_r\circ h_r^{-1}
+                         \circ\widehat H_r^{-1}.
+\end{equation}
+The oscillation choice gives
+$d_0(Q_{r+1}(x),Q_r(x))<\eps_{r+1}$ wherever they differ, proving
+\eqref{topology:finite-error} at the next stage.  Their difference is
+supported in $\widehat H_r(S_i)$.  If
+$x=\widehat H_r(z)$ belongs to this set, then
+\eqref{topology:horizon}, \eqref{topology:strip}, and
+\eqref{topology:finite-error} imply
+\begin{equation}\label{topology:fixed-support}
+ d_0(x,x_i)
+ \le d_0(x,Q_r(x))+d_0(\widehat q_r(z),x_i)
+ <1+(2D+1)=2D+2.
+\end{equation}
+This support radius is independent of the stage.
+
+\begin{figure}[!b]
+\centering
+\begin{tikzpicture}[x=1.25cm,y=1.05cm,>=Latex,font=\small]
+ \fill[blue!6] (-3,-1) rectangle (3,1);
+ \fill[red!8] (-1,-2.25) rectangle (1,2.35);
+ \draw[->] (-3.2,0)--(3.5,0) node[right] {$s$};
+ \draw[->] (0,-2.3)--(0,2.65) node[above] {$t$};
+ \draw[densely dashed,gray] (-3,1)--(3,1);
+ \draw[densely dashed,gray] (-3,-1)--(3,-1);
+ \draw[very thick,purple!75!black]
+  (-3,-2)--(-1,0)--(1,0)--(3,2);
+ \draw[thick,orange!85!black]
+  (-3,-2)--(-2,-1)--(-1,-.35)--(0,0)--(1,.35)--(2,1)--(3,2);
+ \draw (-1,.07)--(-1,-.07) node[below=4pt,fill=white,inner sep=1pt] {$-L$};
+ \draw (1,.07)--(1,-.07) node[below=4pt] {$L$};
+ \node[left,fill=white,inner sep=1pt] at (-.08,1) {$\delta$};
+ \node[left,fill=white,inner sep=1pt] at (-.08,-1) {$-\delta$};
+ \node[align=left,anchor=west,text=purple!75!black] at (3.55,1.25)
+  {collapse $c_r$};
+ \node[align=left,anchor=west,text=orange!85!black] at (3.55,.55)
+  {compression $h_r$};
+ \node[align=left,anchor=west] at (3.55,-.55)
+  {$c_r=h_r$ outside the strip};
+ \node[align=left,anchor=west] at (3.55,-1.35)
+  {old strata follow\\the same reparameterization};
+ \node[below,align=center] at (0,-2.4)
+  {finite inserted cylinder: $-L\le s\le L$};
+\end{tikzpicture}
+\caption{The two maps used in a finite reconstruction, shown schematically
+in local normal coordinates: $s$ on the reconstructed domain $X_{r+1}$
+and $t$ on the old target $\widehat X_r$. The target strip $|t|<\delta$
+represents the chosen collar $S_i$.
+The collapse is constant on the inserted cylinder;
+the homeomorphism squeezes it into an arbitrarily narrow old collar.
+Where the maps differ, both images lie in the target strip.  Infinite analytic ends
+are truncated before this topological operation.}
+\label{fig:topology-compression}
+\label{component:collar-figure}
+\end{figure}
+
+The balls in \eqref{topology:fixed-support} form a locally finite
+family.  Consequently, on every relatively compact neighborhood in
+the fixed copy, the maps $Q_r$ are exactly unchanged after finitely
+many stages.  Their locally stationary limit $q$ is continuous and
+satisfies \eqref{topology:displacement}.  It is proper: the inverse
+image of a compact set is a closed subset of its compact closed
+$1$-neighborhood in $(M,d_0)$.
+
+At each finite stage the signed sides are the closed reconstructed
+sides, with their intersection equal to the central separating set.  The
+stratum-preserving identifications just constructed preserve every
+previously installed side and separating set exactly.  Newly installed label
+separating sets are confined to the fixed balls in
+\eqref{topology:fixed-support}.  Thus all the partition data are locally
+eventually unchanged.  Their final closed sets satisfy
+\eqref{topology:sides} and \eqref{topology:forced}, since these are the
+finite-stage forced-sign properties of
+\cref{countable:construction}, and both collapse and indices are
+stationary near each point.  The separating set family is locally finite by the
+same support bound.  Finally, a point on $n-1$ distinct final label
+separating sets would, on a neighborhood where these data have stabilized, lie
+on the same $n-1$ finite-stage separating sets.  This contradicts
+\cref{countable:construction}.
+\end{proof}

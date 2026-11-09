@@ -1,0 +1,214 @@
+\section{Counting common zeros by polynomial interpolation over \texorpdfstring{$\mathbb Q$}{Q}}\label{sec:setup}
+We now prove Theorem~\ref{thm:overview-sparse-polynomials}. The input
+is a system $\mathcal P$ of $m_{\mathrm{test}}\le cn$ polynomial equations
+$P_i(x)=0$ over $\mathbb F_2$ in $n$ Boolean variables. Each $P_i$ is a
+list of at most $(\log n)^c$ monomials of degree at most $k$, for fixed
+$k,c$. Our target is $N(\mathcal P)$ from \eqref{eq:common-zero-count}.
+Use the integer lifts $L_i$, scopes $I_i$, linear coefficient polynomials $e_j$,
+and coefficient algebra $\mathcal E_\ell$ from
+Sections~\ref{subsec:rational-lift}--\ref{subsec:total-order}, with
+$\ell=n+1$. Lemma~\ref{lem:total-order} bounds the product degree by
+$k(m_{\mathrm{test}}+2n)=O_{k,c}(n)$. On each branch fixing the few
+variables of high incidence, Lemmas~\ref{lem:incidence-parameters}
+and~\ref{lem:layout} supply the data used by Proposition~\ref{prop:count}.
+The full deduction, including the cost of these branches, is in
+Section~\ref{subsec:sparse-queries}.
+
+\subsection{Counting with supplied replacement forms}\label{subsec:count-polynomial}
+For equation $i$ supply Section~\ref{sec:counting} with the factor
+\begin{equation}\label{eq:lifted-factor}
+ \mathcal B_i((X_v)_{v\in I_i},V)
+ =\sum_{j=0}^{\ell-1}e_j(L_i(\vec X))h(L_i(\vec X))^j V^j
+ \quad\text{in }\mathcal E_\ell[(X_v)_{v\in I_i}].
+\end{equation}
+Within a factor, every occurrence of $X_v$ uses the same replacement
+form; different factors may use different forms for $X_v$. Even if
+each factor receives its own independent inputs, $L_i$ has degree at
+most $k$ in those inputs. Lemma~\ref{lem:total-order} bounds the input
+degree of the product \emph{in $\mathcal E_\ell$} by
+$d=k(m_{\mathrm{test}}+2(\ell-1))$. Thus the product satisfies precisely
+the degree hypothesis \eqref{eq:general-product-degree} of the common
+routine. Adding factors equal to one with scope $\{v\}$ ensures that
+all declared variables occur in the construction.
+
+Let $H(T)\in\mathcal E_\ell[T]$ be \eqref{eq:general-count-polynomial}
+for these factors. Its $V$-coefficients at $T=0$ are integers because
+all replacements restore their Boolean inputs at zero. By the same
+lemma, summing their values gives
+\begin{equation}\label{eq:origin-residue}
+ \deg_T H\le d_H:=kR(m_{\mathrm{test}}+2(\ell-1)),\qquad
+ \mathcal S_\ell(H(0))\equiv N(\mathcal P)\pmod{2^\ell}.
+\end{equation}
+Consequently the least nonnegative residue of $\mathcal S_\ell(H(0))$
+is the exact count. Interpolation takes place over the rationals;
+the congruence is needed only on Boolean inputs at $T=0$.
+
+\subsection{Cost of evaluating the factors}\label{subsec:one-query-cost}
+\begin{proposition}\label{prop:count}
+Let $\mathcal P$ be a list of $m_{\mathrm{test}}$ polynomial equations
+over $\mathbb F_2$ on $n$ declared Boolean variables, each given by
+a monomial list of degree at most $k$. Suppose the factors
+\eqref{eq:lifted-factor}, including the neutral factors, are supplied
+with the data of Definition~\ref{def:layout}. Let $S\ge1$ bound
+the total length of the monomial lists and factor scopes, and let
+$\ell$ be any positive integer with $2^\ell>2^n$. With $d_H$ from
+\eqref{eq:origin-residue} and $q,J$ from \eqref{eq:hasse-order},
+$N(\mathcal P)$ can be computed deterministically in
+\[
+ \poly(n,m_{\mathrm{test}},\ell,D,Q,R,J,r,k,S)\,
+ \left(\sum_{s=0}^{\min(q,n)}2^s\binom ns\right)
+ (2D+1)^{2\tau n}2^{2n/r}
+\]
+bit operations and $\poly(n,m_{\mathrm{test}},\ell,D,Q,R,J,r,k,S)$
+bits of working space.
+\end{proposition}
+\begin{proof}
+Apply Proposition~\ref{prop:general-count} with coefficients in
+$\mathcal E_\ell$. At an evaluation point $t$, the routine uses
+$\mathcal E_\ell[z]/(z^J)$, so a stored element has just $J\ell$
+rational coefficients. To evaluate factor $i$ at a fixed Boolean
+substitution $\vec X=\mathbf1_U$ in \eqref{eq:taylor-substitution}, first
+evaluate each listed monomial by multiplying its at most $k$ substituted
+inputs, then add the results to get $L_i$. Use this value in
+\eqref{eq:lifted-factor}, successively multiplying by $h(L_i)$ to
+obtain its powers. This takes polynomially many rational operations in
+the displayed parameters and never enumerates assignments to the entire
+scope $I_i$. The polynomials $e_j$ are computed once by
+Lemma~\ref{lem:rational-idempotent}.
+
+For bit complexity, the rows have common denominator
+$d_{\mathrm{den}}=(R-1)!Q!$. Each substituted monomial has denominator
+dividing $\Delta=d_{\mathrm{den}}^k$, every lifted factor has denominator
+dividing $\Gamma=\Delta^{2\ell-1}$, and their product has denominator
+dividing $\Omega=\Gamma^{m_{\mathrm{test}}}$. Thus exponentially many
+summands can be accumulated over one denominator.
+Appendix~\ref{app:arithmetic} bounds the bit lengths in these sums by
+\begin{equation}\label{eq:sum-bit-bound}
+ B_{\mathrm{sum}}=\poly(n,m_{\mathrm{test}},\ell,k,Q,\log(D+2),\log(S+2)).
+\end{equation}
+For each $0\le s<\ell$ we interpolate the rational polynomial
+$[V^s]H(T)$ from its $QJ$ Taylor coefficients. The appendix verifies
+polynomial bit cost for this interpolation and the final integer
+remainder in \eqref{eq:origin-residue}. The $O(QJ\ell)$ stored
+coefficients, the supplied rows, partitions, assignments, and measurement matrices, and the sequential enumerations in
+Proposition~\ref{prop:general-count} give the stated space bound.
+\end{proof}
+
+\subsection{Constructing the forms and completing the proof}\label{subsec:sparse-queries}
+Each sparse polynomial reads few variables, but one variable might
+occur in many equations. We first fix the values of the few variables
+with the largest numbers of occurrences. On each resulting branch we
+can construct the rows, partitions, assignments, and measurement matrices required by Proposition~\ref{prop:count}.
+
+\begin{proof}[Proof of Theorem~\ref{thm:overview-sparse-polynomials}]
+Let $\mathcal P$ be the supplied polynomial system. An empty list of
+equations gives $2^n$ common zeros; a constant equation $1=0$ gives
+none. Discard equations $0=0$. Include a neutral factor equal to one
+with scope $\{v\}$ for each declared variable $v$, and write
+\[
+ M=\sum_{f\in\mathcal F}|I_f|
+\]
+for the total number of factor--variable incidences. The input
+bounds imply $M=n(\log n)^{O_{k,c}(1)}$, and every scope has
+$(\log n)^{O_{k,c}(1)}$ variables. A particular variable, however,
+may occur in many of these scopes.
+
+Put $\lambda=\lceil\log_2 n\rceil$ and
+\[
+ b_0=\left\lceil\frac Mn\right\rceil\lceil\sqrt\lambda\rceil.
+\]
+Let $S\subseteq[n]$ be the variables belonging to more than $b_0$
+scopes. For each $b\in\{0,1\}^S$, we fix $x|_S=b$ and count the
+completions on $[n]\setminus S$; we call this restricted problem a
+branch. Since $|S|\le M/b_0\le n/\sqrt\lambda$, there are at most
+$2^{n/\sqrt\lambda}$ branches.
+Each branch has the same number $n'$ of free variables, with
+\[
+ n'\ge n-\frac n{\sqrt\lambda}\ge\frac n2
+ \qquad(n\ge20).
+\]
+Substitute the fixed bits in every $P_i$ over $\mathbb F_2$ and
+combine duplicate monomials modulo two before forming its integer
+lift. Neither degree nor the number of monomials increases. A constant
+equation can again be handled immediately. The branches partition the
+Boolean cube, so their common-zero counts add to $N(\mathcal P)$.
+
+To apply Section~\ref{sec:construction}, remove the fixed variables from the
+scopes and relabel the free variables by $[n']$.
+Write $I'_f\subseteq[n']$ for the restricted
+scopes and $M'=\sum_f|I'_f|$ for their total incidence count.
+Let $b$ be the maximum factor incidence of a free variable
+and let $w=\max_f|I'_f|$. Then $b\le b_0$,
+and both $b$ and $w$ are bounded by a fixed power of $\log n'$.
+The remaining neutral factors ensure $M'\ge n'$.
+Set
+\[
+ \lambda'=\lceil\log_2 n'\rceil,\qquad
+ \nu'=\lceil\log_2\lambda'\rceil,
+\]
+and choose the smallest integer $\beta\ge1$ with
+$b,w\le(\lambda')^\beta$. For fixed $k,c$, the possible values
+of $\beta$ are bounded by a constant for all sufficiently large
+$n$. We apply Lemma~\ref{lem:incidence-parameters} to the restricted
+scopes $(I'_f)$ on $[n']$, with incidence count $M'$, using
+\[
+ r=\left\lfloor\frac{\sqrt{\lambda'}}{(\nu')^2}\right\rfloor,
+ \qquad Q=\left\lfloor\frac{\lambda'}{128\nu'}\right\rfloor,
+ \qquad R=(\beta+3)\lceil\sqrt{\lambda'}\rceil.
+\]
+If $r<2$ or $Q\le R$, use the exhaustive-search fallback below
+before forming $\tau$, $\epsilon$, or the parity interpolation
+interval $\mathcal I$.
+Otherwise set
+\[
+ \tau=\frac1{r\lambda'},\qquad
+ \epsilon=\frac1{br^2\lambda'},\qquad D=r^{2Q},
+\]
+and carry out the remaining feasibility checks from that lemma.
+For all sufficiently large $n$, Lemma~\ref{lem:layout} supplies
+the required rows and measurement matrices, with
+\[
+ r=\Theta\!\left(\frac{\sqrt{\log n'}}{(\log\log n')^2}\right),
+ \qquad Q=\Theta\!\left(\frac{\log n'}{\log\log n'}\right),
+ \qquad R=O_{k,c}(\sqrt{\log n'}),
+ \qquad D\le(2n')^{1/128}.
+\]
+
+On every branch we may use the original precision $\ell=n+1$,
+since even the unrestricted count is smaller than $2^\ell$. As
+$n'\ge n/2$, both $\ell$ and $m_{\mathrm{test}}$ are $O_c(n')$.
+Thus $d_H=O_{k,c}(n'R)$, $J=O_{k,c}(n'R/Q)+1$, and
+\eqref{eq:three-costs}, in dimension $n'$, has exponent
+\[
+ O_{k,c}\!\left(\frac{n'(\log\log n')^2}{\sqrt{\log n'}}\right)
+ =O_{k,c}\!\left(\frac{n(\log\log n)^2}{\sqrt{\log n}}\right).
+\]
+All substitution data, coefficient arrays, and interpolation systems
+have total representation length $n^{O_{k,c}(1)}$ bits.
+Multiplying the per-branch running time by at most
+$2^{n/\sqrt\lambda}$ leaves the displayed exponential bound
+unchanged, so summing the branch answers gives the required running time.
+
+To implement the construction for every input size, the algorithm
+checks its numerical hypotheses using integer arithmetic.
+In addition to the preliminary guards above, it checks
+$2(b+w)D^2\le M'$ and $2Qr^2\le n'$ from
+Lemma~\ref{lem:incidence-labels}, the endpoints of $\mathcal I$,
+$R\ge32$, $6R\le Q$, and the binomial tail bound in
+\eqref{eq:incidence-tail}, which can be tested exactly.
+If any check fails, the algorithm abandons the branched computation
+and checks the original equations directly on all $2^n$ assignments. For fixed
+$k,c$, the bounds just proved and
+Lemma~\ref{lem:incidence-parameters} show that a failure can occur
+only for finitely many $n$. This fallback is therefore absorbed
+in the theorem's constants.
+
+To combine the branch counts within the stated space bound, we
+process the branches one at a time. We initialize an integer
+accumulator $Z=0$ and add each branch's answer to it. The construction and
+Proposition~\ref{prop:count} use $n^{O_{k,c}(1)}$ bits of space on
+each branch.
+Disjointness gives $0\le Z\le2^n$ throughout, and the final value
+is $N(\mathcal P)$, as claimed.
+\end{proof}
+

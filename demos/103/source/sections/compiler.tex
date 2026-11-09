@@ -1,0 +1,554 @@
+\section{The effective compiler}
+\label{sec:compiler}
+
+The probability-approximation theorem fixes the source machine. We now
+construct one effective map from source descriptions and supplied
+resource bounds to deterministic simulations with explicit bounds.
+
+\begin{theorem}[Effective simulation with explicit bounds]
+\label{thm:effective-simulation}
+There is a terminating algorithm which, given a finite randomized machine
+description ${\mathcal M}$ and positive integers $a,b$, emits a deterministic
+machine $\mathcal D_{\mathcal M}$ and positive integers ${K_{\rm space}},{H_{\rm time}},c$ with the following guarantee.
+If, on every input of length $n$ and every random tape, ${\mathcal M}$ halts within
+$(n+2)^a$ steps, uses at most $b\lceil\log(n+2)\rceil$ work bits, and
+has acceptance probability at most $1/3$ on no inputs and at least
+$2/3$ on yes inputs, then $\mathcal D_{\mathcal M}$ decides the same language. On each input,
+that same execution uses at most ${K_{\rm space}}\log(n+2)$ work bits and
+${H_{\rm time}}(n+2)^c$ elementary bit operations.
+\end{theorem}
+
+The compiler's own running time need only be finite, and its output
+exponent may depend on the source.
+
+We prove Theorem~\ref{thm:effective-simulation} by specializing one
+fixed deterministic program. First we construct a randomized interpreter
+${\mathcal U}$ that enforces polynomial-time and logarithmic-space bounds on every
+input. Theorem~\ref{thm:fixed-precision} supplies a deterministic machine
+${\mathcal A_{\rm lib}}$ that separates the inputs on which ${\mathcal U}$ accepts with probability at
+least $2/3$ from those on which it accepts with probability at most
+$1/3$. Both ${\mathcal U}$ and ${\mathcal A_{\rm lib}}$ are fixed before the compiler receives a source
+description ${\mathcal M}$ and bounds $a,b$.
+
+When the source satisfies its supplied resource bounds, padding places
+each encoded computation within ${\mathcal U}$'s caps without changing its
+acceptance probability. The generated machine runs ${\mathcal A_{\rm lib}}$ on that padded input, generating each requested
+symbol from the real input. We then compute the output bounds ${K_{\rm space}},{H_{\rm time}},c$
+from the generated finite transition table and the fixed library data.
+
+Universal deterministic estimation has a substantial antecedent in
+Pyne, Raz and Zhan~\cite[full version, Theorem~5.1]{PyneRazZhan2023}.
+They construct one deterministic algorithm that, on input $(1^n,\mathcal B)$
+with $n\ge1$ and $\mathcal B$ an ordered branching program of length
+and width at most $n$, approximates its acceptance probability to error less than
+$1/n$. For every space-constructible $S(n)\ge\log n$, this single
+algorithm uses $O(S(n))$ space exactly when
+$\mathsf{prBPL}\subseteq\mathsf{SPACE}[O(S(n))]$.
+Here the preceding sections establish the separator used by one fixed
+library, and we compute explicit resource bounds for its source-specific
+specialization.
+
+All quantities in this section are local to the compiler construction.
+In particular, ${P_{\rm pad}}$ is a padding exponent, $d_{\mathrm{code}}$ is a program
+length, $\ell_n=\lceil\log_2(n+2)\rceil$, and $N_{\mathrm{pad}}$ is a virtual
+input length.  They do not denote the statistical budgets, field modulus,
+or domain sizes used in the preceding sections.  We use the usual
+counted-cell convention for work tapes: traversed writable cells count
+toward space, whether or not they contain a nonblank symbol.  The finite
+control and the read-only input have their standard treatment.
+
+\subsection{One fixed interpreter with enforced resource bounds}
+\label{subsec:compiler-interpreter}
+
+Fix a binary coding of ordinary finite transition lists.  One concrete
+choice uses a fixed record grammar and the field encoding
+$w\mapsto 1^{|w|}0w$.  Lists specify the finite state set, tape and
+alphabet declarations, initial and halting states, blanks and endmarkers,
+and transition records.  A transition record lists its tested state,
+scanned symbols and coin pattern, followed by its next state, written
+symbols and local head movements.  The grammar has fixed nesting depth;
+its fields are actual listed data, not recursively executable descriptions.
+State and symbol IDs are canonical binary integers used only as names.
+The first matching transition is
+used; a missing transition causes rejection.  Wildcards for ignored coins
+can equivalently be expanded into a finite explicit list.
+
+Write $z$ for a program in this coding and
+$d_{\mathrm{code}}=|z|\ge1$.  The coding permits at most
+$d_{\mathrm{code}}$ work tapes and a block of at most
+$d_{\mathrm{code}}$ fresh fair bits per simulated transition.  Every ID
+has at most $d_{\mathrm{code}}$ bits.  A harmless padding field can enlarge
+the program to meet these inequalities.  All tape movements are local.
+Work coordinates are measured from their initial origins; the ordinary
+model has one input head and one head per work tape.  For a source input
+$x$ of length $n$, let $E_{d_{\mathrm{code}}}(x)$ encode each of its
+symbols by its ID padded to exactly $d_{\mathrm{code}}$ bits.
+
+\paragraph{Preserving the supplied source bounds.}
+An ordinary source machine ${\mathcal M}$ can be converted effectively to this format
+by renaming its states and symbols and listing its transitions.  Its tapes
+are represented directly, so a source transition retains its work writes
+and head movements and counts as one interpreted transition.  The
+conversion does not pass through a slower single-tape simulation.
+
+Under the optional one-way read-only random-tape convention, the source
+may reuse its current random bit. Store a cached bit and a validity flag
+in finite control, initially invalid.
+At each transition obtain one fresh bit.  Use it if the cache is invalid;
+otherwise use the cached bit and discard the fresh one.  Execute the
+source transition, then retain the used bit if the random head stayed
+and invalidate the cache if it advanced.  This samples a newly visited
+random cell lazily on its next use.  It preserves the joint distribution
+of the source run and needs no initialization transition.  An initially
+halting state is recognized before the first transition.  The same
+argument uses a fixed finite block for a convention allowing finitely
+many fresh bits per elementary transition, discarding unused bits.
+The finite cache changes neither counted work space nor the number of
+source transitions.  Thus the supplied parameters $a,b$ remain valid;
+only the static description length can increase.
+
+\begin{lemma}[A total resource-capped interpreter]
+\label{lem:compiler-interpreter}
+There is one fixed randomized Turing machine ${\mathcal U}$ with polynomial
+worst-case running time and $O(\log(m+2))$ counted work bits on every
+binary input of length $m$, with the following behavior.
+Set
+\begin{equation}\label{eq:compiler-interpreter-cap}
+ \ell_m^{\rm in}=\lceil\log_2(m+2)\rceil,
+ \qquad
+ R(m,d_{\mathrm{code}})
+   =\left\lfloor\frac{\ell_m^{\rm in}}
+       {100(d_{\mathrm{code}}+1)^3}\right\rfloor.
+\end{equation}
+On an input with prefix
+\begin{equation}\label{eq:compiler-prefix}
+  1^{d_{\mathrm{code}}}0\,z\,1^n0\,
+  E_{d_{\mathrm{code}}}(x),
+\end{equation}
+it first requires $1\le d_{\mathrm{code}}\le\ell_m^{\rm in}$ and
+$R(m,d_{\mathrm{code}})\ge1$.  It then simulates the encoded machine
+for at most $m$ transitions, allowing each counted work tape only
+coordinates in $[-R,R]$.  It rejects malformed data, a requested move
+outside these bounds, or failure to halt by the end of the transition
+budget.  Otherwise it returns the encoded machine's decision.  The
+suffix after the complete prefix has no parsing significance.
+\end{lemma}
+
+\begin{proof}
+Count $m$ before interpreting the prefix.  Scan the unary code-length
+header with a bounded counter, rejecting if its length exceeds
+$\ell_m^{\rm in}$ or the required delimiter is absent.  Check the two
+eligibility conditions before copying $z$ or allocating simulation
+storage.  Then verify that the following $d_{\mathrm{code}}$ code bits,
+the unary data-length header, and the required data bits are present.
+The parsed $n$ is at most $m$, and
+$d_{\mathrm{code}}n\le\ell_m^{\rm in} m$, so even size calculations preceding
+a failed length check use only $O(\ell_m^{\rm in})$ bits.  List counts, ID
+lengths, tape declarations, and movements are checked against the actual
+code and the stated bounds before any loops or allocations using them.
+There is no enumeration of an implicit domain of symbol or state names.
+
+Store the encoded tapes sequentially on a fixed number of real work
+tapes of ${\mathcal U}$.  At most $d_{\mathrm{code}}$ strips, each with $2R+1$
+cells of $d_{\mathrm{code}}$ bits, require
+\begin{equation}\label{eq:compiler-interpreter-space}
+ d_{\mathrm{code}}^2(2R+1)=O(\ell_m^{\rm in})
+\end{equation}
+bits.  Indeed, eligibility gives
+$d_{\mathrm{code}}^3\le\ell_m^{\rm in}$ and
+$d_{\mathrm{code}}^2R\le\ell_m^{\rm in}$.
+The copied program, current state, scanned and written symbol tuples,
+coin block, strip coordinates, step counter, and parsing scratch fit
+simultaneously in $O(\ell_m^{\rm in})$ bits.  A single simulated input-head
+coordinate has magnitude $O(m)$ by the transition cap and therefore
+also uses $O(\ell_m^{\rm in})$ bits.  Read the corresponding source symbol
+by rescanning the encoded data, supplying the appropriate markers or
+off-data blanks according to the encoded input-tape convention.
+
+All routines are bounded scans and ordinary binary arithmetic.  They
+iterate over actual code positions, input positions, a bounded tape/head
+list, strip positions, and bit positions, with a fixed nesting depth.
+Each range is polynomially bounded in $m+2$; binary arithmetic is
+implemented by bit scans, not unit-cost operations on growing words.
+Matching a listed transition, fetching input symbols, updating the
+strips, and obtaining its finite coin block therefore take polynomial
+time in $m+2$, with one fixed exponent determined by these routines.
+The same bounds hold when a check fails.  There are at most $m$
+interpreted transitions.  Checking the initial halting state and the
+state reached by the last permitted transition gives the asserted
+total behavior, including $m=0$.  The resulting fixed ${\mathcal U}$ has the
+required polynomial worst-case time on every random tape.
+\end{proof}
+
+No bounded-error language promise is asserted for ${\mathcal U}$ on arbitrary
+inputs.  Its acceptance probability may lie between $1/3$ and $2/3$.
+This is why we use probability approximation rather than a bare
+language-class containment.
+
+\begin{remark}[Optional head conventions]
+The construction also applies when the fixed coding and ${\mathcal U}$ are chosen
+to allow at most $d_{\mathrm{code}}$ heads per tape, with the usual common
+initial origin. These conventions are fixed before choosing the
+deterministic library in Section~\ref{subsec:compiler-library}.
+There are then at most $d_{\mathrm{code}}^2$ work-head coordinates and
+scanned symbols.  Their storage is bounded by
+\[
+ O\bigl(d_{\mathrm{code}}^2\log(2R+1)
+          +d_{\mathrm{code}}^3\bigr)=O(\ell_m^{\rm in}).
+\]
+For multiple input heads, or an optional entirely blank tape whose
+cells are not charged, use signed $R$-bit coordinates and reject on
+overflow.  At most $d_{\mathrm{code}}^2$ such coordinates still cost
+$O(d_{\mathrm{code}}^2R)$ bits.  These optional conventions do not
+change the interpreter's bounds. The instances in
+Section~\ref{subsec:compiler-padding} never overflow those coordinates
+by Equation~\eqref{eq:compiler-strip-slack}.
+\end{remark}
+
+\subsection{Fixing one deterministic library}
+\label{subsec:compiler-library}
+
+Apply Theorem~\ref{thm:fixed-precision} to the fixed machine ${\mathcal U}$ and
+accuracy exponent $3$, and compare its dyadic answer with $1/2$.
+The error on an input of length $m$ is at most
+$(m+2)^{-3}\le1/8$.  Hence the resulting deterministic machine accepts
+whenever $\Pr[{\mathcal U}\text{ accepts}]\ge2/3$ and rejects whenever that
+probability is at most $1/3$, since
+\[
+ \frac13+\frac18=\frac{11}{24}<\frac12
+   <\frac{13}{24}=\frac23-\frac18.
+\]
+It halts on every input, including inputs between the two thresholds,
+as also stated in Corollary~\ref{cor:promise-bpl}.  Its logarithmic
+space bound counts all simultaneously live work in the approximation
+algorithm.  Store the $O(\log(m+2))$-bit dyadic output in work space
+for the threshold test.
+
+We fix this library once in the following convenient form.  It is an
+ordinary finite-tape deterministic decision machine ${\mathcal A_{\rm lib}}$ with one input
+head confined to the endmarked input, initially at its left endmarker,
+such that every work head stays in
+\begin{equation}\label{eq:compiler-library-box}
+ [-(\ell_m^{\rm in}+1),\ell_m^{\rm in}+1]
+\end{equation}
+relative to its origin.  To obtain this form, first consolidate any
+input heads by keeping their coordinates in logarithmic work space
+and scanning for each read.  Even an off-data coordinate under an
+unbounded-input convention has logarithmic length because the original
+library has polynomial running time.  A fixed change of initial control
+state handles its input-head start convention.
+
+Next choose an integer $w$ at least a coefficient bounding each counted
+work head's distance from its origin by $w\ell_m^{\rm in}$.  Such one fixed
+$w$ exists from the logarithmic bound, enlarged if necessary for the
+finitely many small lengths.  Group consecutive work cells into blocks
+of width $w$, storing within-block offsets in finite control.  The
+resulting finite alphabet and finite transition list realize
+Equation~\eqref{eq:compiler-library-box}, also for two-sided tapes.
+All symbol widths will be charged in bits below; grouping only exposes
+a uniform address bound and gives no uncharged bit compression.
+
+This choice of ${\mathcal A_{\rm lib}}$, including its one blocking width, precedes every
+compiler input.  More formally, the remaining construction is a
+computable syntactic function of a finite library list and
+$({\mathcal M},a,b)$.  Fixing one valid finite list yields one ordinary
+computable compiler on all those source inputs.  The existence
+of the fixed list was proved by Theorem~\ref{thm:fixed-precision};
+no constant is selected as a noncomputable function of the source
+machine or its ordinary input.
+
+The fixed finite data are the program grammar, the transition list of
+${\mathcal A_{\rm lib}}$ with its blocked work alphabets and head conventions, and the
+finite callback templates described below. The construction constants,
+cutoffs, generator choices and finite instruction routines used by the
+separator are included in that list. Its blocking width is fixed at
+the same time. These are data specifying one compiler; subsequent
+source-dependent integers are computed from these data and the supplied
+$({\mathcal M},a,b)$.
+
+\subsection{Padding and exact preservation of acceptance probability}
+\label{subsec:compiler-padding}
+
+Given the source description and its supplied positive integers $a,b$,
+construct $z$ as above and compute
+\begin{equation}\label{eq:compiler-padding}
+ \begin{split}
+ {P_{\rm pad}}&=1000(d_{\mathrm{code}}+2)^4(a+b+2),\\
+ \ell_n&=\lceil\log_2(n+2)\rceil,
+ \qquad N_{\mathrm{pad}}=2^{P_{\rm pad}\ell_n}.
+ \end{split}
+\end{equation}
+The generated machine will run ${\mathcal A_{\rm lib}}$ on a virtual binary input
+$y_x$ of length $N_{\mathrm{pad}}$ whose prefix is
+Equation~\eqref{eq:compiler-prefix} and whose remaining bits are zero.
+Its prefix length is exactly
+\begin{equation}\label{eq:compiler-prefix-length}
+ L_{\mathrm{pre}}
+ =(d_{\mathrm{code}}+1)+d_{\mathrm{code}}+(n+1)
+       +d_{\mathrm{code}}n
+ =(d_{\mathrm{code}}+1)(n+2).
+\end{equation}
+Since $\ell_n\ge1$, $2^{\ell_n}\ge n+2$, and
+$2^{{P_{\rm pad}}-1}\ge d_{\mathrm{code}}+1$, this length is at most
+$N_{\mathrm{pad}}$.  The interpreter's length parameter is
+\begin{equation}\label{eq:compiler-padded-log}
+ \ell_{\mathrm{pad}}
+ :=\ell_{N_{\mathrm{pad}}}^{\rm in}=P_{\rm pad}\ell_n+1.
+\end{equation}
+
+All eligibility checks pass.  In particular,
+\[
+ \frac{{P_{\rm pad}}}{100(d_{\mathrm{code}}+1)^3}
+ =10\frac{(d_{\mathrm{code}}+2)^4}
+          {(d_{\mathrm{code}}+1)^3}(a+b+2)
+ \ge30(a+b+2),
+\]
+so
+\begin{equation}\label{eq:compiler-strip-slack}
+ R(N_{\mathrm{pad}},d_{\mathrm{code}})
+ \ge30(a+b+2)\ell_n-1\ge(a+b)\ell_n+4.
+\end{equation}
+Also ${P_{\rm pad}}>a$, whence
+$(n+2)^a\le2^{a\ell_n}<N_{\mathrm{pad}}$.
+Local motion from an initial work origin to a cell entails visiting
+the intervening counted cells.  The source bound of $b\ell_n$ work bits
+therefore places every source work cell in the allocated strip;
+the slack in Equation~\eqref{eq:compiler-strip-slack} also covers a final
+one-cell move.  This uses the source's original cell costs, each at
+least one bit, and does not charge it for the larger interpreter IDs.
+
+Under the optional head conventions, local motion bounds an input or
+uncharged blank-tape coordinate by the source time, up to the fixed
+endmarker offset.  Its signed encoding fits because $R\ge a\ell_n+4$.
+
+Consequently no resource cutoff changes a promised source run, and
+\begin{equation}\label{eq:compiler-exact-probability}
+ \Pr[{\mathcal U}(y_x)\text{ accepts}]=\Pr[{\mathcal M}(x)\text{ accepts}].
+\end{equation}
+The decision of ${\mathcal A_{\rm lib}}(y_x)$ is therefore the decision required for the source language.
+Although $N_{\mathrm{pad}}$ is given exponentially, it is at most
+$(n+2)^{2{P_{\rm pad}}}$ for the fixed source.  More importantly, it need never
+be written as an input string.
+
+
+
+Figure~\ref{fig:compiler-padding} shows how the generated machine supplies
+the virtual input requested by ${\mathcal A_{\rm lib}}$. The library's work tapes remain live
+while the callback scans the real input; the resource bound below counts
+the library and callback storage simultaneously.
+
+\begin{figure}[tb]
+ \centering
+ \input{figures/compiler-padding}
+ \caption{The fixed library reads the padded input at virtual input-head
+ address ${J_{\rm in}}$ through a callback.
+ The callback regenerates prefix symbols from the real input and returns
+ zero for an address in the padding interval.}
+ \label{fig:compiler-padding}
+\end{figure}
+
+\subsection{Compiling the virtual input operations}
+\label{subsec:compiler-callback}
+
+Inline the finite transition list of ${\mathcal A_{\rm lib}}$, giving it its own work tapes.
+The generated machine ${\mathcal D_{\mathcal M}}$ suspends its library control state in finite
+control during an input operation.  Four auxiliary binary words suffice:
+the length count $n+1$, the virtual right-endmarker address
+$N_{\mathrm{pad}}+1$, the virtual input-head position ${J_{\rm in}}$, and a prefix
+position ${J_{\rm pre}}$.  Each has a separate tape, with origin and termination
+marks and digits in low-end-first order.
+
+Initialize the length count to one and increment it once per real input
+symbol.  Its bit length is exactly
+\begin{equation}\label{eq:compiler-bitlength}
+ \operatorname{bitlength}(n+1)
+   =\lfloor\log_2(n+1)\rfloor+1
+   =\lceil\log_2(n+2)\rceil=\ell_n
+ \qquad(n\ge0).
+\end{equation}
+For every bit place in that count, write ${P_{\rm pad}}$ zero bits on the bound tape,
+then append a one.  This produces the low-end-first representation of
+$2^{P_{\rm pad}\ell_n}=N_{\mathrm{pad}}$; increment it to obtain
+$N_{\mathrm{pad}}+1$.  The repetition of ${P_{\rm pad}}$ is hardwired finite control.
+Initially set ${J_{\rm in}}=0$, the library's left-endmarker position.
+
+At a virtual read, first test ${J_{\rm in}}=0$ and ${J_{\rm in}}=N_{\mathrm{pad}}+1$ and return
+the corresponding endmarker.  Otherwise initialize ${J_{\rm pre}}=1$ and regenerate
+the prefix in its natural order:
+\begin{enumerate}
+ \item emit the fixed string $1^{d_{\mathrm{code}}}0z$;
+ \item scan $x$, emitting one $1$ per symbol, and then emit $0$;
+ \item rewind and scan $x$ again, emitting each fixed-width symbol code
+       in $E_{d_{\mathrm{code}}}(x)$.
+\end{enumerate}
+Here ``emit'' means compare the current ${J_{\rm pre}}$ with ${J_{\rm in}}$, return the bit
+if they agree, and otherwise increment ${J_{\rm pre}}$ and continue.  If the scan
+finishes without a match, return zero.  The strings $z$, the integer
+$d_{\mathrm{code}}$, symbol codes and emission phases are fixed in
+the generated control.  The real input head is rewound by scanning to
+its endmarker, without storing its position.  In particular,
+${J_{\rm in}}=N_{\mathrm{pad}}+1$ is answered before regeneration, while a padding
+address such as ${J_{\rm in}}=N_{\mathrm{pad}}$ returns zero after the finite
+prefix scan.  The largest prefix counter value is
+$L_{\mathrm{pre}}+1\le N_{\mathrm{pad}}+1$.
+
+For explicit counter routines, an increment uses a finite carry flag.
+Compare two low-end-first words by scanning both, retaining only a
+finite comparison flag that is overwritten by each higher differing
+bit.  After one terminator, treat its later bits as zero using a finite
+``ended'' flag.  Rewind each tape to its origin mark afterward.  Zeroing
+and copying are likewise bounded bit scans.  No growing arithmetic
+register beyond the named words is required.  All words have at most
+$P_{\rm pad}\ell_n+2$ bits; including delimiters and rewinds, their heads need visit
+only positions through $P_{\rm pad}\ell_n+10$.
+
+After the callback, perform the indicated library transition and update
+${J_{\rm in}}$ in place for its input-head motion.  The library's work heads and
+contents are untouched by the callback.  Its state, the returned input
+symbol, and any step-local scanned tuple are fixed finite-control data.
+The callback does not invoke ${\mathcal A_{\rm lib}}$ recursively or maintain a stack of
+callbacks.  The real input head stays between its real endmarkers.
+
+Every listed routine terminates.  For example, a complete regeneration
+uses at most $L_{\mathrm{pre}}$ emissions, each with an
+$O(P_{\rm pad}\ell_n+1)$-bit comparison and increment, together with two real-input
+scans.  Initialization makes $n$ increments and writes $P_{\rm pad}\ell_n+1$ bound
+bits.  These observations give direct polynomial bounds for the
+auxiliary operations.  The whole simulation halts because ${\mathcal A_{\rm lib}}$ is total.
+Its more uniform explicit time bound, including every such operation,
+is derived next from the complete configurations of this same machine.
+
+All the above instructions can be generated as finite transition tables,
+unrolling fixed repetitions and strings if necessary.  Formation of the
+source list, the integer ${P_{\rm pad}}$, and this transition table is a finite
+effective process.  Syntactically invalid compiler inputs may be assigned
+a fixed default output; correctness is required on the stipulated class.
+The generated simulation is total and obeys the bounds below even when
+the supplied source promises fail; those promises are used to establish
+that its decision agrees with the source.
+
+\subsection{Explicit simultaneous bounds}
+\label{subsec:compiler-bounds}
+
+Use the finite-alphabet description just constructed to compute ${n_{\rm tapes}}$, its
+number of work tapes; ${g_{\rm alph}}\ge2$, the maximum of two and its work alphabet
+sizes, including all blank, origin and termination symbols; and $q_D$,
+its number of states, including callback phases.  Let ${u_{\rm code}}\ge1$ dominate
+its explicit transition-table bit length, all alphabet sizes (including
+the input alphabet), the number of states, and the number of tapes.
+Padding this integer is effective.  Return the positive integer bounds
+\begin{equation}\label{eq:compiler-output-bounds}
+ \begin{split}
+ \rho_{\rm tape}&=100({P_{\rm pad}}+2),\qquad
+ {S_{\rm code}}=1+({n_{\rm tapes}}+1)(2\rho_{\rm tape}+1)({g_{\rm alph}}+2),\\
+ {K_{\rm space}}&=4{S_{\rm code}},\qquad c=2{S_{\rm code}}+1,\qquad
+ {H_{\rm time}}=2^{({u_{\rm code}}+100)^2}(q_D+1).
+ \end{split}
+\end{equation}
+These depend on the fixed source and the fixed library, and are computed
+from finite syntax.  They have no dependence on $n$ or $x$.
+
+\paragraph{All live work bits.}
+Every work head stays in
+$[-\rho_{\rm tape} \ell_n,\rho_{\rm tape} \ell_n]$.  For a library tape this follows from
+Equations~\eqref{eq:compiler-library-box} and
+\eqref{eq:compiler-padded-log}, since
+$\ell_{\mathrm{pad}}+1=P_{\rm pad}\ell_n+2\le\rho_{\rm tape} \ell_n$.
+For an auxiliary tape it follows from
+$P_{\rm pad}\ell_n+10\le\rho_{\rm tape} \ell_n$, using $\ell_n\ge1$.
+Thus the library's live data and all callback data satisfy the same
+bound at the same time.  Encoding a work alphabet of size $g_i$ in
+$\max\{1,\lceil\log_2 g_i\rceil\}\le {g_{\rm alph}}$ bits per symbol bounds
+their total data by
+\begin{equation}\label{eq:compiler-space-bound}
+ {n_{\rm tapes}}(2\rho_{\rm tape} \ell_n+1){g_{\rm alph}}\le S_{\rm code}\ell_n.
+\end{equation}
+Even twice this quantity satisfies the stronger logarithmic bound: with
+$L_n=\log_2(n+2)\ge1$ we have $\ell_n\le2L_n$ and
+\[
+ 2S_{\rm code}\ell_n\le4S_{\rm code}L_n={K_{\rm space}} L_n.
+\]
+
+\paragraph{All finite-alphabet transitions.}
+For a fixed real input $x$, a complete configuration is specified by
+the state, the real input-head position, all work-head positions, and
+all work symbols in the stated intervals.  Everything outside these
+intervals remains at its initial value.  There are at most
+\begin{equation}\label{eq:compiler-configurations}
+ q_D(n+2)(2\rho_{\rm tape} \ell_n+1)^{n_{\rm tapes}}
+       {g_{\rm alph}}^{{n_{\rm tapes}}(2\rho_{\rm tape} \ell_n+1)}
+ \le q_D(n+2)2^{S_{\rm code}\ell_n}
+ \le q_D(n+2)^c
+\end{equation}
+such configurations.  For the first inequality use
+\[
+ 2\rho_{\rm tape} \ell_n+1\le(2\rho_{\rm tape}+1)\ell_n,
+ \quad \log_2{g_{\rm alph}}\le {g_{\rm alph}},
+ \quad \log_2(2\rho_{\rm tape} \ell_n+1)\le(2\rho_{\rm tape}+1)\ell_n;
+\]
+the second uses $\ell_n\le2\log_2(n+2)$ and $c=2{S_{\rm code}}+1$.
+A deterministic halting computation cannot repeat a complete
+configuration.  Therefore Equation~\eqref{eq:compiler-configurations}
+bounds its total transitions, including initialization, counter
+arithmetic, every regenerated input bit, and every library transition.
+The virtual head position is already in the counted word ${J_{\rm in}}$; it is
+not an additional uncounted configuration component.
+
+\paragraph{Elementary bit operations.}
+The preceding count refers to ordinary finite-alphabet transitions.
+To charge them in bits, encode each work symbol by a fixed-width block,
+mapping blank to the all-zero block.  Read and write within the current
+block, return to its first bit, and move to the first bit of the target
+block.  Within-block phases and scanned finite tuples are stored in
+finite control.  No per-block writable delimiter is needed, and these
+operations visit only blocks whose macro positions occur in the proved
+work intervals.  Existing origin and termination symbols have already
+been included in ${g_{\rm alph}}$.  Thus the block implementation obeys the bit-space
+estimate above; the factor two also allows the usual blank/bit tape
+convention.  Input-symbol access has fixed width and is covered by the
+same finite description parameter ${u_{\rm code}}$.
+
+There are at most ${u_{\rm code}}+1$ scanned symbols of at most ${u_{\rm code}}$ bits each.
+An explicit sequential comparison against at most ${u_{\rm code}}$ transition rows,
+followed by the fixed-width reads, writes and moves, uses at most a
+fixed polynomial in ${u_{\rm code}}+1$ bit actions per transition.  For example,
+the deliberately loose bound $100({u_{\rm code}}+1)^8$ suffices for these scans
+and comparisons, with all temporary phase and symbol information in
+finite control.  It is dominated, for ${u_{\rm code}}\ge1$, by
+\[
+ 100({u_{\rm code}}+1)^8\le2^{({u_{\rm code}}+100)^2}.
+\]
+The binary microcode may have more states than $q_D$, but no new
+configuration count is needed: multiply the number of original
+transitions by this per-transition bit cost.  Equations~\eqref{eq:compiler-output-bounds}
+and~\eqref{eq:compiler-configurations} give the simultaneous bound
+\begin{equation}\label{eq:compiler-time-bound}
+ \operatorname{time}_{\mathrm{bit}}({\mathcal D_{\mathcal M}},x)
+ \le {H_{\rm time}}(n+2)^c.
+\end{equation}
+No growing-word arithmetic is charged as a single elementary bit action.
+
+\begin{proof}[Completion of the proof of Theorem~\ref{thm:effective-simulation}]
+The compiler returns the described machine ${\mathcal D_{\mathcal M}}$ and the integers
+${K_{\rm space}},{H_{\rm time}},c$ in Equation~\eqref{eq:compiler-output-bounds}.  Its finite
+syntactic construction terminates.  On every promised source input,
+Equation~\eqref{eq:compiler-exact-probability} and the fixed separator's
+threshold guarantee give the correct decision.  The totality of ${\mathcal A_{\rm lib}}$
+and the finite callback loops prove halting.  Equations~\eqref{eq:compiler-space-bound}
+and~\eqref{eq:compiler-time-bound} give at most ${K_{\rm space}}\log_2(n+2)$
+work bits and ${H_{\rm time}}(n+2)^c$ bit operations for this same machine.
+
+All claims include $n=0$: then $\ell_n=1$, the real-input scans are empty,
+the count $n+1=1$ has one bit, and every displayed padding, strip,
+space, and time inequality remains valid.  The library's grouping
+width already includes its finitely many small-length exceptions.
+All construction constants are fixed before the ordinary input is read.
+
+The work and time internal to probability approximation---environment
+enumeration, numerical digits, recursive interfaces, recomputation,
+and precision management---belong to the one complete library machine
+proved in Theorem~\ref{thm:fixed-precision}.  Its tapes remain counted
+throughout virtualization.  The compiler adds only the exact input
+operations analyzed here.  Configuration counting gives polynomial time because this
+entire deterministic machine uses exact logarithmic space.
+\end{proof}

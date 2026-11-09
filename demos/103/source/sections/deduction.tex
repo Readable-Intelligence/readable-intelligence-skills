@@ -1,0 +1,145 @@
+\section{Reduction to fixed-precision approximation}
+\label{sec:deduction}
+
+The main theorems follow from an approximation algorithm with a fixed
+inverse-polynomial error bound. We state that intermediate result here
+and give the deductions. Its construction, including the median and
+the simultaneous time and space bounds, is proved in
+Section~\ref{sec:conclusion}.
+
+All transducers have read-only input and a one-way write-only output
+tape. For a fixed randomized machine $\mathcal M$, write
+$p_{\mathcal M}(x)$ for its acceptance probability on $x$.
+
+\begin{theorem}[Fixed inverse-polynomial accuracy]
+\label{thm:fixed-precision}
+Fix a randomized machine $\mathcal M$ with polynomial worst-case
+running time and $O(\log(n+2))$ work space, and fix an integer $d\ge1$.
+There is a uniform deterministic transducer that, on every input $x$
+of length $n$, outputs a dyadic rational $z_x\in[0,1]$ with
+\[
+ |z_x-p_{\mathcal M}(x)|\le(n+2)^{-d}.
+\]
+Its work space and output length are $O(\log(n+2))$, and its running
+time is polynomial in $n+2$. The constants may depend on
+$\mathcal M$ and $d$, but not on the input.
+\end{theorem}
+
+The proof in Section~\ref{sec:conclusion} combines the deterministic
+reward approximation of Proposition~\ref{prop:hier-reward-target},
+the moment bound of Theorem~\ref{thm:fp-estimators}, and the total
+space-bounded implementation of Theorem~\ref{thm:ctrl-realization}.
+The deductions below need only the stated guarantee of
+Theorem~\ref{thm:fixed-precision}.
+
+\subsection{The class equality and promise separation}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Let $\mathcal M$ recognize a language in $\BPL$, with acceptance
+probability at most $1/3$ on no inputs and at least $2/3$ on yes
+inputs. Apply Theorem~\ref{thm:fixed-precision} with $d=3$.
+For every input length, including $n=0$, its error is at most
+$(n+2)^{-3}\le1/8$. Hence the dyadic answer is at most
+$1/3+1/8=11/24$ on a no input and at least
+$2/3-1/8=13/24$ on a yes input. Comparing this answer with $1/2$
+decides the language uniformly in logarithmic space. This proves
+$\BPL\subseteq\Lclass$ directly from probability approximation.
+
+A deterministic machine may ignore its coins, giving
+$\Lclass\subseteq\RL$. Two independent repetitions of an $\RL$
+machine, accepting if either repetition accepts, have acceptance
+probability zero on no inputs and at least $3/4$ on yes inputs.
+They use logarithmic space and polynomial time, so
+$\RL\subseteq\BPL$. The three inclusions prove
+$\Lclass=\RL=\BPL$.
+\end{proof}
+
+A promise problem is a pair $(Y,N)$ of disjoint sets of inputs.
+The class $\mathsf{prBPL}$ of the introduction consists of the pairs for
+which one polynomial-time randomized
+logarithmic-space machine halts on every input, accepts each
+input in $Y$ with probability at least $2/3$, and accepts each
+input in $N$ with probability at most $1/3$.
+The class $\mathsf{prL}$ consists of pairs separated by a total
+deterministic logarithmic-space decider; there is no correctness
+requirement outside $Y\cup N$.
+
+\begin{corollary}\label{cor:promise-bpl}
+Under these conventions,
+$\mathsf{prBPL}=\mathsf{prL}$.
+\end{corollary}
+
+\begin{proof}
+The same $d=3$ approximation and threshold $1/2$ used in the preceding
+proof accept every input in $Y$ and reject every input in $N$.
+The resulting machine halts also outside the promise because its
+approximation queries are total. The reverse inclusion follows by
+ignoring the coins.
+\end{proof}
+
+\subsection{Accuracy supplied as part of the input}
+
+Theorem~\ref{thm:fixed-precision} fixes the accuracy exponent before
+reading the input.  To obtain one algorithm for arbitrary input precision
+$q$, we instead fix its exponent to one and apply it to a longer input
+represented implicitly.  Padding preserves the source acceptance
+probability while making the inverse-linear error small enough for the
+requested accuracy.
+
+\begin{proof}[Proof of Theorem~\ref{thm:probability}]
+Fix a padded machine $\mathcal M_{\rm pad}$ as follows. On a string
+beginning with $1^n0x$, where $|x|=n$, it simulates $\mathcal M(x)$
+and ignores all remaining symbols. If the delimiter or the following
+$n$ symbols are absent, it rejects. This is one fixed randomized
+machine with polynomial worst-case running time and logarithmic work
+space in its full input length. On every string with the specified
+prefix its acceptance probability is $p_{\mathcal M}(x)$.
+Fix once and for all the transducer of
+Theorem~\ref{thm:fixed-precision} for $\mathcal M_{\rm pad}$ and $d=1$.
+
+On input $(x,1^q)$, with $n=|x|$ and $q\ge1$, set
+\[
+ m=2^{q+\lceil\log_2(2n+4)\rceil+4}.
+\]
+Simulate that fixed transducer on the virtual length-$m$ string
+\[
+ y=1^n0x0^{m-(2n+1)}.
+\]
+An input query is answered by comparing its address with the prefix
+boundaries and either returning the appropriate bit of $x$ or a
+fixed bit. The simulated input-head address and all these comparisons
+use $O(\log m)$ bits; the string $y$ is never stored. The simulated
+transducer returns a dyadic rational $z\in[0,1]$ satisfying
+\[
+ |z-p_{\mathcal M}(x)|\le(m+2)^{-1}<2^{-q-4}.
+\]
+Its numerator and exponent have $O(\log m)$ bits and can be retained
+in work space while its finite output is simulated.
+
+Compute by exact dyadic arithmetic
+\[
+ a=\left\lfloor 2^{q+2}z+\tfrac12\right\rfloor.
+\]
+Then $0\le a\le2^{q+2}$, and rounding gives
+\[
+ \left|a2^{-(q+2)}-p_{\mathcal M}(x)\right|
+ \le2^{-q-3}+2^{-q-4}<2^{-q}.
+\]
+Write the binary numerator $a$ to the output tape. It has at most
+$q+3$ bits and represents the denominator specified in the theorem.
+The simulator state, virtual input address, actual input counters,
+captured dyadic answer, and rounding operands occupy a fixed number
+of records of total size
+\[
+ O(\log m)=O(\log(n+2)+q).
+\]
+The simulation and the synthesis of each input bit take polynomial
+time in $m$, so the total time is
+$m^{O(1)}=(n+2)^{O(1)}2^{O(q)}$.
+The padded machine and its exponent-one approximator were fixed
+before reading $q$. Thus their constants are independent of the
+requested accuracy. Throughout their simulation, the original size
+convention is $B=\Theta(\log(m+2))$, exactly as required by the
+estimator and controller theorems.
+\end{proof}
+

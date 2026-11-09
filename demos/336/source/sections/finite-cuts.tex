@@ -1,0 +1,384 @@
+\section{Finite cuts with compatible ends}\label{sec:finite-cuts}
+
+The stretching construction supplies separated sets and a scalar-curvature
+reserve. We now describe the second input: a cutting procedure that retains
+both sides of every cut and controls how later cuts meet them. Its output is
+a family of smooth boundaries and complete manifolds obtained by attaching
+cylinders to the closed sides. The definitions below make its hypotheses
+and output explicit; Appendices~\ref{sec:components}--\ref{sec:regularization}
+give the proofs. Section~\ref{sec:countable} will separately justify its use
+with countably many labels.
+
+Let $X=M$ denote the original complete manifold, let $g$ be its original
+metric, and write $d_0=d_g$ for its distance.  The metric used in an analytic
+component can change; the map to $X$ always records its position in the
+original manifold.  Fix finitely many of the supplied ball pairs
+\[
+ A_i=\overline B_{d_0}(x_i,D),\qquad
+ B_i=X\setminus B_{d_0}(x_i,2D),\qquad 1\le i\le\ell,
+\]
+with $A_i,B_i$ nonempty. There is one label for each ball pair. An additional first label is radial.
+Thus $N_*=\ell+1$, and the order is
+radial, then $1,\ldots,\ell$.  Properness of $(X,g)$ makes each closed
+outer ball compact.
+
+The analytic input at stage zero is a complete smooth metric $h\ge g$ on $X$
+and finitely many smooth positive circle warping functions for which the stabilized
+scalar curvature is at least $.4$.  Each prescribed distance
+$\dist_h(A_i,B_i)$ can be required to exceed any given finite number.
+\cref{rounds:wide} supplies these data.  For finitely many requested
+pairs its construction uses only finitely many compactly supported
+increments and hence finitely many circle factors.  The countable
+version has a locally finite list of nonunit warping functions and is used in
+\cref{countable:construction}; the geometric statements below apply to
+each finite collection of the relevant factors.
+
+For a single smooth cut, let $u$ be a smooth function on an
+$m$-manifold $E$ without boundary, with $0$ a regular value, and put
+$L=u^{-1}(0)$.
+Attach $L\times[0,\infty)$ to each closed side $\{\pm u\ge0\}$
+along its boundary, and also retain $L$ as a separate space.
+The two extended sides have dimension $m$, while the boundary has dimension
+$m-1$. The cylinders replace the new boundaries by ends.
+The following definition records these spaces and their incidences
+after repeated cuts.
+
+\begin{definition}[Component diagram]\label{component:category}
+At stage $r$, an index is $\alpha\in\{+,-,*\}^{r}$.
+Its entries record the first $r$ processed cuts.
+A sign $+$ or $-$ selects the corresponding retained side of a cut,
+and a star $*$ selects the zero set.
+Indices are ordered by replacing signs with stars: an index obtained
+from $\alpha$ by replacing $d\ge1$ signs by stars lies below $\alpha$.
+A stage-$r$ component diagram consists of the following data, with the
+following properties.
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item \emph{Spaces.} For each index $\alpha$, the space $E_\alpha$ is a
+smooth second countable manifold without boundary,
+possibly empty or disconnected; when nonempty its base dimension is
+$m(\alpha)=n-\#\{i:\alpha_i=*\}$.  We consider its connected components.
+\item \emph{Product tails.}
+If $B$ is a component of an index $\beta$ and $\alpha$ is obtained from $\beta$
+by replacing $d$ stars with signs, then in $E_\alpha$ the component $B$ has
+exactly one incident component $E$ and
+one corresponding occurrence of a full product tail
+\begin{equation}\label{component:tail}
+ \iota_{BE}:B\times(T_1,\infty)\times\cdots\times(T_d,\infty)
+       \longrightarrow E.
+\end{equation}
+\(B\) is the base of this product end of \(E\), with \(d\) normal factors.
+\(E\) is the corresponding incident higher-dimensional component.
+For \(d=1\), the product end has one normal coordinate.
+The normal coordinates are labelled by the changed index entries.
+Thresholds may depend on the incidence.
+\item \emph{Intersections and commutation.} For a single entry, tails
+from distinct end base components are disjoint.  Intersections of sufficiently
+far tails for different entries are exactly the tails over their common
+further end bases.  The identifications commute: composing end base maps in
+any order gives the same occurrence and the same individually labelled
+normal coordinates.  After slightly raising the entry thresholds,
+each closed tail is properly embedded.
+\item \emph{Position maps.} Each component $E$ is equipped with a continuous
+map $q_E:E\to X$.
+\item \emph{After the radial stage}, in addition:
+every component has only finitely many incident end bases and incident higher-dimensional components, including
+through chains; the complement of its sufficiently far product tails with one normal factor
+is compact.  On each sufficiently far end base product the maps $q_E$ satisfy
+$q_E(\iota_{BE}(b,\mathbf t))=q_B(b)$.
+\end{enumerate}
+A metric, scalar function, warping function, or set is \emph{compatible} if, in every
+sufficiently far tail, it is exactly the product or pullback of the
+corresponding end base datum.  For metrics the normal factors are
+$\dd t_1^2+\cdots+\dd t_d^2$; all warping functions are independent of the normal
+coordinates there.  The thresholds for different data may differ.
+\end{definition}
+
+There is no boundary in an analytic component.  Its end base is represented by
+an entire cylindrical end, not by a boundary subset.  Finite boundaries
+appear only when we truncate these ends.
+
+A \emph{split along regular zero sets} applies the preceding construction using
+compatible smooth defining functions whose zero sets are regular on
+every index space. Each zero set gives the space indexed by a new star.
+In inherited ends the operation is the corresponding end base operation
+times the old normal factors. The proof that these operations preserve
+the component diagram is \cref{component:split}.
+
+For the diagrams constructed here, these maps are defined recursively,
+starting with $q_X=\Id_X$.  In the split of \cref{component:split}, let
+$A$ be a new stage-$(r+1)$ component with stage-$r$ parent $E$.
+Define $p_A:A\to E$ by inclusion on a zero set or the bulk of a joined
+side, and by $p_A(x,t)=x$ on each newly attached cylinder.
+Set $q_A=q_E\circ p_A$.  Thus $q_A$ is pulled back from the base on
+each fresh cylinder.  In a sufficiently far inherited tail of $A$,
+let $C$ be the corresponding new end base with old parent $B$, and let
+$I$ denote the old normal intervals.  Under the identifications of
+these tails with $C\times I$ and $B\times I$, the map $p_A$ is
+$p_C\times\Id_I$; explicitly,
+\[
+ p_A\circ\iota_{CA}=\iota_{BE}\circ(p_C\times\Id_I),\qquad
+ q_A\bigl(\iota_{CA}(c,\mathbf t)\bigr)=q_C(c).
+\]
+Thus the recursion preserves compatibility.  The proper maps $q_r$
+on finite reconstructions are constructed in
+\cref{component:reconstruction}.
+
+Figure~\ref{fig:regular-component-split} depicts one extended side and the
+separate zero set.
+\input{figures/packet-split}
+
+The label set and the index depth are finite in this section. The family
+of connected components may be countable; finiteness is required only for
+the directed chains through end bases and higher-dimensional components
+incident to each component. The
+downward diagram of a component consists of that component and all its further
+end bases. Numerical
+requests are allocated downward through these chains before actual data
+are constructed upward from end bases.
+
+We now specify the analytic data that must survive each split.
+For the finite-label statements in this section and the appendices we
+use the following constants:
+\begin{equation}\label{component:constants}
+\begin{gathered}
+ \lambda_r=\frac14-\frac{r}{8N_*},\qquad
+ b_r=1.12-\frac{.05r}{N_*},\qquad
+ a_r=.60+\frac{.03r}{N_*}\quad(0\le r\le N_*),\\
+ \pi_0=\frac{1}{10N_*},\qquad k=399,\qquad
+ C=\frac{4k}{k+1}=3.99,\qquad
+ e_0=\frac{\lambda_r-\lambda_{r+1}}{100}
+     =\frac{1}{800N_*}\quad(r<N_*).
+\end{gathered}
+\end{equation}
+Here $k$ is the number of circle factors added at each split; the initial
+number may be different. The choice $k=399$ realizes the coefficient
+$C=4k/(k+1)$ in the scalar-curvature identity of \Cref{regular:step}.
+With $C=3.99$, the boundary and retained-side estimates leave gradient
+coefficients $C-2=1.99$ and $C-3.05=.94$, respectively
+(\Cref{cut:raw-domination}); these supply the reserve for enlargement of the prescribed open sets.
+In particular $\lambda_r\ge1/8$, $a_r\le.63$,
+and $1.07\le b_r\le1.12$.  The common floor $\pi_0$ and the equally
+spaced stage parameters are bookkeeping for a finite list, not uniform
+lower bounds for the countable construction. Section~\ref{sec:countable}
+and Appendix~\ref{sec:regularization} write the same constants in terms
+of increasing budget parameters \(t_r\in[0,1]\), with increments
+\(\Delta_r=t_{r+1}-t_r\), in \eqref{countable:constants}. The equally
+spaced choice \(t_r=r/N_*\) gives back \eqref{component:constants}, with
+\(\Delta_r=1/N_*\) and \(e_0=\Delta_r/800\), and gives the number
+\(\eta_r=\Delta_r/200=1/(200N_*)\) that appears in \Cref{finite:cut}.
+
+\begin{definition}[Analytic invariant]\label{component:invariant}
+At stage $r$, write $J_r$ for the unprocessed labels.  On a component $E$
+of base dimension $m$, retain its base metric and all circle warping functions.
+Write $R_E$ for the scalar curvature of that full warped metric and
+$\omega_E$ for the product of its warping functions, suppressing fixed
+circle-volume constants.  Gradients of invariant functions are base
+gradients; their integrals use $\omega_E\,\dd\vol_E$, and their
+Laplacian is the corresponding weighted base Laplacian.
+For every $j\in J_r$ the data comprise a compatible continuous function
+$\mu_j:E\to[-\infty,\infty]$ whose finite truncations
+$\max\{-c,\min\{\mu_j,c\}\}$, $0<c<\infty$, are locally Lipschitz,
+a compatible smooth potential $\Pi_j\ge\pi_0$, and compatible prescribed
+open sets $U_j^+,U_j^-$ satisfying
+\begin{equation}\label{component:open-set-poles}
+ \overline{U_j^\pm}\subset
+ \operatorname{int}_E\{\mu_j=\pm\infty\}.
+\end{equation}
+On the open finite-value locus $\{x\in E:|\mu_j(x)|<\infty\}$ the function
+obeys, almost everywhere,
+\begin{equation}\label{component:function}
+ 2|\grad\mu_j|\le a_r\mu_j^2+\Pi_j.
+\end{equation}
+Set
+\begin{equation}\label{component:required-set}
+ G_j=E\setminus(U_j^+\cup U_j^-),\qquad
+ D_E=\bigl\{x:\#\{j\in J_r:x\in G_j\}\ge m-1\bigr\}.
+\end{equation}
+The required scalar bound is
+\begin{equation}\label{component:curvature}
+ R_E\ge\lambda_r+b_r\sum_{j\in J_r}\Pi_j
+       \quad\hbox{on }D_E.
+\end{equation}
+For an unprocessed label $i$, the prescribed open sets contain
+$q_E^{-1}(A_i)\subset U_i^+$ and
+$q_E^{-1}(B_i)\subset U_i^-$.  Enlarging prescribed open sets must preserve these
+conditions.  The sets $D_E$ are closed: they are finite unions of finite intersections
+of the closed sets $G_j$ (and equal $E$ when the count threshold is
+nonpositive).  All data are exact products
+in the sense of \cref{component:category}; at stage zero the single
+space is $X$, with no product-end requirement.
+\end{definition}
+
+The threshold $m-1$ is preserved by the two kinds of output of a
+split. A side keeps its dimension and loses one unprocessed label;
+a zero set loses both one dimension and that label. The set $H_E^*$ where at least $m-2$ remaining labels are undecided contains the projections of all new required
+sets, even after the remaining prescribed open sets have been enlarged.
+
+\begin{lemma}[The two count inclusions]\label{component:counts}
+Use the required sets and compatible prescribed open sets of
+\Cref{component:invariant}. If $B$ is the base of a product end of $E$ with $d$ normal factors,
+the specified tail projection in \eqref{component:tail} sends
+$D_E$ in that tail into $D_B$.
+At a split of label $j_0$ on a parent of dimension $m$, suppose the
+remaining prescribed open sets have been compatibly enlarged, giving $G'_j\subset G_j$ for
+$j\ne j_0$, and define the closed set
+\begin{equation}\label{component:count-set}
+ H_E^*=\bigl\{x:\#\{j\in J_r\setminus\{j_0\}:x\in G'_j\}
+                      \ge m-2\bigr\}.
+\end{equation}
+Suppose a regular zero set $L$ lies in $\operatorname{int}G_{j_0}$.
+Pull the remaining prescribed open sets to a new side or component of the zero set $A$ by bulk
+inclusion, boundary restriction, and projection of the attached cylinder.
+Define $D_A$ using these prescribed open sets, the remaining labels, and the dimension
+of $A$, as in \eqref{component:required-set}.
+Then the bulk inclusion, boundary restriction, or cylinder projection
+that defines $D_A$ sends it into both $H_E^*$ and the parent's old
+set $D_E$.
+The sets $H_E^*$ likewise project into $H_B^*$ on further end bases $B$.
+\end{lemma}
+
+\begin{proof}
+In an exact product tail all label memberships pull back unchanged,
+whereas the end base dimension is $m-d$.  A count at least $m-1$ is at
+least $(m-d)-1$, proving the first assertion.  The same argument
+with thresholds $m-2$ and $(m-d)-2$ proves the set $H_E^*$ assertion.
+On a new side, whose dimension is $m$, a point of $D_A$ has at least
+$m-1$ remaining undecided labels.  This puts its projection in the
+set $H_E^*$ and, because $G'_j\subset G_j$, in the old required set.
+On a component of the zero set, whose dimension is $m-1$, the required count is
+$m-2$.  Its projection lies on $L\subset G_{j_0}$, so the processed
+label contributes one further old undecided label.  The old count
+is therefore at least $m-1$.  The cylinder projection has exactly
+the same remaining memberships as its base, so the side argument
+also covers all cylinder points.  These are pointwise count
+statements.
+\end{proof}
+
+\begin{lemma}[Initialization and radial confinement]\label{component:initialization}
+For the stage-zero metric, warping functions, and ball pairs fixed above, assume
+that the stabilized scalar curvature is at least $.4$ and that each
+label pair satisfies
+\[
+ \dist_h(A_i,B_i)>T_0+4,\qquad
+ T_0=2\pi\sqrt{2/\pi_0}.
+\]
+Then the given metric and warping functions admit the functions, prescribed open sets, and
+potentials of \cref{component:invariant} at stage zero with
+$\Pi_j=\pi_0$.  On a noncompact $X$ the radial prescribed open sets can be chosen
+as separating inverse images of intervals of a smooth proper function,
+with alternating signs,
+with compact smooth barrier domains around their closures lying in
+the same pole plateaus.  Every regular radial partition respecting
+these signs has locally finite compact boundary components and compact
+closed-side components before collar attachment.  On a compact $X$
+a decided radial label with empty boundary has the same properties.
+\end{lemma}
+
+
+\begin{theorem}[Finite compatible cutting]\label{finite:cut}
+Fix $N_*$ and the stage constants in \eqref{component:constants}. Let
+$0\le r<N_*$ and let a stage-$r$ diagram arise from the regular
+splits of \Cref{component:category}, with compatible smooth base metrics
+and a finite common list of positive circle warping functions satisfying
+\Cref{component:invariant}. After the radial stage, assume that each
+component is complete, has compact remainder outside its finitely many
+product ends, and has the exact metric and warping function identifications in
+\Cref{component:category}. Let $j_0$ be the next label, and assume that
+every nonempty parent has base dimension at least two.
+
+The diagram admits a compatible split along regular zero sets of $j_0$ with the
+following properties.
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item On each parent $E$, the smooth defining function has the
+prescribed signs on the current closures of the prescribed open sets, and its regular
+zero set lies in $\operatorname{int}G_{j_0}$. The new spaces are
+that boundary and the two closed sides with their full boundary cylinders
+attached. Their maps to $X$ are the continuous maps $q_A=q_E\circ p_A$
+specified above, including the commuting inherited tail projections.
+\item The remaining parent functions and potentials may change, with
+prescribed open sets only enlarged and potentials only increased. Their restrictions
+and cylinder pullbacks admit compatible smooth metrics and potentials
+and exactly $399$ new positive circle factors satisfying the full
+stage-$(r+1)$ invariant. Earlier forced signs persist. The new components
+are complete with compact remainders and exact product ends. This
+includes a possible one-dimensional output, whose scalar bound holds
+everywhere.
+\item Every old warping function identically equal to $1$ stays fixed. A parent's
+downward source diagram consists of that component and all its further
+end bases, together with every specified product occurrence
+\eqref{component:tail} whose end base and incident higher-dimensional component both belong to this diagram.
+An end base copy means the data on the end base pulled back to such an
+occurrence. If a remaining label has the same constant pole function,
+full corresponding prescribed open set, and spatially constant potential $c_j$ on
+every component of this finite diagram, and hence on all their end base copies,
+its pole and prescribed open set can stay fixed
+and its new potential can equal $(1+3\eta_r/2)c_j$ exactly, where
+$\eta_r=1/(200N_*)$.
+\end{enumerate}
+At stage zero the parent may instead be an arbitrary complete smooth
+manifold. With the same scalar and separation assumptions and the
+radial initialization of \Cref{component:initialization}, the first split
+has all the stated conclusions. Its boundary and closed-side components
+are compact before cylinder attachment and form locally finite families.
+\end{theorem}
+
+\begin{proof}
+Realize the processed function by a smooth finite prescribed weighted mean curvature and take a
+local minimizer of weighted perimeter minus the weighted volume
+integral of that function, as in \cref{cut:prescribed-curvature,cut:bv-compactness}. The Caccioppoli set has the
+forced signs of \cref{cut:barriers}; the support of its perimeter measure
+has the regular-part geometry of \cref{cut:gmt} but may still have
+singularities. After the
+radial cut, the generic prescribed weighted mean curvature choice in
+\cref{cut:generic-uniqueness} makes these boundary supports converge to the
+corresponding end base products at component ends
+(\cref{cut:end-convergence}). On the initial radial parent use shift
+zero and a Caccioppoli set from compactness; compact barriers replace this
+post-radial growth and uniqueness argument.
+
+The boundary, and each retained side with its attached cylinder,
+carry the quadratic-form lower bounds of \cref{cut:raw-domination}.
+These bounds include a positive gradient reserve and, on a joined
+side, the scalar contribution of its internal attachment interface.
+They are not yet pointwise scalar bounds on smooth new components.
+Keep these boundary supports and their prescribed weighted mean curvatures fixed. The constructions of
+\Cref{local:smooth-approximations,local:sharp,enlargement:global} change only the remaining
+functions, enlarge their prescribed open sets, and add nonnegative potentials. Their
+form cost is paid by the gradient reserve and the gap
+$\lambda_r-\lambda_{r+1}$, and the updated set $H_E^*$ of
+\eqref{component:count-set} misses the singular set. Thus the future required
+regions can be controlled through regular portions of the boundary support.
+When the parent dimension is at most seven the
+singular set is empty, and no singular forcing is needed; compactness on
+the resulting smooth regions is the smooth case of
+\cref{enlargement:compactness}. More generally this case with a smooth limiting boundary applies
+whenever the limiting boundary is smooth, including products of smooth end bases
+with Euclidean factors even when their total dimension is at least eight.
+At the first radial split the same arguments
+are applied on the locally finite compact transition blocks, as specified
+in \cref{enlargement:global}.
+
+The approximation near $H_E^*$ in \cref{regular:partition} now replaces
+the boundary support by a smooth regular boundary. Its defining functions are
+exact products in the old ends. The comparison with the boundary support on
+the set $H_E^*$, followed by the interface smoothing of \cref{regular:interface},
+transfers the form bound to the smooth split. The positive
+supersolutions of \cref{regular:correction,regular:solutions}
+then supply $399$ compatible new circle factors; the scalar identity
+in \cref{regular:step} converts that form bound into the pointwise
+stage-$(r+1)$ scalar inequality. Throughout this transfer the parent
+scalar inequality is used only over $D_E$: \cref{component:counts}
+places every new required region inside that old region as well as
+inside the set $H_E^*$.
+
+\Cref{component:split,component:geometry} give the
+new geometry; \cref{component:initialization} gives the radial confinement.
+Unit entries are fixed by restriction, product extension, and interface
+smoothing. For a remaining label with the same constant pole function, full
+corresponding prescribed open set, and constant potential throughout its
+source diagram,
+we omit its forcing updates, and
+\cref{regular:constant-preservation,regular:functions} reproduce its chosen
+constant potential exactly. The choice of $\eta_r$ satisfies the strict
+stage margins in \eqref{regular:eta}.
+\end{proof}

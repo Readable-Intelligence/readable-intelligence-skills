@@ -1,0 +1,429 @@
+\section{A fast counting algorithm via shared linear summaries}\label{sec:counting}
+Sections~\ref{sec:counting}--\ref{sec:setup} prove
+Theorem~\ref{thm:overview-sparse-polynomials}. We begin with the sum
+from Section~\ref{subsec:preview-encoding}: for each Boolean assignment,
+multiply the factors, then add the products over all assignments.
+Here the factors can be any rational polynomials. We show how to
+compute the sum when the replacement forms and measurements are given.
+Section~\ref{sec:construction} constructs them using only the variables
+read by each factor. Section~\ref{sec:setup} supplies one factor per
+sparse polynomial equation.
+
+\subsection{Polynomial factors and the value to recover}
+\label{subsec:product-interface}
+Let $\mathcal F$ index the factors, and let $I_f\subseteq[n]$ be the
+variables read by $\Phi_f$. With rational coefficients our target is
+\begin{equation}\label{eq:general-product-sum}
+ Z=\sum_{x\in\{0,1\}^n}\prod_{f\in\mathcal F}\Phi_f((x_v)_{v\in I_f}).
+\end{equation}
+For clause satisfaction indicators, $Z$ is the number of satisfying
+assignments. The proof also works with coefficients in any commutative
+$\mathbb Q$-algebra $\mathcal E$: sums and products then take place in
+$\mathcal E$, and interpolation uses only rational scalars. Readers may
+take $\mathcal E=\mathbb Q$ throughout this section.
+
+Different factors may use different replacements for the same variable.
+Give each incidence $(f,v)$ its own indeterminate $Y_{f,v}$ and suppose
+\begin{equation}\label{eq:general-product-degree}
+ \deg_{\{Y_{f,v}\}}\!
+    \left(\prod_{f\in\mathcal F}\Phi_f((Y_{f,v})_{v\in I_f})\right)\le d .
+\end{equation}
+This is the degree of the whole product computed over $\mathcal E$.
+\subsection{The required rows, partitions, and measurements}
+\label{subsec:layout-interface}
+We use the same partitions and measurements as in Section~\ref{subsec:preview-separation},
+with a group assignment for each factor in place of each clause.
+The final condition below records the coefficient bound needed for
+exact arithmetic. Here $\widetilde\xi$ denotes extension by zero
+from a group to all $n$ coordinates.
+
+\begin{definition}\label{def:layout}
+For the factor scopes $(I_f)_{f\in\mathcal F}$, let $r\ge2$, $D\ge1$,
+and $1\le R<Q$ be integers, and let $0<\tau\le1/2$.
+We require the following data and properties.
+\begin{enumerate}
+\item For each $t\in[Q]$, a partition
+$[n]=S_{t,1}\sqcup\cdots\sqcup S_{t,r}$, allowing empty parts,
+with $|S_{t,g}|\le2n/r$.
+\item For every factor $f\in\mathcal F$, a sequence
+$\sigma_f\in[r]^Q$. The value $\sigma_f(t)$ assigns factor $f$
+to a group at point $t$.
+\item For every $t\in[Q]$ and $g\in[r]$, an integer matrix
+$C_{t,g}\in\mathbb Z^{[c_{t,g}]\times S_{t,g}}$, where
+$c_{t,g}$ is a nonnegative integer. Each row has sum of absolute
+values at most $D$, and
+\[
+ \sum_{g=1}^r c_{t,g}\le2\tau n.
+\]
+For an assignment $x$, the entries of
+$C_{t,g}(x|_{S_{t,g}})$ are the measurements on group $g$.
+\item For every $f\in\mathcal F$ and $v\in I_f$, a row
+$\vec{P}_{f,v}(T)\in\mathbb Q[T]^{1\times n}$ with
+$\vec{P}_{f,v}(0)=\delta_v$ and $\deg \vec{P}_{f,v}\le R$.
+For every $t\in[Q]$, $g\in[r]\setminus\{\sigma_f(t)\}$, and
+$\xi\in\mathbb Q^{S_{t,g}}$, require
+\[
+ C_{t,g}\xi=\vec{0}\quad\Longrightarrow\quad
+ \langle \vec{P}_{f,v}(t), \widetilde\xi\rangle=0,
+\]
+where $\widetilde\xi\in\mathbb Q^n$ is the extension of $\xi$ by zero.
+\item With $d_{\mathrm{den}}=(R-1)!Q!$, every coefficient of
+$d_{\mathrm{den}} \vec{P}_{f,v}$ is an integer with
+$O(Q\log Q+\log D)$ bits, with an absolute implied constant.
+\end{enumerate}
+\end{definition}
+
+To interpret the kernel condition, fix $t$, $f$, and $v\in I_f$,
+and put $g=\sigma_f(t)$. Write $x_h=x|_{S_{t,h}}$.
+If $x,x'\in\mathbb Q^n$ agree outside $S_{t,h}$ for some $h\ne g$
+and satisfy $C_{t,h}x_h=C_{t,h}x'_h$, then
+$x'_h-x_h\in\ker C_{t,h}$. The condition gives
+\[
+ \langle \vec{P}_{f,v}(t), x'\rangle=\langle \vec{P}_{f,v}(t), x\rangle.
+\]
+Applying this one group at a time shows that the tuple
+$(\langle \vec{P}_{f,v}(t), x\rangle)_{v\in I_f}$ is determined by $x_g$ and
+$(C_{t,h}x_h)_{h\ne g}$. Fixing all the measurement vectors therefore
+makes the entire factor a function of $x_g$. This applies to every
+polynomial factor $\Phi_f$, including factors with coefficients in
+$\mathcal E$.
+
+Each measurement of a Boolean vector lies in $[-D,D]\cap\mathbb Z$.
+We bound the sum of absolute values of the matrix entries because
+the construction can place the same Boolean coordinate in several
+auxiliary positions. After those positions are identified, entries
+of $C_{t,g}$ need not belong to $\{0,1,-1\}$. A rank bound alone
+would not control the number of possible measurements: the single
+row $(1,2,4,\ldots,2^{n-1})$ distinguishes all $2^n$ Boolean vectors.
+
+\begin{proposition}[Common counting routine]\label{prop:general-count}
+Let $\mathcal E$ be a commutative $\mathbb Q$-algebra. Suppose the
+product of the factors in \eqref{eq:general-product-sum}, computed
+over $\mathcal E$, satisfies the degree bound \eqref{eq:general-product-degree},
+and that the replacement rows, partitions, and measurements satisfy
+Definition~\ref{def:layout}. Put
+\begin{equation}\label{eq:hasse-order}
+ q=\left\lfloor\frac{dR}{Q}\right\rfloor,\qquad J=q+1.
+\end{equation}
+Then $Z$ can be computed by examining at most
+\[
+ 2Qr\left(\sum_{j=0}^{\min(q,n)}2^j\binom nj\right)(2D+1)^{2\tau n}2^{2n/r}
+\]
+Boolean vectors. For each vector, the algorithm evaluates at most $|\mathcal F|$
+factors in $\mathcal E[z]/(z^J)$. The additional operations per
+vector and the final interpolation take polynomially many operations
+in $\mathcal E$ and over $\mathbb Q$, in the parameters
+$n,|\mathcal F|,D,Q,R,J,r$ and the total scope length.
+Apart from the factor evaluators' own storage, the routine retains
+only polynomially many algebra elements, rational numbers and index bits.
+\end{proposition}
+The proof has three parts. Lemma~\ref{lem:measurement-separation}
+evaluates a sum after fixing the measurements. Lemma~\ref{lem:boolean-differences}
+expresses each Taylor coefficient as restricted sums of that form.
+Hermite interpolation over $\mathbb Q$ then recovers the value at zero.
+Sections~\ref{subsec:measurement-factorization}--\ref{subsec:three-costs}
+give these steps and their cost.
+
+For the proof, use the supplied replacement rows, their degree
+bound $R$, and the equalities
+$\vec P_{f,v}(0)=\delta_v$ to form
+\begin{equation}\label{eq:general-count-polynomial}
+ H(T)=\sum_{x\in\{0,1\}^n}\prod_{f\in\mathcal F}
+   \Phi_f\bigl((\langle\vec P_{f,v}(T),x\rangle)_{v\in I_f}\bigr)
+   \in\mathcal E[T].
+\end{equation}
+The replacements restore the inputs at zero and multiply the degree by
+at most $R$. Thus $H(0)=Z$ and $\deg_T H\le d_H:=dR$. Our application
+will have $d=O(n)$, as in the bounded-occurrence example.
+This uses the degree of the product over $\mathcal E$ in
+\eqref{eq:general-product-degree}. Substitution is an
+$\mathcal E$-algebra homomorphism: expand that product in the
+independent incidence inputs, then replace each input by its
+degree-at-most-$R$ form. Each surviving degree-$j$ monomial acquires
+$T$-degree at most $jR$. In particular, coefficients already zero
+in a truncated coefficient algebra remain zero after substitution.
+
+\subsection{Separating the sum by fixing measurements}
+\label{subsec:measurement-factorization}
+Fixing the measurements makes every factor depend on only its assigned
+group. The following lemma states the resulting calculation over a
+commutative ring, so it applies equally to rational-valued factors and
+to factors in $\mathcal E$. The restrictions $x_i=1$ will be needed
+for Taylor coefficients and are local to individual groups.
+
+\begin{lemma}\label{lem:measurement-separation}
+Let $[n]=S_1\sqcup\cdots\sqcup S_r$ be a partition, allowing empty parts.
+For each $g\in[r]$, let $C_g$ be an integer matrix with $c_g$ rows
+and columns indexed by $S_g$. Suppose each row has sum of absolute
+values at most an integer $D\ge0$, and write $c=\sum_g c_g$.
+For each $g\in[r]$, let $A_g:\mathbb Q^n\to\mathcal E$, where
+$\mathcal E$ is a commutative ring with identity. Suppose
+\[
+ A_g(x+\xi)=A_g(x)
+ \qquad
+ (x\in\mathbb Q^n,\ \xi\in\ker C_h,\ h\ne g),
+\]
+where $\xi$ is extended by zero outside $S_h$.
+Then, for any $E\subseteq[n]$, the sum
+\[
+ Z_E=\sum_{\substack{x\in\{0,1\}^n\\x_i=1\ (i\in E)}}
+           \prod_{g=1}^r A_g(x)
+\]
+can be evaluated by examining at most
+\[
+ 2(2D+1)^c\sum_{g=1}^r2^{|S_g|}
+\]
+Boolean vectors, with at most one $A_g$ evaluation,
+$\poly(n,r,c,\log(D+2))$ additional bit operations, and $O(1)$ ring
+operations per vector. Apart from the evaluators' own storage and
+$O(1)$ ring elements, the procedure uses $\poly(n,r,c,\log(D+2))$
+bits of space.
+\end{lemma}
+\begin{proof}
+For $y_g\in\mathbb Z^{c_g}$, define
+\[
+ \mathcal X_g(y_g)=\{u\in\{0,1\}^{S_g}:C_gu=y_g\},
+ \qquad
+ \mathcal Y=\prod_{g=1}^r\{-D,\ldots,D\}^{c_g}.
+\]
+Every tuple of measurements of a Boolean assignment belongs to
+$\mathcal Y$, and $|\mathcal Y|=(2D+1)^c$.
+We first identify the contribution of a fixed measurement tuple
+$\vec y=(y_1,\ldots,y_r)$. If every $\mathcal X_g(y_g)$ is nonempty,
+let $\bar x_g\in\mathcal X_g(y_g)$ be a representative for each $g$,
+and put
+\[
+ \mathcal X_{g,E}(y_g)=
+ \{u\in\mathcal X_g(y_g):u_i=1\text{ for all }i\in E\cap S_g\}.
+\]
+If $x_h\in\mathcal X_h(y_h)$ for every $h$, then
+$x_h-\bar x_h\in\ker C_h$. Applying the invariance hypothesis
+successively for $h\ne g$ gives
+\[
+ A_g\Bigl(\sum_{h=1}^r x_h\Bigr)
+ =A_g\Bigl(x_g+\sum_{h\ne g}\bar x_h\Bigr).
+\]
+The assignments with measurement tuple $\vec y$ and fixed bits indexed
+by $E$ form $\prod_g\mathcal X_{g,E}(y_g)$. Define
+\begin{equation}\label{eq:group-sum}
+ \Sigma_g(\vec y)=\sum_{x_g\in\mathcal X_{g,E}(y_g)}
+       A_g\Bigl(x_g+\sum_{h\ne g}\bar x_h\Bigr).
+\end{equation}
+Distributivity shows that these assignments contribute
+$\prod_g\Sigma_g(\vec y)$ to $Z_E$. If $\mathcal X_{g,E}(y_g)$ is empty,
+then $\Sigma_g(\vec y)=0$. The representatives $\bar x_g$ themselves
+need not satisfy the fixed-bit conditions indexed by $E$.
+Every Boolean assignment has a unique measurement tuple, so
+\[
+ Z_E=\sum_{\vec y\in\mathcal Y}\prod_{g=1}^r\Sigma_g(\vec y),
+\]
+where the product is taken to be zero if any $\mathcal X_g(y_g)$
+is empty.
+
+The algorithm evaluates this identity one measurement tuple at a
+time, starting with $Z=0_{\mathcal E}$. For each $\vec y\in\mathcal Y$,
+a first scan of each $\{0,1\}^{S_g}$ finds a representative
+$\bar x_g\in\mathcal X_g(y_g)$; if any such set is empty, the
+algorithm skips this tuple. Otherwise it initializes
+$p=1_{\mathcal E}$. To compute $\Sigma_g(\vec y)$, it initializes
+$s=0_{\mathcal E}$ and scans $u\in\{0,1\}^{S_g}$ again. Whenever
+\[
+ C_gu=y_g,\qquad u_i=1\quad(i\in E\cap S_g),
+\]
+the algorithm performs the update
+\[
+ s\leftarrow s+A_g\Bigl(u+\sum_{h\ne g}\bar x_h\Bigr).
+\]
+At the end of this scan, $s=\Sigma_g(\vec y)$, and the algorithm sets
+$p\leftarrow ps$. After all groups, it sets $Z\leftarrow Z+p$.
+After all tuples $\vec y$ have been processed, $Z=Z_E$.
+
+For each $\vec y$, the scan finding the representatives and the scan
+computing the $\Sigma_g(\vec y)$ each examine at most
+$\sum_g2^{|S_g|}$ Boolean vectors. This gives the stated bound.
+Checking a vector's measurements and fixed bits uses
+$\poly(n,r,c,\log(D+2))$ bit operations: each matrix row has sum of
+absolute values at most $D$, so its partial sums have
+$O(\log(D+2))$ bits. There is at most one factor evaluation per vector.
+The retained state is $\vec y$, $(\bar x_1,\ldots,\bar x_r)$, $g$, $u$,
+$s$, $p$, and $Z$. The tuple $\vec y$ contains $c$ integers in $[-D,D]$,
+the representatives contain $n$ bits in total, and $s,p,Z\in\mathcal E$.
+\end{proof}
+
+To evaluate \eqref{eq:general-count-polynomial} at a fixed $t$, group
+the transformed factors by $\sigma_f(t)$ and apply the lemma in
+$\mathcal E$ with $E=\varnothing$. Definition~\ref{def:layout}
+gives its invariance hypothesis, so the sum is $H(t)$. As in the overview, the two exponential costs
+are the measurement choices and the Boolean assignments in one group.
+
+\subsection{Taylor coefficients from fixed Boolean substitutions}
+\label{subsec:fixed-boolean-substitutions}
+The $Q$ values $H(1),\ldots,H(Q)$ need not determine $H$.
+With $q,J$ from \eqref{eq:hasse-order}, we have $q=\lfloor d_H/Q\rfloor$.
+Since $QJ>d_H$, it suffices to compute
+\begin{equation}\label{eq:taylor-truncation}
+ \mathcal H_t(z)=\sum_{j=0}^{J-1}([z^j]H(t+z))z^j
+ \qquad(t\in[Q]).
+\end{equation}
+Hermite interpolation recovers $H$, and hence $Z=H(0)$, from these
+$QJ$ coefficients in $\mathcal E$. Indeed, the rational Hermite
+matrix for polynomials of degree less than $QJ$ is invertible over
+$\mathbb Q$. Its inverse acts on elements of $\mathcal E$ by rational
+linear combinations.
+
+Fix $t$. The replacement forms at $t+z$ need not satisfy the kernel condition
+at $t$. Write
+\[
+ \Delta\vec P_{f,v}(z)=\vec P_{f,v}(t+z)-\vec P_{f,v}(t).
+\]
+Every entry is divisible by $z$. For fixed $x\in\mathbb Q^n$,
+introduce independent indeterminates $\vec X$ and replace each input by
+\begin{equation}\label{eq:taylor-substitution}
+ \langle\vec P_{f,v}(t),x\rangle
+       +\langle\Delta\vec P_{f,v}(z),\vec X\rangle.
+\end{equation}
+Let
+\begin{equation}\label{eq:auxiliary-polynomial}
+ \mathcal G_x(\vec X,z)=\prod_{f\in\mathcal F}
+ \Phi_f\!\left(
+  (\langle\vec P_{f,v}(t),x\rangle+
+   \langle\Delta\vec P_{f,v}(z),\vec X\rangle)_{v\in I_f}\right).
+\end{equation}
+Setting $\vec X=x$ gives
+$\sum_x\mathcal G_x(x,z)=H(t+z)$.
+Holding $\vec X$ fixed instead makes every correction independent
+of $x$, so the kernel condition at $t$ still separates the factors.
+Moreover, each occurrence of $\vec X$ carries a factor of $z$, giving
+\begin{equation}\label{eq:degree-cost}
+ \deg_{\vec X}([z^j]\mathcal G_x(\vec X,z))\le j.
+\end{equation}
+The next identity recovers the substitution $\vec X=x$ from fixed
+Boolean substitutions and restrictions on the assignments being summed.
+
+\begin{lemma}\label{lem:boolean-differences}
+Let $q\ge0$ be an integer and let $\mathcal E$ be a commutative
+ring with identity. For each $x\in\{0,1\}^n$, let
+$p_x(X_1,\ldots,X_n)$ be a polynomial over $\mathcal E$ of degree
+at most $q$. Then
+\begin{align}
+ \sum_{x\in\{0,1\}^n}p_x(x)
+ &=\sum_{\substack{E\subseteq[n]\\|E|\le q}}
+   \sum_{U\subseteq E}(-1)^{|E|-|U|}
+   \sum_{\substack{x\in\{0,1\}^n\\x_i=1\ (i\in E)}}
+                  p_x(\mathbf1_U).
+ \label{eq:boolean-differences}
+\end{align}
+Here $\mathbf1_U\in\{0,1\}^n$ is the indicator vector of $U$.
+\end{lemma}
+\begin{proof}
+For fixed $x$, we replace every positive power of $X_i$ by $X_i$.
+This leaves Boolean evaluations unchanged and does not increase
+the degree. By M\"obius inversion on subsets, the resulting
+multilinear polynomial has the expansion
+\[
+ \widetilde p_x(\vec{X})=\sum_{E\subseteq[n]}c_{x,E}\prod_{i\in E}X_i,
+ \qquad
+ c_{x,E}=\sum_{U\subseteq E}(-1)^{|E|-|U|}p_x(\mathbf1_U).
+\]
+The degree bound gives $c_{x,E}=0$ whenever $|E|>q$.
+The inversion is valid over the stated ring because the coefficient
+of any original multilinear monomial indexed by $A$ in the
+alternating sum for $c_{x,E}$ is zero unless $A\subseteq E$, and
+then is
+\[
+ \sum_{A\subseteq U\subseteq E}(-1)^{|E|-|U|}
+ =\begin{cases}1,&A=E,\\0,&A\ne E.\end{cases}
+\]
+Only addition and multiplication by $1$ and $-1$ are involved.
+Setting $\vec{X}=x$ and summing over $x$ now gives the claimed identity:
+the monomial $\prod_{i\in E}x_i$
+selects exactly the assignments with $x_i=1$ for every $i\in E$.
+\end{proof}
+
+Apply Lemma~\ref{lem:boolean-differences} to
+$[z^j]\mathcal G_x$ over $\mathcal E$ for each $j<J$.
+All coefficients can use the same pairs $U\subseteq E$, $|E|\le q$,
+so compute them together in
+\[
+ \mathcal R=\mathcal E[z]/(z^J).
+\]
+For a fixed pair $(E,U)$, let $\Phi_{f,U}(x;z)$ be factor $f$
+in \eqref{eq:auxiliary-polynomial} after setting $\vec X=\mathbf1_U$.
+Group these factors by their assignments:
+\begin{equation}\label{eq:group-polynomial}
+ A_{g,U}(x;z)=\prod_{f:\sigma_f(t)=g}\Phi_{f,U}(x;z).
+\end{equation}
+Their product is $\mathcal G_x(\mathbf1_U,z)$.
+For $h\ne g$, changing $x$ by a vector in $\ker C_{t,h}$ changes
+neither the original inputs of these factors nor their fixed
+corrections. Lemma~\ref{lem:measurement-separation} therefore
+computes the restricted sum with $x_i=1$ for $i\in E$ by examining
+at most
+\begin{equation}\label{eq:boolean-enumeration}
+ 2r(2D+1)^{2\tau n}2^{2n/r}
+\end{equation}
+Boolean vectors. Combining all the pairs gives
+\begin{equation}\label{eq:full-taylor-sum}
+ H(t+z)\equiv
+ \sum_{\substack{E\subseteq[n]\\|E|\le q}}
+ \sum_{U\subseteq E}(-1)^{|E|-|U|}
+ \sum_{\substack{x\in\{0,1\}^n\\x_i=1\ (i\in E)}}
+       \mathcal G_x(\mathbf1_U,z)\pmod{z^J}.
+\end{equation}
+The group products and sums are formed in $\mathcal R$. The result is
+$\mathcal H_t(z)$; repeating at all $t$ supplies the interpolation data.
+The algorithm never stores a polynomial in all $n$ indeterminates:
+it sets $\vec X=\mathbf1_U$ first and stores only the $J$ coefficients in $\mathcal E$.
+
+\subsection{The three exponential costs}
+\label{subsec:three-costs}
+For each $t\in[Q]$,
+the number of pairs $U\subseteq E\subseteq[n]$ with $|E|\le q$ is
+\begin{equation}\label{eq:pair-count}
+ C_q=\sum_{s=0}^{\min(q,n)}2^s\binom ns.
+\end{equation}
+In particular, $C_0=1$ and $C_q=3^n$ for $q\ge n$.
+For every $0<\eta\le1$,
+\begin{equation}\label{eq:finite-difference-cost}
+ \eta^qC_q\le\sum_{s=0}^n\binom ns(2\eta)^s=(1+2\eta)^n,
+\end{equation}
+because $\eta^q\le\eta^s$ for every retained index $s\le q$.
+
+\begin{proof}[Completion of the proof of Proposition~\ref{prop:general-count}]
+There are $Q$ points, $C_q$ pairs per point, and at most
+\eqref{eq:boolean-enumeration} Boolean vectors per pair.
+Forming each group product uses at most $|\mathcal F|$ factor evaluations.
+Addition and multiplication modulo $z^J$ cost $O(J^2)$ operations
+on coefficients in $\mathcal E$. The preceding Taylor identity
+and interpolation prove correctness.
+Process the points, pairs, measurement tuples, and local assignments
+sequentially, retaining their current indices and accumulators.
+Together with the $QJ$ interpolation coefficients, this gives the
+stated storage bound. Bit complexity additionally depends on the
+cost of evaluating the factors and on coefficient sizes; these are
+verified for the sparse polynomial application in
+Section~\ref{subsec:one-query-cost}.
+\end{proof}
+
+When $d=O(n)$, we have $d_H=O(nR)$ and $q=O(nR/Q)$.
+Taking $\eta=R/Q$ in \eqref{eq:finite-difference-cost} gives
+\[
+ \log C_q\le q\log(Q/R)+n\log(1+2R/Q)
+     =O\!\left(n\frac RQ\log\frac{2Q}{R}\right).
+\]
+Consequently, if factor evaluation and coefficient arithmetic have
+polynomial bit cost, the running time is a polynomial factor times
+\begin{equation}\label{eq:three-costs}
+ 2^{O\left(n\left[
+       \frac RQ\log\frac{2Q}{R}
+       +\tau\log(2D+1)+\frac1r\right]\right)}.
+\end{equation}
+These are exactly the three costs from the overview. The parameter
+choice in Lemma~\ref{lem:incidence-parameters} makes their sum
+$O((\log\log n)^2/\sqrt{\log n})$ when factor scopes and their
+maximum incidence are bounded by a fixed power of $\log n$.
+The routine also applies when $d$ is larger; then one keeps the
+actual value $q=\lfloor dR/Q\rfloor$ in the bound of
+Proposition~\ref{prop:general-count}.
+
+

@@ -1,0 +1,702 @@
+\section{Countably many compatible partitions}\label{sec:countable}
+
+The separations in \Cref{rounds:wide} may depend on the label.
+We now use this freedom to construct the partitions. The analytic
+construction is performed at finite stages. Its essential finiteness
+property concerns each \emph{whole component}, including all its infinite
+product ends; local finiteness merely on compact subsets would not
+suffice. The finite-label procedure is stated in \Cref{finite:cut}, and its detailed
+proof is in \Cref{sec:components,sec:cut,sec:local,sec:enlargement-global,sec:regularization}.
+We adapt that proof using individual positive floors and finite
+exceptional data on each whole component.
+
+\subsection{Data and the countable construction}
+
+Let $D$ be the length in \eqref{rounds:original-scale}, and let the
+centers $x_i$ and the pairs $(A_i,B_i)$ be those fixed in
+Section~\ref{sec:width-map}: a maximal $D$-separated set and its ball
+pairs, as in \Cref{rounds:wide}. We assume every $B_i$ is nonempty, since otherwise
+$\diam_g M\le4D$. There is one label for each center, and an additional
+label $0$ used first for radial confinement. The set of labels is finite
+or countable; write it as $I=\{0,1,2,\ldots\}$, stopping the enumeration
+if necessary. Choose
+\begin{equation}\label{countable:floors}
+ p_i^*>0,\qquad \sum_{i\in I}p_i^*=\frac1{20}.
+\end{equation}
+Use \Cref{rounds:wide} with
+\begin{equation}\label{countable:widths}
+ L_i=10+2\pi\sqrt{2/p_i^*}\qquad(i\ne0).
+\end{equation}
+We henceforth use the resulting complete metric $h\ge g$, its locally
+finite list of logarithms of the warping functions $p_\alpha$, and its stabilized scalar lower
+bound $2/5$.
+
+The initial weighted base measure is globally well defined:
+\[
+ \omega\,\dd\vol_h,\qquad
+ \omega=\exp\Bigl(\sum_\alpha p_\alpha\Bigr)>0.
+\]
+The sum is locally finite. On a buffered compact set, only finitely many
+nonunit factors $e^{p_\alpha}$ occur, so ordinary finite warped-product
+formulas compute the stabilized scalar, weighted variations, and
+invariant test forms there. These formulas agree on overlaps: adjoining
+a unit factor changes none of them. In particular, the initial problem
+is a weighted problem on the $n$-dimensional base $M$.
+
+Fix numbers
+\[
+ 0=t_0<t_1<t_2<\cdots<1,\qquad t_r\longrightarrow1,
+\]
+and use as many stages as there are labels. These are budget parameters,
+unrelated to a spatial coordinate. Put
+\begin{equation}\label{countable:constants}
+ \begin{gathered}
+ a_r=.60+.03t_r,\qquad b_r=1.12-.05t_r,
+ \qquad \lambda_r=\frac14-\frac{t_r}{8},\\
+ \Delta_r=t_{r+1}-t_r,\qquad
+ e_r=\frac{\Delta_r}{800},\qquad
+ \eta_r=\frac{\Delta_r}{200},\qquad k=399,
+ \qquad C=\frac{4k}{k+1}=3.99.
+ \end{gathered}
+\end{equation}
+With $t_r=r/N_*$, the entries shared with \eqref{component:constants}
+agree with it, $e_r$ being its $e_0$.
+Thus $\lambda_r\ge1/8$, $.60\le a_r<.63$, and
+$1.07<b_r\le1.12$. In a stagewise
+appendix lemma, its symbol $e_0$ denotes the current $e_r$.
+
+We use the component notation and operation of splitting along regular zero sets introduced in
+\Cref{sec:finite-cuts}. The countable invariant below replaces the common
+finite-label floor by the individual positive floors $p_j^*$.
+At stage $r$, the processed labels are $0,\ldots,r-1$ and the remaining
+set is $J_r$. A component with $s$ star entries has base dimension $m=n-s$.
+Its continuous collapse map to $M$ is denoted by $q_E$. For each
+$j\in J_r$ retain an extended-real continuous function $\mu_j$ with
+locally Lipschitz finite truncations, a smooth potential
+$\Pi_j\ge p_j^*$, and disjoint prescribed open sets $U_j^+,U_j^-$ with
+\begin{equation}\label{countable:function-invariant}
+ \overline{U_j^\pm}\subset\operatorname{int}\{\mu_j=\pm\infty\},
+ \qquad 2|\grad\mu_j|\le a_r\mu_j^2+\Pi_j
+ \quad\hbox{almost everywhere on the finite-value locus}.
+\end{equation}
+For unprocessed center labels require
+$q_E^{-1}(A_j)\subset U_j^+$ and $q_E^{-1}(B_j)\subset U_j^-$.
+All data are compatible products in the component ends. With
+\begin{equation}\label{countable:required}
+ G_j=E\setminus(U_j^+\cup U_j^-),\qquad
+ D_E=\{x:\#\{j\in J_r:x\in G_j\}\ge m-1\},
+\end{equation}
+the scalar requirement is
+\begin{equation}\label{countable:scalar-invariant}
+ R_E\ge\lambda_r+b_r\sum_{j\in J_r}\Pi_j\quad\hbox{on }D_E.
+\end{equation}
+Here $R_E$ denotes the stabilized scalar expression, and integrals and
+Laplacians use the product of the old warping functions as weight. The
+finiteness statement below makes these meanings unambiguous. A nonpositive
+counting threshold means the whole component.
+
+\begin{definition}[Finite exceptional data]\label{countable:finite-data}
+At stage $r\ge1$, on each whole component $E$ there are finite sets
+$I_E\subset J_r$ of label indices and $F_E$ of old warping function indices such
+that, for $j\notin I_E$,
+\begin{equation}\label{countable:constant-data}
+ \mu_j\equiv-\infty,\qquad U_j^-=E,\qquad U_j^+=\varnothing,
+ \qquad \Pi_j\equiv c_rp_j^*.
+\end{equation}
+Every old warping function indexed outside $F_E$ is identically one.
+The number $c_r$ is the same on all components and is prescribed by
+\begin{equation}\label{countable:constant-data-multiplier}
+ c_0=1,\qquad c_{r+1}=(1+3\eta_r/2)c_r.
+\end{equation}
+For any finite diagram used in a comparison, take the union of its
+finite exceptional sets, adding the current label explicitly. This
+one finite union then works simultaneously on all its whole components.
+At stage zero the analogous property is required on every compact
+radial block and buffer, with $c_0=1$.
+\end{definition}
+
+The sets $I_E$ need not consist exactly of the nonconstant entries: an
+entry may be retained in the exceptional list even if it happens to be
+constant. This convention avoids any need to discard previous exceptions.
+Only the existence of a finite list matters.
+
+\begin{proposition}[The countable compatible construction]\label{countable:construction}
+For the initialized data above, there is a successive compatible
+split along regular zero sets for every label. At every finite stage the
+component diagram has the invariant above and no nonempty component of
+dimension at most one. After the radial stage it has finite exceptional
+data on whole components; at stage zero this assertion holds on buffered
+compact radial blocks.
+The finite reconstruction $X_r$, obtained by truncating the product
+ends and gluing the corresponding boundary faces selected by stars, has a proper collapse $q_r:X_r\to M$
+and closed signed sides $P_i^{(r)},N_i^{(r)}$ for each processed center
+label, with
+\[
+ P_i^{(r)}\cup N_i^{(r)}=X_r,\qquad
+ P_i^{(r)}\cap N_i^{(r)}=W_i^{(r)},
+\]
+where $W_i^{(r)}$ is its boundary. The forced preimages satisfy
+\[
+ q_r^{-1}(A_i)\subset P_i^{(r)}\setminus W_i^{(r)},\qquad
+ q_r^{-1}(B_i)\subset N_i^{(r)}\setminus W_i^{(r)}.
+\]
+These inclusions hold in open sides and persist at every subsequent
+finite stage. No $n-1$ distinct boundaries, even including the radial boundary,
+have a common point. Each center boundary lies over its original open
+outer ball, and its components are compact and locally finite.
+
+Old finite truncation levels of the product ends can be
+enlarged by identifications preserving collapse,
+all boundaries, and all signed indices. For any prescribed sequence
+$\eps_r>0$ with $\sum_r\eps_r<1$, the next finite collar compression
+can be chosen with collapse displacement less than $\eps_r$, preserving
+the previously decided boundary strata and signed sides. These assertions concern each finite stage.
+\end{proposition}
+
+\begin{proof}
+Initialization is \Cref{countable:initial}. If the construction has
+reached stage $r$, its parents have dimension at least two: a first
+nonempty output of smaller dimension would have dimension exactly
+one, since a zero set decreases dimension by one and a sign preserves it.
+\Cref{countable:step} produces the next invariant, and
+\Cref{countable:dimension-one} excludes that first output. Thus the
+induction continues through every finite stage.
+
+Apply \Cref{component:reconstruction} to each finite initial segment.
+Its hypotheses are the compatible splits along regular zero sets and the compact
+radial components already established. Its index pieces are exactly
+the corresponding compact component truncations. If $n-1$ boundaries met,
+assign those labels star entries and choose a closed sign index for
+each other processed label containing the point. The corresponding
+nonempty truncation would have dimension one, a contradiction.
+Forced signs persist under the continuous collapse recursion and
+enlargement of the prescribed open sets. In particular
+\[
+ q_r(W_i^{(r)})\subset M\setminus(A_i\cup B_i)
+                         \subset B_g(x_i,2D).
+\]
+Properness of $q_r$ and compactness of the original closed outer ball
+make each boundary component compact; regular local boundary charts give
+local finiteness, as in \Cref{component:reconstruction}.
+
+The truncation level identifications in \Cref{component:reconstruction} preserve
+collapse, boundaries, and signed indices. Its collar compressions preserve
+the old strata and their sides, and \Cref{component:small-displacement}
+allows their collapse oscillations to be bounded by the prescribed
+$\eps_r$. These choices are made separately on the locally finite
+compact component family. Section~\ref{sec:reconstruction} chooses these homeomorphisms
+coherently on one fixed copy of $M$, proving \Cref{topology:partitions}.
+\end{proof}
+
+\subsection{Initial functions and radial confinement}
+
+\begin{lemma}[Initial functions and radial blocks]\label{countable:initial}
+The fixed stretched metric and its initial warping functions admit stage-zero
+functions and prescribed open sets satisfying
+\eqref{countable:function-invariant}--\eqref{countable:scalar-invariant}
+with the prescribed potentials $\Pi_i=p_i^*$. The radial forced signs can be
+chosen so that every regular radial split preserving them has locally
+finite compact boundary and closed-side components before cylinder
+attachment. On every compact radial block and buffer, only finitely
+many center labels fail to be identically the negative pole with full
+negative prescribed open set, and only finitely many initial warping functions fail to be one.
+\end{lemma}
+
+\begin{proof}
+For a positive number $p$, the decreasing crossing
+\[
+ 2|y'|=.5y^2+p
+\]
+from $+\infty$ to $-\infty$ has length
+\[
+ T(p)=\int_{-\infty}^{\infty}\frac{2\,\dd y}{.5y^2+p}
+      =2\pi\sqrt{2/p}.
+\]
+Extend it by its poles. For center $i$, begin this crossing at stretched
+distance $2$ from $A_i$ and compose it with $\dist_h(A_i,\cdot)$.
+The distance is $1$-Lipschitz, so the resulting function obeys the
+inequality with $.5$ in place of $a_0=.60$. Take prescribed open sets
+\[
+ U_i^+=\{\dist_h(A_i,\cdot)<1\},\qquad
+ U_i^-=\{\dist_h(A_i,\cdot)>T(p_i^*)+3\}.
+\]
+Their closures lie in the respective pole interiors. The stipulated
+separation puts $B_i$ strictly inside the negative prescribed open set. In particular, on
+the complement of the original closed ball $\overline B_g(x_i,2D)$,
+the function is the negative pole and the negative prescribed open set is full.
+
+The radial label is constructed as in the proof of
+\Cref{component:initialization} in Appendix~\ref{sec:components}, with the
+potential \(\pi_0\) replaced by \(p_0^*\) and \(T_0\) by \(T(p_0^*)\).
+The chartwise smooth-radius construction there, with its
+additive constant \(2\) subtracted, gives a smooth proper function
+\(\rho:M\to\R\), bounded below, such that
+\(|\rho-\dist_h(o,\cdot)|<1\) and \(|\grad\rho|_h<2\).
+It uses only local smoothness and completeness, so applies to the
+present stretched metric.
+The same proof builds alternating positive and negative plateaus of
+\(\rho\), separated by transition intervals wider than \(2T(p_0^*)\),
+on which the rescaled crossing satisfies the function inequality with
+coefficient \(.5\) and potential \(p_0^*\); closures of the prescribed open sets strictly
+inside the plateaus; and compact smooth barrier domains, bounded by
+regular levels, whose closures stay in the same pole plateaus and
+whose value intervals tend to infinity.
+The same proof shows that a boundary respecting these signs has compact
+components, each lying in one block between consecutive separating
+plateaus, that every component of either closed side is trapped between
+two separating regions of the opposite sign or lies in the initial compact
+block, and that both component families are locally finite. When \(M\)
+is compact, it uses a radial label with constant positive pole and full
+positive prescribed open set; its split has no boundary and its only side is compact.
+
+The scalar requirement initially holds everywhere because
+\[
+ \lambda_0+b_0\sum_i p_i^*=.25+1.12/20=.306<.4.
+\]
+Finally a compact block with a compact buffer meets only finitely many
+original closed outer balls and finitely many initial supports of the logarithms of warping functions.
+Every other center label and warping function has the asserted constant data there.
+\end{proof}
+
+\subsection{Finite exceptional data on entire components}
+
+A \emph{downward diagram} of a component consists of it and all its further
+end bases. An \emph{upward diagram} consists of it and all its incident higher-dimensional components.
+Each is finite at a fixed stage, by \Cref{component:split}. A finite union
+of either type is finite. The constructions below make finitely many
+directed passes through such diagrams.
+
+Radial confinement gives the geometric reason to expect finite data on
+a whole component. At the first split, a compact radial side or boundary
+component is prolonged by cylinders; its entire collapse image stays
+in that original compact component. At every later split a child $A$
+of $E$ has
+\begin{equation}\label{countable:collapse-recursion}
+ q_A=q_E\circ p_A,\qquad
+ p_A=\begin{cases}
+ \text{inclusion},&\text{on the boundary or bulk},\\
+ \text{projection to the boundary},&\text{on a fresh cylinder}.
+ \end{cases}
+\end{equation}
+Hence $q_A(A)\subset q_E(E)$, including in all simultaneous normal
+directions. A finite incidence diagram therefore has image in a finite
+union of compact original radial blocks. Only finitely many original
+outer balls and supports of the logarithms of the initial nonunit warping functions meet that image.
+Enlargement of the prescribed open sets changes no collapse map, and regularization chooses new
+boundaries inside old parents, so both preserve this confinement.
+
+This argument controls the initial supports. Later smooth data need
+not factor through $q_A$: they also use data copied from end bases. We
+must therefore retain finite exceptional lists through those directed
+dependencies, as well as preserve every other entry exactly.
+
+\begin{lemma}[Consequences and directed dependencies]\label{countable:locality}
+At a finite stage after the radial split, assume the exact component
+geometry of \Cref{component:category} and the finite exceptional data of
+\Cref{countable:finite-data}. Then:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item The sum of potentials on a whole component is a smooth function
+with bounded derivatives of every fixed order. The undecided counts,
+required sets, and sets $H_E^*$ use only a finite list and are closed.
+\item On each whole component and each finite comparison diagram, the old
+weight, stabilized scalar, stability forms, and weighted Laplacian are
+computed with one finite list of warping functions, after padding with unit factors.
+The conclusions of a positive injectivity radius, uniform bounds on
+curvature and all its covariant derivatives, and polynomial weighted growth in
+\Cref{component:geometry} apply, including on any finite Euclidean product.
+\item Compatible choices with positive componentwise tolerances can be
+made in the following order: fix individual requests, propagate numerical
+requests down the finite chains through higher-dimensional components, and then construct data upward
+from deeper end bases. Enlarging an incident higher-dimensional component's exceptional list by the union
+over its downward source diagram suffices for the last pass. No data
+are propagated back from a newly constructed incident higher-dimensional component to an already
+constructed end base.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+On $E$, the sum of potentials is exactly
+\begin{equation}\label{countable:potential-sum}
+ \sum_{j\in J_r}\Pi_j
+ =\sum_{j\in I_E}\Pi_j+c_r\sum_{j\in J_r\setminus I_E}p_j^*.
+\end{equation}
+The second term is a finite spatial constant. Indeed
+\[
+ 1\le c_r\le\exp\Bigl(\frac32\sum_{s<r}\eta_s\Bigr)
+ \le e^{3/400}.
+\]
+The first term is a finite sum; its derivative bounds follow from
+compatible smoothness and the compact-part/product-end decomposition
+in \Cref{component:geometry}. On a finite comparison diagram choose common
+product thresholds for its finite exceptional list. Every other entry is already a spatial
+constant with the same value on each copy. The full sum is therefore
+an exact end base pullback beyond those thresholds. Entries outside the finite exceptional list have empty undecided set. Thus a set requiring at least $a\ge1$ undecided labels
+is the finite union, over $a$-element subsets of $I_E$, of the intersections of
+their closed $G_j$'s. This proves closedness, including for the sets $H_E^*$
+with threshold $m-2$. Threshold zero gives $E$.
+
+For (ii), take the union of the finitely many relevant old warping function
+indices on the finite diagram and set every missing entry to one.
+Writing $u_\alpha=\log f_\alpha$ and $U=\sum_\alpha u_\alpha$, the
+scalar expression is
+\[
+ R_E=\Scal_{h_E}-2\Delta_{h_E}U-|\dd U|_{h_E}^2
+                        -\sum_\alpha|\dd u_\alpha|_{h_E}^2.
+\]
+A padded logarithm is zero; the product weight is unchanged. The
+weighted Laplacian is
+$\Delta_{h_E}+\langle\dd U,\dd\,\cdot\,\rangle_{h_E}$ and is
+unchanged as well. Weighted perimeter and its first and second
+variations depend on the same weight. Equivalently, a flat unit
+factor adds zero second fundamental form and zero curvature to the
+invariant variation calculation. Thus the boundary and interface forms also
+agree. The finite-diagram geometric lemma now gives completeness,
+a positive injectivity radius and uniform bounds on curvature and all its covariant derivatives, positive lower and finite upper bounds for the
+weight, and center-uniform polynomial volume growth. It gives the
+same statements after taking a finite Euclidean product. The
+regularity problem for a minimizing Caccioppoli set remains on the base, with
+singular dimension at most $m-8$ by \Cref{cut:gmt}; padding does not
+alter that dimension.
+
+For (iii), a particular end base receives requests from only its finitely
+many incident higher-dimensional components and chains through higher-dimensional components. Allowing for the finitely many fixed
+product and cutoff bounds, the minimum of the requested positive
+errors is positive. Settle all these numbers before constructing the
+approximations. A request only decreases an error tolerance: it does
+not copy any incident higher-dimensional component value into the end base. During the subsequent upward
+pass, the inputs on a component are its own data and already constructed
+copies from its finite downward diagram. Their exceptional sets have
+a finite union. Outside that union every copy in
+\eqref{countable:constant-data} agrees with every other copy. A newly
+constructed incident higher-dimensional component is not used to reconstruct its sources. The same
+argument applies to finitely many successive directed passes, and
+proves the stated dependency rule.
+\end{proof}
+
+\subsection{One countable invariant step}
+
+\begin{proposition}[Preservation of the invariant]\label{countable:step}
+Suppose that all nonempty parents at stage $r$ have base dimension at
+least two and satisfy \eqref{countable:function-invariant}--\eqref{countable:scalar-invariant}.
+At $r=0$ use the compact radial blocks of \Cref{countable:initial}; at
+$r\ge1$ suppose also that the component geometry and
+\Cref{countable:finite-data} hold. There is a compatible split along regular zero sets of label $r$ preserving the
+forced signs and satisfying
+\eqref{countable:function-invariant}--\eqref{countable:scalar-invariant},
+the component geometry, and \Cref{countable:finite-data} at stage $r+1$. Exactly $399$ new warping function factors, with
+common indices, are appended at this stage. Each whole resulting
+component has a finite relevant old warping function list.
+\end{proposition}
+
+\begin{proof}
+The finite exceptional lists let each geometric operation use only
+finitely many nonconstant functions on a whole component. The remaining
+functions and potentials pass through the operation as their prescribed
+constants. We first choose the current cut using its own positive floor,
+then carry these two types of data through enlargement of the prescribed open sets and regularization.
+
+\emph{The current prescribed weighted mean curvature and minimizing Caccioppoli sets.}
+The prescribed weighted mean curvature construction of \Cref{cut:prescribed-curvature} uses a positive floor
+only for the label being processed. Replace its finite-family floor
+by $p_r^*$. Compatible clipping heights can first be chosen above the
+local barrier bounds, with a uniform extra barrier margin of one.
+Then use local smoothing errors to obtain, for the smoothed prescribed weighted mean curvature
+$p_0$ of \Cref{cut:prescribed-curvature} (its subscript does not refer to the radial
+label $0$),
+\[
+ 2|\grad p_0|\le .65p_0^2+1.01\Pi_r.
+\]
+All smoothing requests involve only this one function and finite
+incidence diagrams. The elementary inequality
+\[
+ .67(y+c)^2-.65y^2\ge-21.775c^2
+\]
+shows that one common nonempty shift interval, for example
+\begin{equation}\label{countable:shift}
+ |c|<\min\{.01\sqrt{p_r^*},1/2\},
+\end{equation}
+preserves both $2|\grad(p_0+c)|\le .67(p_0+c)^2+1.02\Pi_r$ and
+the barrier inequalities. Floors for other labels do not enter this
+interval.
+
+After the radial stage, \Cref{countable:locality} supplies the positive injectivity radius, uniform bounds on curvature and
+all its covariant derivatives, and weighted polynomial-growth hypotheses of
+\Cref{cut:generic-uniqueness}. There are countably many components,
+Euclidean product dimensions, and tests in that lemma's exhaustion.
+Remove the countable exceptional shift sets and choose a single $c$
+in \eqref{countable:shift}. The resulting minimizers have the
+common product limits of \Cref{cut:end-convergence}; choose them before
+any enlargement of the prescribed open sets. The smooth global
+positive weight and locally bounded smooth prescribed weighted mean curvature give local BV
+existence and strict compactness by \Cref{cut:bv-compactness}. The
+relatively compact radial barriers force the Caccioppoli sets by compact
+comparisons. All variations and tests lie in buffered compact regions
+with finite warping function lists, so the formulas in \Cref{cut:raw-domination}
+apply. The GMT and singular-set dimensions are the base dimensions at
+this first step as well.
+
+\emph{Smooth approximations, sets $H_E^*$, and enlargement of the prescribed open sets.}
+On each post-radial component retain its finite exceptional list, enlarged
+by its finite downward source diagram and by the current label.
+Labels outside it are already forced everywhere and require no shell
+addition. Choose compatible smooth functions $h_j$ within $.1$ of
+$\max(-1,\min(1,\mu_j))$ as in \Cref{local:smooth-approximations}, retaining the exact
+value $-1$ when $\mu_j=-\infty$ identically. For each component of dimension $m\ge8$ and each set of $m-7$
+remaining labels, the image of its singular set under the corresponding
+map of smooth approximations has $(m-7)$-dimensional Lebesgue measure zero.
+There are countably many such conditions, even if all finite subsets
+of the countable label set are included. In the countable product of
+uniform probability intervals $(-.3,.3)$, each bad cylinder has
+measure zero by its finite-dimensional marginal. A threshold vector $(t_j)$
+outside their union therefore exists. At most $m-8$ approximations $h_j$ equal
+their thresholds at any singular point. The sign exclusions at poles
+follow from the $.1$ approximation to the truncated function, exactly as in
+\Cref{local:smooth-approximations}.
+
+Process the finitely many end base depths from deepest upward, keeping the
+boundary supports fixed. Suppose every strict end base $B$ of $E$ has $H_B^*$ disjoint from its singular set.
+The remaining intersection of its singular set with $H_E^*$ is
+\[
+ K_E=\Sigma_E\cap
+ \{x:\#\{j\in J_r\setminus\{r\}:x\in G'_j\}\ge m-2\}
+\]
+is closed. It is compact: an escaping sequence would, by
+\Cref{component:escape}, have a product limit over a further end base with
+compact convergent base coordinates. The finite exceptional list and
+closed complements of the prescribed open sets pass the undecided count to that limit.
+The end base $B$ has a smaller dimension, so the limit lies in $H_B^*$.
+The product convergence of boundary supports forces the limiting point to be
+singular, since regular-point graphical convergence excludes nearby
+singular points. This contradicts the completed enlargement of the prescribed open sets of that
+end base. This argument also treats escape in several normal coordinates.
+
+Apply \Cref{local:plane-containment-pieces,local:shell,local:sharp} on this compact
+set $K_E$, only for the finite list which can still be undecided.
+Enumerate the signed compact subsets $F$ with the following property:
+in Euclidean chart coordinates, for some $r_F>0$, each $F\cap B_r(x)$,
+$x\in F$, $0<r<r_F$, lies within $\eta r$ of an affine $(m-8)$-plane,
+with $\eta$ as small as required. Choose each shell scale by
+\Cref{enlargement:maximum}, hold it fixed, and then send its incident higher-dimensional component starting levels
+far enough out by \Cref{enlargement:extension}. In the normal-coordinate function construction
+of \Cref{enlargement:normal-functions}, the crossing for label $j$ satisfies
+\[
+ 2|w'|\le .58w^2+p_j^*.
+\]
+Its length is finite; the inequality is paid by $\Pi_j\ge p_j^*$,
+and the rest of that lemma applies unchanged.
+
+Only finitely many additions are required on $E$. Indeed, every point
+of the initial compact $K_E$ eventually belongs to a prescribed open set
+for each of its strict inequalities $h_j>t_j$ or $h_j<t_j$ among the finite exceptional list.
+At most $m-8<m-2$ labels can then remain undecided there. The remaining
+subsets of the initial $K_E$ are nested and closed, and their
+intersection is empty. Compactness gives a finite index at which the
+residual is empty. Stop then. Each specified incident higher-dimensional component receives additions
+from finitely many source end bases through finitely many chains. Thus
+only finitely many additions and finite minima or maxima affect any
+whole component.
+
+The local shell estimate \eqref{local:sharp-estimate} charges
+$1.16D_\varepsilon$ at gradient coefficient $.78$. The factor $1.16$
+is chosen to exceed $(1+3\eta_r)b_{r+1}$, the coefficient with which
+the additions $D_j$ enter the next potentials in the later scalar-form
+transfer; see \eqref{regular:eta}.
+To control all the countably many components at once, enumerate the pairs
+consisting of a component and a possible local addition number by distinct
+integers $\nu\ge1$. As in the proof of \Cref{enlargement:global}, assign
+$\gamma_\nu=.1\,2^{-\nu}$ to that pair, allocating at most half to
+its shell-scale choice and half to its simultaneous finite incident higher-dimensional component
+extensions. Starting the bookkeeping form bound at $.78$, the maximum
+and extension estimates give
+$\theta_*=.78+\sum_{\nu\ge1}\gamma_\nu=.88<.9$ and hence
+\begin{equation}\label{countable:enlargement-form}
+ \int1.16\sum_{j\ne r}D_jv^2
+ \le\theta_*\bigl(\mathcal N(v)+e_r\|v\|_2^2\bigr).
+\end{equation}
+This is the bound \eqref{enlargement:form-output} of \Cref{enlargement:global}.
+Here $\mathcal N(v)$ is the sum of weighted integrals of
+$|\nabla v|^2$, with coefficient $1.7$ on a boundary, or coefficient
+$.8$ on the bulk and $1.7$ on its attached cylinder. The measure on
+each piece is its base volume times the product of the retained
+warping functions; $\|v\|_2^2$ is the sum of its weighted squared norms.
+Tests are compactly supported away from singularities, and their
+two traces match at a joined interface, as in \Cref{cut:reserve}. These are the
+same coefficients on every component and product. Only a finite list of
+additions occurs on each post-radial component, so the bound persists
+after a whole depth has been treated.
+
+Initially, instead work in separated compact transition shells with
+compact buffers between radial barriers. Each has finitely many
+exceptional labels and warping functions. Its intersection of the singular set with $H_E^*$ is compact, and the same
+finite termination applies; there is no incident higher-dimensional component extension yet. Choose
+supports within the shell buffers. Their local finiteness makes all
+updates locally finite on $M$, and a compact test meets only finitely
+many of them. The summable allowances prove
+\eqref{countable:enlargement-form} for every such test. Every compact radial
+side block meets only finitely many shell buffers. This supplies the
+whole-component finite lists after the first attachment.
+
+\emph{Counts and the quantitative transfer.}
+Enlargement of the prescribed open sets gives $G'_j\subset G_j$. Only the finite exceptional
+list can contribute to the counts on a post-radial component; the analogous
+statement holds on buffered compact blocks at the radial step.
+Thus \Cref{component:counts} places every new required set in both the old
+required set and the set $H_E^*$ disjoint from the singular set under projection, including along
+attached cylinders. The finite lists and closed complements of the prescribed open sets also
+pass these count inclusions to all further-end base product limits.
+
+The normal tube near $H_E^*$ and comparison constructions of
+\Cref{regular:count-sets,regular:partition} use these closed sets $H_E^*$,
+regular graphical convergence on product limits, and finite
+componentwise derivative bounds. All are now available. Numerical
+errors are allocated down chains through higher-dimensional components before the defining functions
+are constructed upward.
+
+Apply the quantitative transfer of \Cref{regular:transfer} with the
+current $t_r$, $\Delta_r=t_{r+1}-t_r>0$, and $e_0=e_r=\Delta_r/800$.
+Its stage margins \eqref{regular:eta} were proved for these general
+adjacent parameters.
+The potential calculation also applies: on each finite comparison
+diagram, \eqref{countable:potential-sum} expresses the old potential
+sum as finitely many smooth functions plus one spatial constant.
+Only finitely many potential additions near singularities occur there. Thus, with
+$\widetilde\Pi_j=\Pi_j+D_j$, the same raw form and comparison estimates
+control
+\begin{equation}\label{countable:raw-target}
+ \lambda_{r+1}+(1+3\eta_r)b_{r+1}
+                         \sum_{j\ne r}\widetilde\Pi_j
+\end{equation}
+near the new required set, with the positive mass and gradient reserves
+proved there. The constant tail has no derivative error; potential
+approximation errors concern only the finite exceptional list. At the
+radial step these estimates are made on buffered compact blocks, as
+in that proof.
+The interface and potential smoothing can consequently retain an $e_r$
+local mass gap. This positive number is fixed for the current stage;
+all geometric tolerances may depend on the component.
+
+\emph{Exact constants outside the finite exceptional lists in regularization.}
+Restrictions, bulk inclusions, and cylinder projections preserve
+identically constant functions. Interface smoothing of an old identically
+unit warping function leaves it one. For the remaining potentials, smooth
+$(1+3\eta_r/2)\widetilde\Pi_j$ as in
+\Cref{regular:functions,regular:constant-preservation}, so that
+\begin{equation}\label{countable:smooth-potentials}
+ (1+\eta_r)\widetilde\Pi_j\le\Pi_j^{\rm new}
+                     \le(1+2\eta_r)\widetilde\Pi_j.
+\end{equation}
+On a finite exceptional list, allocate the required relative errors
+separately, using $p_j^*>0$ for its $j$th entry. If an aggregate error
+is prescribed, subdivide it among that finite list. If an entry lies outside every finite exceptional list in the source
+diagram, set its output \emph{exactly} to
+$c_{r+1}p_j^*$. This is compatible with the smoothing procedure, which
+reproduces constants exactly by \Cref{regular:constant-preservation}.
+
+Before blending on an incident higher-dimensional component, enlarge its exceptional list by the union
+over its entire finite downward source diagram. Thus an entry on an end base's exceptional list is recorded even if it
+was outside the incident higher-dimensional component's own exceptional list.
+The remaining copies agree identically. Higher-dimensional component requests merely adjust
+numeric tolerances; they do not introduce new source values on end bases.
+This proves exact reproduction of the specified constant data on the completed diagram and
+precludes a cascade through infinitely many same-depth neighbors.
+At the radial step choose a compact buffer for each compact radial
+block, enlarged to contain the finitely many chart closures and shell
+supports used by its approximations. Only finitely many original
+outer balls and supports of the logarithms of the initial nonunit warping functions meet this buffer.
+Enlarge the exceptional list by precisely these indices. Every other
+entry is the same constant on every averaging neighborhood and is
+therefore reproduced exactly before cylinder attachment.
+
+The restriction argument of \Cref{regular:functions}, with the first
+inequality in \eqref{regular:eta} and \eqref{countable:smooth-potentials},
+gives the next function inequality.
+Continuous pullback and enlargement of the prescribed open sets preserve all pole-neighborhood
+and forced-preimage conditions.
+
+\emph{Corrections, supersolutions, and the new warping function group.}
+The sum in \eqref{countable:potential-sum} is now smooth, bounded, and
+exactly compatible, as are its finite-order derivatives. On every
+required finite diagram, pad the old warping functions by units. In a product end
+over $B$ the operator of \Cref{regular:correction} therefore satisfies
+exactly
+\[
+ L_A=L_B-C\Delta_{\rm normal},\qquad
+ L_A=-C\Delta_{\rm old}+R_{\rm old}-V_A^*+K_A,
+ \qquad
+ V_A^*=\lambda_{r+1}+b_{r+1}\sum_{j\ne r}\Pi_j^{\rm new}.
+\]
+In particular the potential formula does not depend on the base
+dimension or on how many unit factors were padded. The correction is
+zero near the new required set and produces a positive form gap on
+each whole component. The proof of \Cref{regular:correction} uses finite
+minima of the gaps on the component's end base diagram. Its bounded solution of the elliptic equation
+and the compatible positive supersolutions in
+\Cref{regular:bounded-solutions,regular:solutions} apply with the positive injectivity radius, uniform bounds on curvature and all
+its covariant derivatives, and polynomial weighted volume already proved
+on each component.
+Their tolerances are chosen after the operators and their individual
+exact solutions are fixed, and before the final upward blending pass.
+Thus their finite-dependency hypothesis is precisely (iii) of
+\Cref{countable:locality}.
+
+Let $v_A>0$ be the resulting supersolution with $L_Av_A\ge1/2$.
+Append the common group of $k=399$ warping functions
+$f=v_A^{2/(k+1)}=v_A^{1/200}$. The scalar identity in
+\Cref{regular:step} gives
+\[
+ R_{\rm new}=R_{\rm old}-C\frac{\Delta_{\rm old}v_A}{v_A}
+           =V_A^*-K_A+\frac{L_Av_A}{v_A}
+           \ge V_A^*\quad\hbox{on }D_A.
+\]
+Only the number of \emph{new} factors enters the coefficient $C$.
+The old finite list may vary from component to component; unit padding has
+no effect. Each stage adds just this one finite group, with the same
+factor indices for every component index. All its warping functions are positive and bounded
+above and away from zero on a whole component, and exactly compatible.
+The initial lists and their finite propagated exceptions remain finite,
+so the complete old list at stage $r+1$ is still finite on each whole
+component and each finite comparison diagram.
+
+Finally the split along regular zero sets preserves compact truncations and finite
+incidence by \Cref{component:split}. Initially the radial separators make
+all components compact before prolongation. Compatible smooth metrics
+and finite relevant warping functions then give the complete component geometry by
+\Cref{component:geometry}. The recursion
+\eqref{countable:collapse-recursion} preserves confinement in original
+radial blocks. All exceptional-list enlargements just described are
+finite, and all constants outside the exceptional lists have multiplier $c_{r+1}$.
+This completes the induction step, including the first radial step.
+\end{proof}
+
+\subsection{The obstruction in dimension one}
+
+\begin{lemma}[The one-dimensional obstruction]\label{countable:dimension-one}
+At any finite stage of the construction, the scalar inequality
+\eqref{countable:scalar-invariant} excludes a nonempty one-dimensional
+component with the complete geometry and finite warping function list stipulated above.
+\end{lemma}
+
+\begin{proof}
+Such a component is complete by \Cref{component:geometry} and has only
+finitely many relevant positive smooth warping functions $f_1,\ldots,f_q$ on
+its whole base. Its arclength universal cover is $\R$, including
+when the component itself is a circle. On this line put
+$u_\alpha=\log f_\alpha$ and $P=\sum_{\alpha=1}^q u_\alpha$.
+The warped-product scalar formula reduces to
+\[
+ R=-2P''-(P')^2-\sum_{\alpha=1}^q(u_\alpha')^2.
+\]
+The required count in dimension one is zero, so the invariant holds
+everywhere and gives $R\ge\lambda_r>0$. Consequently
+\[
+ -2P''\ge\lambda_r+(P')^2,\qquad
+ \frac{\dd}{\dd s}\arctan\frac{P'}{\sqrt{\lambda_r}}
+ \le-\frac{\sqrt{\lambda_r}}2.
+\]
+Integration over a line interval longer than
+$2\pi/\sqrt{\lambda_r}$ contradicts the range of the arctangent.
+If $q=0$, the scalar formula is simply $R=0$. The argument takes
+place at one finite stage and uses an ordinary finite sum.
+\end{proof}
+
+

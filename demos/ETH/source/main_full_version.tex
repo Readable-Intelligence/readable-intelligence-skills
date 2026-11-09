@@ -1,0 +1,2120 @@
+\documentclass[11pt,reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{dsfont}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage[colorlinks=true,allcolors=blue,backref=page]{hyperref}
+\numberwithin{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\Prob}{\mathbb P}
+\DeclareMathOperator{\Bin}{Bin}
+\allowdisplaybreaks[2]
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\setlength{\emergencystretch}{1.5em}
+\setcounter{tocdepth}{1}
+\title{The Exponential Time Hypothesis is False}
+\author{OpenAI}
+\date{17 October 2026, revised 25 October 2026}
+\hypersetup{pdftitle={ETH is False},
+ pdfauthor={OpenAI},
+ pdfsubject={Exact counting, sparse parity tests, and polynomial interpolation}}
+\begin{document}
+\begin{abstract}
+We give a deterministic algorithm for exactly counting the satisfying assignments
+of an arbitrary $k$-CNF formula.
+For every fixed $k\ge2$, on a formula with $n$ variables and $m$ clauses,
+our algorithm uses $\poly_k(n,m)$ space and runs in time
+$(n+m)^{O_k(1)}2^{\,n/(\log n)^{\frac12+o(1)}}$.
+Our algorithm refutes the Exponential Time Hypothesis (ETH), which
+postulates that deciding $3$-SAT on $n$ variables requires
+$2^{\Omega(n)}$ time in the worst case.
+\end{abstract}
+\maketitle
+
+\tableofcontents
+\vspace{-\baselineskip}
+
+\section{Introduction}
+For every fixed $k\ge3$, $k$-SAT is the canonical NP-complete
+problem~\cite{Cook71}, and its exponential-time complexity underlies the Exponential Time
+Hypothesis (ETH) and the Strong Exponential Time Hypothesis
+(SETH)~\cite{IP01,IPZ}.
+In this paper, we refute ETH by giving, for every fixed $k\ge2$,
+a deterministic algorithm that counts the satisfying assignments
+of a $k$-CNF in subexponential time and polynomial space.
+
+Write the input $k$-CNF on $n$ declared variables with $m$ input clauses as
+\[
+ F(x_1,\ldots,x_n)=\bigwedge_{e=1}^m
+ \bigl[(x_{i_{e,1}}\oplus b_{e,1})\vee\cdots\vee
+       (x_{i_{e,k}}\oplus b_{e,k})\bigr],
+\]
+where $i_{e,j}\in\{1,\ldots,n\}$ and $b_{e,j}\in\{0,1\}$ are the
+variable index and negation bit of the $j$th literal in clause $e$,
+and $\oplus$ denotes addition modulo two. Repeating a literal permits
+clauses with fewer than $k$ literals.
+The indices $i_{e,j}$ and bits $b_{e,j}$ are fixed by $F$;
+only $x_1,\ldots,x_n$ vary over assignments.
+Our aim is to compute the quantity
+\begin{equation}\label{eq:solution-count}
+ \#F=\bigl|\{x\in\{0,1\}^n:F(x)=1\}\bigr|.
+\end{equation}
+Testing $\#F>0$ also decides satisfiability.
+We keep $k$ fixed as $n$ grows.
+Throughout, $\log$ denotes the natural logarithm.
+\begin{theorem}\label{thm:main}
+For each fixed $k\ge2$, the count $\#F$ of a $k$-CNF $F$ on
+$n\ge20$ declared variables with $m$ clauses can be computed by a
+deterministic algorithm using
+\[
+ (n+m)^{O_k(1)}2^{O_k(n\log\log n/\sqrt{\log n})}
+\]
+bit operations and $(n+m)^{O_k(1)}$ bits of space.
+For each fixed $D>0$, its running time on inputs with $m\le Dn$ is
+\[
+ (n+m)^{O_{k,D}(1)}2^{O_{k,D}(n/\sqrt{\log n})}.
+\]
+\end{theorem}
+
+Both bounds in Theorem~\ref{thm:main} follow from a Boolean tensor
+contraction algorithm. A contraction sums, over one bit per wire,
+the product of the local tensor entries. Clause truth tables and
+equality constraints linking occurrences of the same variable reduce
+counting to contraction of a network with $O_k(n+m)$ wires, hence
+$O_{k,D}(n)$ wires at fixed clause density
+(Section~\ref{subsec:sharp-fixed-density}). Since $0\le\#F\le2^n$,
+computation modulo $2^{n+1}$ determines the integer count.
+Theorem~\ref{thm:tensor-contraction} contracts the networks
+used here with exponent $O(s/\sqrt{\log s})$, where $s$ bounds their
+number of wires.
+
+The contraction algorithm is recursive, and each call separates groups
+of vertices. Call the two sides of the bipartite network its row side
+and its column side, and give the row ends and the column ends of the
+wires independent Boolean vectors $Y$ and $X$, indexed by the wires.
+The agreement factor is $\prod_x l_{Y_x}(X_x)$, where $l_0(z)=1-z$ and
+$l_1(z)=z$: it is one exactly when $X=Y$ and zero otherwise, so
+multiplying the tensor entries by it and summing over $X$ and $Y$
+gives the contraction. A call replaces $X$ in this product by
+$W(T)X$, where $W(T)$ is a matrix of polynomials in a parameter $T$
+with $W(0)=I$. To define it, Lemma~\ref{lem:tensor-arrays} labels the
+vertices by strings in $[r]^a$, with coordinates numbered
+$0,\ldots,a-1$, and places the wires into \emph{arrays} of $L=2^a$
+\emph{slots}, numbered $0,\ldots,L-1$, with at most one wire per slot.
+Each wire has its row and column ends at the same slot; the parameters
+$r$ and $a$ are chosen as in Section~\ref{subsec:tensor-packing}.
+The matrix $W(T)$ is indexed only by the occupied row and column
+positions. Within an array, its entries are
+$W_{xy}(T)=\mathcal C(T)/(\mathcal C'(0)(T-(y-x)))$ on slots $x,y$,
+where $\mathcal C(T)=\prod_{t=-L}^{L-1}(T-t)$, and entries between
+different arrays are zero. At each nonzero integer $t$ with
+$-L\le t<L$, the matrix $W(t)$ is therefore supported only on pairs of
+slots differing by $t$. We select the points $t$ whose two-adic
+valuation $v_2(t)$ is less than an integer parameter $1\le u\le a$.
+The labels and slot
+numbers are chosen so that at a selected point $t$ the surviving
+entries connect vertices in the same group, where the groups at $t$
+are the classes of coordinate $v_2(t)$ of the labels, each with few
+wires. Thus the deformed contraction has its original value at zero
+and separates at the selected points
+(Section~\ref{subsec:tensor-deformation}).
+
+The degree bound for the deformed contraction does not allow recovery
+from values at the selected points alone, so we also compute Taylor
+data. Moving away from a selected point reintroduces interactions
+between groups.
+Section~\ref{subsec:tensor-auxiliary-variables} expands the crossing entries by a
+geometric series whose terms separate the row and column dependence.
+Successive terms have coefficients divisible by successively higher
+powers of two. Working modulo $2^p$, we can therefore discard every
+product whose accumulated divisibility reaches $2^p$. For each
+remaining monomial in the expansion, the sum over wire bits factors
+into contractions of smaller networks, as expressed by
+\eqref{eq:tensor-recursion-identity}.
+
+The saving depends on how much precision interpolation requires.
+Writing $T=t+\alpha z$ near a selected point $t$, with
+$\alpha=2^{a+1}$, scales the local Taylor coordinate $z$ and cancels
+the powers of two in the matrix-entry denominators
+(Lemma~\ref{lem:tensor-integrality}). We
+then use fewer Taylor coefficients at nodes divisible by higher
+powers of two. This gradual decrease bounds the precision lost to
+the Hermite interpolation denominators
+(Lemma~\ref{lem:decreasing-hermite-multiplicities}). With $M$ wires and $u$ retained
+two-adic valuation levels, the resulting bound leaves only
+$2^{O(M/\sqrt u)}$ monomials to enumerate. Each gives child networks
+with at most $M/8$ wires. Section~\ref{subsec:tensor-cost} shows that
+the exponents decrease geometrically through the recursion, giving the
+exponent $O(s/\sqrt{\log s})$. The tensor entries are represented
+implicitly, and the recursion is traversed depth first; the same
+section bounds their descriptions and the working precisions by
+polynomials, giving polynomial space.
+
+For arbitrary clause density, counting-preserving
+sparsification~\cite[Appendix~A]{DHMTW} partitions the satisfying
+assignments among formulas on the original variables. With a
+parameter tending to zero, the number of leaves fits the desired
+time bound, but their clause counts can still be $n$ times a
+polylogarithmic factor (Lemma~\ref{lem:sparsify}). To obtain smaller
+networks, we compress each leaf into $O(n)$ sparse polynomial
+equations over $\mathbb F_2$. Each equation tests the parity of a
+short list of clause-violation bits. Such a test can easily miss an
+assignment violating very few clauses. We first apply expander-code
+checks~\cite[Sections~IV and~VI]{SS96} to the violation vector, so
+that every nonzero vector still accepted has large support
+(Lemma~\ref{lem:sparse-checks}). A short random parity test then
+rejects each remaining nonsatisfying assignment with constant
+probability. To choose tests deterministically, count the common
+zeros for each candidate and keep a candidate minimizing that count.
+Every satisfying assignment passes every candidate, so minimizing
+the total also minimizes the number of nonsatisfying assignments
+left. Each round removes a constant fraction of them, and $O(n)$
+rounds remove all of them. Section~\ref{sec:hashes} proves this
+construction, including its bounds on the number and sparsity of
+the equations.
+
+The counter for these candidate systems must keep the number of
+wires small. Let $L_i$ be the integer sum of the listed monomials
+of equation $i$, and put $\ell=n+1$. The equation holds exactly when
+$L_i$ is even. The complemented Beigel--Tarui modulus-amplifying
+polynomial~\cite[Section~2.3]{BT94} represents this indicator modulo
+$2^\ell$, but multiplying one such polynomial per equation would
+give a quadratic degree bound. We write each indicator in powers
+of $h(Y)=Y(Y-1)$, with coefficients linear in $Y$. Since $h$ is
+even at integer arguments, every product containing at least
+$\ell$ copies of $h$ vanishes modulo $2^\ell$. Truncating by the
+\emph{total} number of copies across all equations keeps the degree
+$O_k(n)$, even when the inputs of different equations are treated
+as distinct (Lemma~\ref{lem:total-order}). After multilinearization
+on Boolean inputs, the retained monomials select only $O_k(n)$
+factor--variable incidences from a set of size
+$n(\log n)^{O_k(1)}$. Indexing these subsets in binary
+gives networks with $O_k(n\log\log n)$ wires
+(Section~\ref{subsec:tensor-sparse-proof}). Applying the contraction
+algorithm gives Lemma~\ref{lem:tensor-sparse-query}.
+Section~\ref{subsec:sharp-dense} combines this counter with the parity
+tests and sums the disjoint leaf counts, proving the arbitrary-density
+bound of Theorem~\ref{thm:main}.
+
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}
+give a second counting algorithm, based on polynomial interpolation over $\mathbb Q$ and
+independent of the contraction algorithm. It proves
+Proposition~\ref{prop:interpolation-bound}, with the weaker exponent
+$O_k(\rho(n))$, where
+\[
+ \rho(n)=\frac{n(\log\log n)^2}{\sqrt{\log n}}
+          =\frac{n}{(\log n)^{\frac12+o(1)}}.
+\]
+It uses the same parity tests and truncated indicator product, with
+a different way to sum over Boolean assignments. Replace each factor
+input by a linear form whose coefficients are polynomials in a
+parameter $T$. At zero these forms restore the original inputs.
+At selected nonzero points, fixing a few bounded integer linear
+measurements makes every factor depend on just one small group of
+variables, so the sum factors over groups
+(Lemma~\ref{lem:measurement-separation}).
+
+The difficulty is to obtain many such points while keeping the
+replacement degrees small. Section~\ref{sec:construction} works on
+auxiliary coordinates recording the variable and factor group choices.
+Swapping the two labels at every point gives a permutation that
+connects matching groups. We multiply this permutation by a
+low-degree polynomial in the individual swaps. Use the tensor-product basis built from the symmetric and
+antisymmetric eigenvectors of a single swap of two labels, with one
+factor per selected point. A symmetric factor has eigenvalue $+1$,
+and an antisymmetric factor has eigenvalue $-1$. Thus the complete
+swap acts by $(-1)^j$ on a basis vector with $j$ antisymmetric factors.
+For a uniformly chosen vector from this basis, $j$ has a binomial
+distribution, so interpolating these signs on a short central
+interval makes the resulting matrix fix all but a small tail of the
+basis directions.
+Measuring the exceptional directions determines the correction to the identity
+(Lemma~\ref{lem:swaps-matrix}). Low degree allows only a few swaps
+to be undone, so each nonzero entry connects different groups at only
+a few points (Lemma~\ref{lem:swaps-support}). Keep the measured
+correction fixed and multiply each matrix entry by a polynomial
+equal to one at zero and vanishing at those points. This gives the
+desired low-degree replacement forms (Lemma~\ref{lem:swaps-forms}).
+
+Values at these points alone need not determine the counting
+polynomial. To compute its Taylor coefficients, give the changes
+in the replacement forms a separate formal input. Each occurrence
+of that input contributes at least one power of the Taylor variable,
+so the coefficient of order $j$ has degree at most $j$ in the
+correction variables. Boolean M\"obius inversion expresses its sum
+as restricted sums with those variables fixed; fixing them preserves
+the separation into groups (Lemma~\ref{lem:boolean-differences} and
+Section~\ref{subsec:fixed-boolean-substitutions}). Hermite
+interpolation then recovers the value at zero. Section~\ref{sec:setup}
+applies this procedure to the sparse polynomial systems, and
+Section~\ref{subsec:general-reduction} sums the leaf counts to prove
+Proposition~\ref{prop:interpolation-bound}. The computations use
+polynomial space by processing the sums sequentially with common
+denominators of polynomial bit length (Appendix~\ref{app:arithmetic}).
+
+When $\#F>0$, the standard self-reduction finds a satisfying
+assignment by fixing one variable at a time and checking that the
+remaining count is positive. Choosing each bit according to the two
+conditional counts instead gives an exactly uniform random satisfying
+assignment, with $\poly_k(n,m)$ expected overhead~\cite[Theorem~3.3(1)]{JVV86}.
+Indeed, if $C(w)$ counts satisfying extensions of a prefix $w$,
+choose its next bit $b$ with probability $C(wb)/C(w)$.
+The probabilities along any satisfying assignment telescope to
+$1/C(\varnothing)$. This choice is exact: draw a uniform integer
+in $[0,C(w)-1]$ by sampling uniform bit strings of the least sufficient length and rejecting out-of-range values, and choose zero
+precisely when it is smaller than $C(w0)$. Each trial is accepted
+with probability greater than $1/2$, and all counts have at most
+$n+1$ bits.
+
+The theorem also yields arbitrarily accurate subexponential-time
+approximation algorithms for Max-$k$-SAT.
+The Unique Games
+Theorem~\cite[Section~8.1]{OpenAIUGC26} implies NP-hardness bounds
+for Max-$k$-SAT that match, up to arbitrarily small error in the
+approximation ratio, the guarantees of the semidefinite-programming
+algorithm of~\cite{Rag08}. These bounds concern polynomial-time
+algorithms. Corollary~\ref{cor:max-sat-approximation} uses
+subexponential time, and the remark after it explains why hardness
+proved by polynomial-time reductions does not extend to such running
+times.
+Write $\operatorname{OPT}(F)$ for the maximum number of clauses of $F$
+simultaneously satisfied by an assignment.
+\begin{corollary}\label{cor:max-sat-approximation}
+For every fixed $k\ge2$ and $\varepsilon>0$, a randomized algorithm,
+given a $k$-CNF $F$ on $n\ge20$ variables with $m$ clauses,
+finds an assignment satisfying at least
+$\operatorname{OPT}(F)-\varepsilon m$ clauses with probability
+$1-2^{-\Omega(n)}$, in
+\[
+ (n+m)^{O_{k,\varepsilon}(1)}2^{O_{k,\varepsilon}(\rho(n))}
+\]
+time and $(n+m)^{O_{k,\varepsilon}(1)}$ space.
+\end{corollary}
+Appendix~\ref{subsec:consequence-proofs} proves the corollary. The
+proof uses only the fixed-density bound of Theorem~\ref{thm:main}, for
+formulas with $O_{k,\varepsilon}(n)$ variables and clauses, so the
+interpolation algorithm of
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}
+is not needed.
+
+Running-time bounds of the form $2^{o(n)}$ do not transfer under
+general polynomial-time reductions. A reduction that produces formulas
+with $n^c$ variables from instances of size $n$, for a constant $c>1$,
+turns a $2^{o(n)}$ bound only into a $2^{o(n^c)}$ bound, and a
+$2^{n^{o(1)}}$-time algorithm would be needed to give every problem in
+NP a subexponential-time algorithm in this way. So our result does not
+imply that general NP problems admit subexponential-time algorithms.
+The bound does transfer through encodings with linearly many
+variables, and Corollary~\ref{cor:graph-counting} uses such encodings
+to count independent sets, graph colorings and perfect matchings.
+
+\begin{corollary}\label{cor:graph-counting}
+For simple graphs with $v$ vertices and $e$ edges, deterministic
+algorithms compute the following counts:
+\begin{itemize}
+\item independent sets and, for each fixed $q\ge2$, proper
+$q$-colorings, in $2^{o(v)}$ time and $\poly_q(v,e)$ space;
+\item perfect matchings, in $2^{o(v+e)}$ time and $\poly(v,e)$ space.
+\end{itemize}
+\end{corollary}
+Appendix~\ref{subsec:consequence-proofs} proves the corollary by
+counting-preserving CNF encodings, with $v$ variables for independent
+sets, $qv$ variables for $q$-colorings and $O(v+e)$ variables for
+perfect matchings.
+
+The fixed-density case of Theorem~\ref{thm:main} gives a circuit lower
+bound for $\mathrm E^{\mathrm{NP}}$, the class of languages decidable
+in deterministic time $2^{O(n)}$ with an NP oracle.
+
+\begin{corollary}\label{cor:quantitative-circuits}
+Let $C_L(n)$ be the minimum number of noninput gates in a circuit
+computing $L$ on $\{0,1\}^n$, allowing arbitrary Boolean gates of
+fan-in at most two and unrestricted fan-out. There exist a language
+$L\in\mathrm E^{\mathrm{NP}}$ and a constant $c>0$ such that
+\begin{equation}\label{eq:quantitative-circuit-lower-bound}
+ C_L(n)>c\,n\sqrt{\log n}\qquad\text{for infinitely many }n.
+\end{equation}
+\end{corollary}
+
+Appendix~\ref{subsec:circuit-lower-bounds} proves the corollary.
+Appendix~\ref{subsec:local-inversion} gives algorithms for inversion
+and exact preimage counting of Boolean maps with constant output locality.
+
+\subsection{Related work}\label{sec:related}
+We first discuss earlier SAT and counting algorithms and the
+complexity hypotheses contradicted by Theorem~\ref{thm:main}.
+We then compare both algorithms with earlier algebraic algorithms and
+identify the existing constructions they use.
+
+\subsubsection{SAT algorithms and the exponential-time hypotheses}\label{subsec:related-sat}
+Sch\"oning's local-search algorithm and PPSZ are landmarks in the
+development of exponential-time algorithms for $k$-SAT~\cite{Schon99,PPSZ05}.
+Sch\"oning's randomized algorithm starts from a random assignment
+and repeatedly flips a uniformly chosen variable in an unsatisfied clause. Its
+bounded-error decision time is
+\[
+ (n+m)^{O(1)}(2-2/k)^n
+\]
+for each fixed $k\ge3$~\cite[Section~2]{Schon99}.
+In particular, this gives $(n+m)^{O(1)}(4/3)^n$ time for $3$-SAT.
+The PPSZ algorithm~\cite{PPSZ05} uses a different mechanism: bounded resolution derives
+additional clauses, after which variables are assigned in a random
+order, taking forced values when available and guessing
+otherwise. For $k=3,4$, its original analysis gave stronger
+bounds for uniquely satisfiable formulas than for general ones.
+The unique-SAT guarantees were later extended to general $3$-SAT and
+$4$-SAT; for $3$-SAT this gave a randomized
+$O(1.308^n)$ bound~\cite{Hertli14}.
+Hansen, Kaplan, Zamir, and Zwick improved the PPSZ bound for every
+fixed $k\ge3$ by biasing the algorithm's guesses~\cite{HKZZ19}.
+Scheder obtained an improvement for the same range of $k$ by sharpening
+the analysis of the original PPSZ algorithm~\cite[Theorem~1.5]{Scheder24}.
+For general $3$-SAT, a preprint by Jiang and Cai gives a randomized
+$O^*(1.307031578^n)$ bound~\cite[Corollary~1.2]{JC26}, where $O^*$
+suppresses factors polynomial in the input size. Liu's deterministic
+algorithm combines branching with derandomized local search and solves
+$3$-SAT in $O(1.32793^n)$ time~\cite[Theorem~21]{Liu18}.
+
+Randomized local search has also produced effective heuristics.
+The WalkSAT heuristic chooses an
+unsatisfied clause and flips one of its variables, combining random
+choices with greedy moves~\cite{SKC94}. Experiments on formulas
+from circuit synthesis and diagnosis demonstrated the practical value
+of this approach~\cite[pp.~340--342, Tables~4--5]{SKC94}.
+
+Among uniformly random $k$-CNFs, instances at the satisfiability
+threshold were conjectured to be the hardest for deciding satisfiability~\cite[Section~1]{VW21};
+for fixed $k\ge3$ and lower clause densities $m/n\le 2^k/k^C$,
+where $C$ is a universal constant,
+polynomial-time almost-uniform sampling of satisfying assignments is
+known with high probability over the formula~\cite[Theorem~1.2]{CLWYY25}.
+For a uniformly random formula with polynomially many clauses,
+conditioned on satisfiability, Vyas and Williams~\cite[Theorem~3]{VW21} give a PPZ-based
+algorithm that finds a solution in $2^{n(1-\Omega(\log k/k))}$ time with high
+probability over both the formula and the algorithm's random choices.
+
+The Exponential Time Hypothesis (ETH) asserted that $3$-SAT requires
+$2^{\Omega(n)}$ deterministic time in the worst case, and hence so does
+$k$-SAT for every fixed $k\ge3$~\cite[Theorem~1]{IP01}.
+The Strong Exponential Time Hypothesis (SETH) made the sharper
+prediction that $k$-SAT requires $2^{n(1-o_k(1))}$ time as $k$ grows.
+Precisely, for every $\varepsilon\in(0,1)$, there is a fixed $k$ for
+which no deterministic algorithm solves $k$-SAT in
+$2^{(1-\varepsilon)n}(n+m)^{O(1)}$ time.
+The running-time bounds for Sch\"oning's algorithm and PPSZ helped
+motivate this prediction: their improvements over exhaustive search
+diminish as $k$ grows~\cite[Open Problems, item~2]{IP01}.
+
+The Gap Exponential Time Hypothesis (Gap-ETH) strengthens ETH by
+postulating constants $\delta,\gamma>0$ for which no $O(2^{\gamma n})$-time
+algorithm can distinguish a satisfiable $3$-CNF from one in which
+every assignment violates at least a $\delta$ fraction of the clauses,
+even when $m=O(n)$~\cite{Din16,MR17}. The randomized version rules
+out an algorithm with the same running time that distinguishes the
+two cases with probability at least $2/3$ on every promised
+input~\cite[Conjecture~2.5]{CCK20}.
+It has been used to prove hardness of approximating Label
+Cover~\cite{Din16} and dense constraint satisfaction
+problems~\cite{MR17}. It also rules out nontrivial fixed-parameter
+approximations for Clique and Dominating Set. For Clique, the excluded
+ratios are $o(\mathrm{OPT})$, where $\mathrm{OPT}$ is the maximum
+clique size~\cite[Corollaries~5.3 and~5.6]{CCK20}.
+
+The Nondeterministic Strong Exponential Time Hypothesis (NSETH)
+asserts that, for every $\varepsilon>0$, some fixed $k$ admits no
+nondeterministic $2^{(1-\varepsilon)n}(n+m)^{O(1)}$-time algorithm
+for deciding whether a $k$-CNF is \emph{unsatisfiable}, or equivalently
+whether a $k$-DNF is a tautology~\cite{CGIMPS16}.
+NSETH has been used to establish barriers to deterministic fine-grained
+reductions from SAT to problems such as 3SUM and All-Pairs Shortest
+Paths~\cite{CGIMPS16}, and to delineate SETH-based lower bounds for
+approximating directed graph diameter~\cite{Li21}.
+
+Theorem~\ref{thm:main} refutes ETH, SETH, Gap-ETH, and NSETH.
+Indeed, testing whether the exact count is positive or zero decides
+both satisfiability and unsatisfiability in deterministic
+$2^{o(n)}(n+m)^{O_k(1)}$ time for every fixed $k$; deciding
+satisfiability also solves the Gap-ETH promise problem.
+The deterministic algorithm also refutes the bounded-error randomized
+versions of ETH~\cite[Section~1]{DHMTW} and SETH~\cite[Definition~2.1]{CDL16}, and of Gap-ETH.
+It does not conflict with unconditional exponential lower bounds for
+restricted proof systems such as regular resolution~\cite{BeckImp13}.
+In 2016, Ryan Williams refuted the Merlin--Arthur version of SETH
+(MA-SETH) by giving a protocol that certifies $k$-CNF unsatisfiability
+in $2^{n/2}\poly(n,m)$ time~\cite[Theorem~3.3]{Wil16}.
+
+\subsubsection{Exact counting and counting complexity}\label{subsec:related-counting}
+In Valiant's framework, $\#\mathrm{SAT}$ and $\#3$-SAT are
+$\#\mathrm P$-complete under parsimonious
+reductions~\cite[Section~3, Facts~1--2]{Val79}.
+For fixed $k\ge3$, previous exact-counting algorithms achieve
+$\poly_k(n,m)2^{n-\Omega(n/k)}$ time, with a Las Vegas
+expected-time bound in~\cite[Lemma~3.5]{IMP12} and a deterministic
+bound in~\cite[Theorem~1.6]{CW21}.
+For $\#2$-SAT, Wahlstr\"om's algorithm counts satisfying assignments
+in $O^*(1.2377^n)$ time~\cite{Wahlstrom08}. For $\#3$-SAT, Kutzkov
+uses complementary branching to count satisfying assignments in
+$O^*(1.637^n)$ time~\cite{Kutzkov26}. Both algorithms are deterministic.
+
+The counting Exponential Time Hypothesis ($\#\mathrm{ETH}$)
+asserted that exactly counting the satisfying assignments of a $3$-CNF
+requires $2^{\Omega(n)}$ deterministic time~\cite[Section~1]{DHMTW}.
+Under $\#\mathrm{ETH}$, Curticapean~\cite{Cur18} rules out deterministic
+$2^{o(v)}$-time algorithms for counting perfect matchings even in
+unweighted bipartite graphs with $v$ vertices and $O(v)$ edges.
+The perfect-matching algorithm in Corollary~\ref{cor:graph-counting}
+applies in particular to these graphs.
+Our algorithm (Theorem~\ref{thm:main}) solves $\#3$-SAT deterministically
+in $2^{o(n)}\poly(n,m)$ time and therefore refutes $\#\mathrm{ETH}$.
+
+\subsubsection{Implications for fine-grained complexity}\label{subsec:related-consequences}
+ETH and SETH became standard assumptions for parameterized and
+fine-grained complexity~\cite{IPZ,VW19}.
+ETH-based reductions yielded lower bounds for the dependence on
+solution size in Clique~\cite{CHKX06}, and on treewidth in constraint
+satisfaction and subgraph embeddings with prescribed vertex classes~\cite{Marx10}.
+SETH supported sharp exponential bounds for Hitting Set and Set
+Splitting~\cite{CDL16}, and for Independent Set and Dominating Set
+parameterized by treewidth~\cite{LMS18}.
+It also gave bounds on possible speedups of pseudopolynomial algorithms
+for Subset Sum and finding a path subject to two additive weight bounds~\cite{ABHS19}.
+
+For problems in $\mathrm P$, SETH was used to rule out polynomial-factor
+speedups over quadratic running times for edit
+distance~\cite{BackursIndyk18}, longest common subsequence and dynamic
+time warping~\cite{BK15}, Fr\'echet distance~\cite{Bri14}, and
+regular-expression matching~\cite{BI16}.
+Other applications concerned approximating graph
+diameter~\cite{RV13} and maintaining reachability counts or the size
+of the largest strongly connected component under graph
+updates~\cite{AW14}.
+Together these results made SETH a common basis for explaining the
+apparent optimality of algorithms across quite different problems.
+
+Our refutation of ETH and SETH removes one basis for the hardness claims
+above. Some of the same lower bounds follow from weaker hypotheses that
+may still hold. For example, the lower bounds for longest common
+subsequence and regular-expression matching follow from the Orthogonal
+Vectors Conjecture (OVC)~\cite{BK15,BI16}. OVC asserts that for every
+fixed $\varepsilon>0$, no $O(N^{2-\varepsilon}\poly(d))$-time algorithm
+can decide whether two sets of $N$ Boolean vectors of dimension $d$
+contain an orthogonal pair, one vector from each set. The reduction
+from SAT to Orthogonal Vectors shows that SETH implies OVC~\cite{Wil05,VW19}.
+The lower bounds for Fr\'echet distance, graph diameter approximation,
+and the treewidth dependence of Independent Set and Dominating Set also
+follow from the hypothesis that unrestricted CNF-SAT admits no
+$2^{(1-\delta)n}\poly(n,m)$-time algorithm for any constant
+$\delta>0$~\cite{Bri14,RV13,LMS18}. Theorem~\ref{thm:main} gives a
+running-time guarantee for each fixed clause width $k$, while this
+hypothesis allows the width to grow with $n$.
+
+To obtain a faster algorithm for a target problem from our SAT algorithm,
+we need a reduction in the other direction, from that problem to
+fixed-width SAT, that controls the number of variables. Set Splitting
+with sets of size at most $k$ has such a
+reduction~\cite[Observation~3.6]{CDL16}: use one Boolean variable per
+element to specify its side of the split. For each set, one clause
+requires at least one of its variables to be true, and a second requires
+at least one to be false. The resulting $k$-CNF has one variable per
+universe element, so for fixed $k$ Theorem~\ref{thm:main} gives
+subexponential time in the universe size, up to a polynomial input-size
+factor.
+
+Theorem~\ref{thm:main} invites a renewed search for algorithms for
+problems whose known hardness results relied on ETH or SETH. The
+examples above suggest both immediate consequences and problems for
+which new algorithmic ideas are needed.
+
+\subsubsection{Prior work on algebraic algorithms for combinatorial problems}\label{subsec:related-algebraic}
+Both of our algorithms are algebraic. Each deforms the counting sum by
+a polynomial parameter so that, at selected points, it becomes a sum of
+products of sums over small groups, and each recovers the count at the
+origin by Hermite interpolation. The contraction algorithm of
+Sections~\ref{app:quantitative}--\ref{sec:hashes} deforms the
+identification of the two sides of a tensor network
+(Section~\ref{subsec:tensor-deformation}); the algorithm using polynomial interpolation over $\mathbb Q$ of
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}
+replaces the inputs of the factors by linear forms with polynomial
+coefficients (Section~\ref{subsec:preview-deformation}). Below we
+discuss prior work on using algebraic methods to design algorithms for
+combinatorial problems, and name in each comparison the algorithm it
+concerns. For broader background, see the surveys of Koutis and
+Williams~\cite{KW16} on polynomial evaluations used to detect combinatorial structures, Williams~\cite{Wil14}
+on the polynomial method in algorithm design, and
+Husfeldt~\cite{Hus11} on algorithmic inclusion--exclusion.
+
+Markov and Shi evaluate a tensor network by successive tensor
+contractions. Along a fixed order this takes $O(T\exp(O(d)))$ time
+for a network of size $T$, where $d$ is the maximum rank of all
+tensors appearing in the process~\cite[Proposition~3.6]{MS08}, stated
+there for the networks of quantum circuits. In Section~4 they use
+single-edge contractions, retaining loops, and define the contraction
+complexity of a graph as the minimum, over edge orders, of the maximum
+degree of a newly merged vertex. They prove that this graph parameter
+equals the treewidth of the line graph~\cite[Definition~4.1 and
+Proposition~4.2]{MS08}. The contraction algorithm of
+Section~\ref{app:tensor} uses no contraction order: under
+the degree and entry hypotheses of Theorem~\ref{thm:tensor-contraction},
+its exponent $O(s/\sqrt{\log s})$ depends only on the number of wires.
+
+Williams's split-and-list algorithm~\cite{Wil05} partitions the
+variables of a $2$-CSP into three groups, enumerates partial assignments,
+and combines them using fast matrix multiplication.
+Koivisto~\cite{Koi06} gives a direct sum--product formulation.
+The algorithm of Sections~\ref{sec:counting}--\ref{sec:interpolation-return}
+likewise enumerates assignments within groups. Fixing
+the shared measurements $\vec y$ makes their contributions multiply
+independently. Scott and Sorkin~\cite[Section~6]{SS09} extend
+split-and-list to polynomial-valued weights and arbitrary rings.
+The summation routine of Section~\ref{sec:counting} similarly uses truncated polynomial rings to
+retain several coefficients in one computation.
+
+Bj\"orklund~\cite[Sections~2--3]{Bjo16} uses inclusion--exclusion and
+polynomial interpolation to reduce permanent and directed
+Hamiltonian-cycle counting to a weighted sum over smaller instances.
+He adds the weights of identical instances in a table, then solves each
+distinct instance with nonzero total weight once.
+Bj\"orklund, Kaski, and Williams~\cite{BKW19} use
+low-degree curves and generalized Kakeya sets to recover polynomial
+values from evaluations on a small structured set, yielding faster
+algorithms for fermionants, including the permanent of integer matrices whose entries are bounded in absolute value by a fixed constant.
+The polynomial replacements of the algorithm using polynomial interpolation over $\mathbb Q$
+serve a similar purpose: they connect
+the desired count to structured evaluations from which it can be
+reconstructed. Here the useful structure is separation into groups
+after fixing a few shared measurements.
+
+Bhargava, Ghosh, Kumar, and
+Mohapatra~\cite[Sections~3.1--3.2]{BGKM23} evaluate multivariate
+polynomials over finite fields along low-degree curves, using
+Hasse derivatives and Hermite interpolation when values alone do not
+suffice. For a univariate restriction $g$, the order-$j$
+Hasse derivative at $t$ is the coefficient of $z^j$ in $g(t+z)$. Both of our algorithms use the same recovery principle: compute several Taylor
+coefficients at each point admitting fast summation, then recover
+the original count by Hermite interpolation.
+
+Woodruff and Yekhanin~\cite{WY07} use values and first derivatives
+along a line to recover a target value in private information retrieval.
+Kopparty, Saraf, and Yekhanin~\cite{KSY14} use higher-order
+Hasse derivatives for local correction of multiplicity codes, extending the
+line-based recovery of Reed--Muller codes. In the algorithm using polynomial interpolation over $\mathbb Q$, the matrix construction of Section~\ref{sec:construction}
+supplies low-degree replacement forms that let us
+compute the Taylor coefficients at the interpolation points by fast
+summation after fixing a few shared measurements.
+
+\subsubsection{Antecedents of the matrix construction}\label{subsec:related-spectral}
+The algorithm using polynomial interpolation over $\mathbb Q$ of
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}
+evaluates sums of products of polynomials over
+Boolean assignments. The polynomials share variables, so these sums
+do not factor into independent smaller sums. We introduce linear
+substitutions, depending polynomially on an interpolation parameter,
+that make such a factorization possible after fixing a few integer
+linear measurements. An auxiliary square rational matrix $M_0$
+underlies these substitutions: a bound on $\operatorname{rank}(I-M_0)$
+limits the number of measurements, while restrictions on the nonzero
+entries of $M_0$ keep the substitution degrees small.
+Section~\ref{subsec:preview-auxiliary} explains this connection.
+
+Related interpolation methods have been used to obtain low-rank
+approximations to structured matrices. In~\cite[Section~3]{AW17},
+a low-degree polynomial matches $(-1)^j$ on an interval of integer
+inner products $j$, using the interpolation lemma
+of~\cite[Lemma~3.1]{AW15}. This gives low-rank matrices agreeing with
+Walsh--Hadamard matrices in most entries, a result in the study of
+matrix rigidity~\cite{Val77}. Related interpolation gives rigidity
+bounds for Kronecker powers in~\cite[Theorem~6.1]{AGP23}.
+Dvir and Liu~\cite[Claim~2.20 and Lemmas~3.3--3.4]{DL20} use a spectral approach:
+sparse changes to a function invariant under permutations of its coordinates make many Fourier coefficients vanish,
+reducing the rank of its group-circulant matrix.
+
+Our construction also interpolates $(-1)^j$ on a short interval, now
+to obtain a polynomial in commuting permutation matrices. The same
+polynomial gives both the rank bound for $I-M_0$ and the restrictions
+on the nonzero entries of $M_0$. We prove these properties and their
+quantitative bounds directly in Section~\ref{sec:construction}.
+
+\subsubsection{Sparsification and parity tests}\label{subsec:related-reductions}
+We use the counting-preserving version~\cite[Appendix~A]{DHMTW} of
+the sparsification lemma~\cite{IPZ}, with quantitative bounds
+from~\cite[Section~6]{CIP} and
+\cite[Lemma~5.14 and equation~(5.4)]{CalabroThesis}.
+This partitions the satisfying assignments among sparse formulas on
+the same Boolean variables. Appendix~\ref{app:sparsify} records the
+disjoint branching argument and the bounds needed when its parameter
+varies with the input size.
+
+The initial parity tests are the constraints of a Tanner code
+\cite[Section~II]{Tanner81}, applied to the binary vector recording
+which clauses an assignment violates. We use the edge-based
+expander-code construction of~\cite[Sections~IV and~VI]{SS96}:
+each graph edge carries one bit, and each vertex requires its
+incident bits to belong to a fixed binary linear code. The local
+code's minimum distance, together with graph expansion, forces
+every nonzero vector satisfying all these constraints to have
+large support. This construction and distance argument are standard.
+Lemma~\ref{lem:sparse-checks} supplies the parameter choices needed
+here, including the bounds on the number and support size of the
+tests, and constructs the graph and local code by deterministic
+exhaustive searches. The graph has two copies of a Cayley multigraph's vertices and the same adjacency matrix between the copies.
+The shifts defining that multigraph nearly balance every nonconstant
+parity on the base group: this is
+the small-bias condition~\cite{NN93,AR94}, stated explicitly in
+\eqref{eq:hash-walsh}. Fixing unused edge bits to zero gives a code
+on exactly $m$ coordinates.
+Additional parity tests exclude the remaining nonzero violation
+vectors. We choose these tests by the
+averaging principle underlying the method of conditional
+expectations~\cite{Raghavan88}, using exact counts to evaluate each
+candidate. Section~\ref{sec:hashes} gives the constructions and
+quantitative bounds needed here.
+
+\subsection{Organisation}
+Sections~\ref{app:quantitative}--\ref{sec:hashes}, with
+Appendix~\ref{app:sparsify} and Lemma~\ref{lem:rational-lift-height},
+contain the complete proof of Theorem~\ref{thm:main}.
+Section~\ref{app:quantitative} gives the two deductions of
+Theorem~\ref{thm:main}. Section~\ref{app:tensor} proves the contraction
+theorem, Section~\ref{sec:tensor-encoding} encodes sparse polynomial
+systems, and Section~\ref{sec:hashes} constructs the parity tests.
+Appendix~\ref{app:sparsify} proves disjoint sparsification, and
+Lemma~\ref{lem:rational-lift-height} bounds the coefficients of the
+linear coefficient polynomials used in Section~\ref{sec:tensor-encoding}.
+
+The proof of Theorem~\ref{thm:main} does not use
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}.
+These sections develop the alternative algorithm using polynomial interpolation over $\mathbb Q$, which sums over Boolean assignments by a different method
+and proves the weaker bound of Proposition~\ref{prop:interpolation-bound}.
+It reuses Sections~\ref{subsec:rational-lift}--\ref{subsec:total-order},
+Lemma~\ref{lem:sparsify} and the parity tests of
+Section~\ref{sec:hashes}, but not the contraction theorem.
+Section~\ref{sec:technical-overview} first works out the method for
+$3$-CNFs in which every variable occurs at most three times. The rest
+of Appendix~\ref{app:arithmetic} gives the rational bit estimates for
+this algorithm, and Appendix~\ref{app:consequences} proves the
+additional consequences.
+
+\subsection{Notation}\label{subsec:notation}
+For an integer $s\ge0$, write $[s]=\{1,\ldots,s\}$, with
+$[0]=\varnothing$. For a condition $E$, the scalar
+$\mathds{1}_{\{E\}}$ equals one if $E$ holds and zero otherwise.
+We use natural logarithms, writing $\log_2$ when the base is two.
+For complexity bounds, $\poly(t_1,\ldots,t_s)$ denotes a bound of the
+form $(1+t_1+\cdots+t_s)^{O(1)}$, with absolute implicit constants.
+Subscripts, as in $\poly_{k,c}(t_1,\ldots,t_s)$, allow those constants
+to depend on the indicated fixed parameters. Integers are stored in
+signed binary notation, so an integer $z$ uses $O(\log(|z|+2))$ bits.
+Rational numbers are stored as an integer numerator and a positive
+integer denominator; stated bit-length bounds apply to each of them.
+Space is measured in bits. Arithmetic-operation counts are distinguished
+from bit-operation counts.
+
+For a finite set $S$, vectors in $\mathbb Q^S$ have coordinates
+indexed by $S$ and are column vectors unless indicated otherwise.
+For $U\subseteq S$, the indicator vector $\mathbf1_U\in\{0,1\}^S$
+has entries $(\mathbf1_U)_v=\mathds{1}_{\{v\in U\}}$ for $v\in S$.
+We write $\vec{0}$ for the zero vector. For $v\in S$, the row
+$\delta_v\in\mathbb Q^{1\times S}$ selects coordinate $v$, so
+$\delta_vx=x_v$. A vector indexed by $U\subseteq S$ is extended
+to $S$ by putting zero in each coordinate of $S\setminus U$.
+
+We write $\vec{X}=(X_1,\ldots,X_n)$ for the vector of formal variables
+and use arrows for polynomial coefficient vectors such as
+$\vec{P}_{f,v}(T)$. For a coefficient row $\vec{p}=(p_i)_{i\in S}$
+and a vector $z=(z_i)_{i\in S}$, we write their scalar pairing as
+$\langle\vec{p},z\rangle=\sum_{i\in S}p_i z_i$.
+In particular, $\langle\vec{P}_{f,v}(T),\vec{X}\rangle$ is a
+scalar linear form in the variables $X_i$.
+
+For a polynomial $P(\vec{X},z)$ in the variables $\vec{X}$ and a variable $z$,
+$[z^j]P$ denotes the coefficient of $z^j$, viewed as a polynomial
+in $\vec{X}$, and $\deg_{\vec{X}} P$ denotes total degree in $\vec{X}$.
+The degree of a row of polynomials is the largest
+degree of any entry. Unless otherwise specified, polynomial
+coefficients are rational and matrix kernels are taken over
+$\mathbb Q$.
+
+\input{quantitative-reduction}
+\input{quantitative-contraction}
+\input{polynomial-encoding}
+\input{parity-tests}
+\input{interpolation-overview}
+\input{rational-counting}
+\input{replacement-forms}
+\input{rational-polynomials}
+\input{interpolation-reduction}
+
+\appendix
+
+\section{Partitioning the satisfying assignments}\label{app:sparsify}
+
+Fix $k\ge2$ and a rational $0<\sigma\le1$.
+We prove Lemma~\ref{lem:sparsify} by repeatedly splitting a formula
+into two cases. Both children use the same $n$ variables, and every
+satisfying assignment of the parent satisfies exactly one child.
+We follow the rule for choosing a shared set of literals and the
+insertion accounting of~\cite[Section~6]{CIP}.
+The refinement that makes the two cases disjoint is standard in exact
+counting~\cite[Appendix~A]{DHMTW}.
+
+Throughout this appendix, a clause is a set of literals and denotes their
+disjunction. Its \emph{width} is the number of literals it contains.
+We delete tautological clauses, repeated clauses, and clauses
+containing another clause. Thus the remaining clauses form an antichain
+under inclusion. We keep all $n$ declared variables and do not propagate
+unit clauses. An empty clause gives count zero, and the empty formula gives
+count $2^n$.
+
+\subsection{The branching rule}
+
+Fix an integer $M\ge2$. We will obtain an occurrence bound
+$B=O_k(M^{k-1})$ at every leaf, then choose $M$ so that the tree has
+at most $\poly_k(n,\sigma^{-1})2^{\sigma n}$ nodes. Put
+\[
+ \theta_j=M^j\qquad(0\le j<k).
+\]
+Writing $F$ for the current family of clauses, define
+\[
+ \deg_c(H)=\#\{C\in F:|C|=c,\ H\subseteq C\}
+\]
+for each literal set $H$. We branch whenever a nonempty proper subset
+$H$ of a width-$c$ clause satisfies
+\begin{equation}\label{eq:spar-violation}
+ \deg_c(H)\ge\theta_{c-|H|}.
+\end{equation}
+The algorithm chooses the smallest possible $c$, and then the largest possible $|H|$;
+break any remaining ties deterministically.
+Thus a nonempty shared literal set $H$ leaving $j=c-|H|$ other
+literals must occur in at least $M^j$ clauses before we branch on it.
+
+Let $H\cup P_1,\ldots,H\cup P_z$ be all the width-$c$ clauses containing
+the chosen $H$, and let $G$ consist of the other clauses. Put
+$j=c-|H|$. Here $P_a$ is the set of literals left after removing
+$H$ from the $a$th selected clause, so each $P_a$ has width $j$
+and $z\ge\theta_j$.
+The two children are
+\begin{equation}\label{eq:spar-children}
+ F_A=G\wedge H,\qquad
+ F_B=G\wedge\bigwedge_{a=1}^zP_a
+          \wedge\bigwedge_{\ell\in H}\{\neg\ell\}.
+\end{equation}
+We restore the antichain condition in each child by removing
+clauses made redundant by its new clauses.
+The sets $P_a$ may overlap.
+The satisfying assignments of the children are disjoint:
+$F_A$ requires some literal of $H$ to be true, whereas $F_B$
+requires every literal of $H$ to be false.
+
+\begin{lemma}\label{lem:spar-branch}
+For a branch chosen by \eqref{eq:spar-violation} with the stated
+smallest-width and largest-$|H|$ priorities, the normalized children
+in \eqref{eq:spar-children} partition the satisfying assignments
+of their parent. Every new clause has width less than $c$.
+The $A$-child inserts one new clause, and the $B$-child inserts at least
+$\theta_j$ new clauses of width $j$. All newly inserted clauses survive
+the immediate normalization. Every old clause removed in either child
+contains a newly inserted strict subset.
+\end{lemma}
+\begin{proof}
+Every assignment satisfies exactly one of the conditions
+\emph{some literal of $H$ is true} and
+\emph{every literal of $H$ is false}.
+In the first case, all selected clauses are satisfied, leaving
+$G\wedge H$. In the second, each selected clause reduces to $P_a$,
+and the unit clauses $\{\neg\ell\}$ enforce this case.
+Thus the two children partition the parent's satisfying assignments.
+
+The old antichain contains no clause included in $H$ or in any $P_a$:
+such a clause would be a strict subset of $H\cup P_a$.
+Thus $H$ and the distinct equal-width clauses $P_a$ are new.
+No $P_a$ contains a variable of $H$, since its parent is nontautological.
+Consequently, none of the unit clauses $\{\neg\ell\}$, $\ell\in H$,
+is a subset of any $P_a$.
+Any unit clause $\{\neg\ell\}$ already present is retained and
+is not counted as a new insertion.
+The remaining new unit clauses and the clauses $P_a$ all survive.
+Each selected old clause contains the newly inserted clause $H$
+for child $A$, or its newly inserted subset $P_a$ for child $B$.
+Every other removed clause contains a newly inserted strict subset
+by the normalization rule.
+\end{proof}
+
+\subsection{Counting insertions}
+To bound the tree, we count every clause introduced along one path,
+including clauses later deleted. Clauses present in the input are
+excluded from this count. By Lemma~\ref{lem:spar-branch}, each step
+inserts a clause, so bounding the total number of insertions also
+bounds the path length.
+
+For this accounting, a clause is marked when a branch introduces it.
+First we bound how many
+marked clauses can still be present and contain a given literal set.
+The smallest-width priority controls those present before a branch;
+the largest-$|H|$ priority controls those introduced by that branch.
+
+\begin{lemma}\label{lem:spar-marked-degree}
+At every node of this branching tree, for $1\le i<j<k$ and every
+literal set $S$ of size $i$,
+fewer than $2\theta_{j-i}$ marked clauses of width $j$ that are
+still present contain $S$.
+\end{lemma}
+\begin{proof}
+Initially there are no marked clauses. It suffices to consider a branch
+that inserts clauses of width $j$. Its selected width $c$ is larger than
+$j$. Before insertion, fewer than $\theta_{j-i}$ current width-$j$
+clauses contain $S$: otherwise the smallest-width priority would select
+a width at most $j$.
+
+Choosing child $A$ inserts only one clause.
+Suppose child $B$ inserts clauses $P_a$ of width $j$.
+If none of the $P_a$ contains $S$, the number of new width-$j$ clauses
+containing $S$ is zero. Otherwise $S$ lies in some $P_a$ and is therefore
+disjoint from $H$. In this case $P_a$ contains $S$ exactly when the
+selected clause $H\cup P_a$ contains $H\cup S$. Since $0<i<j$,
+$H\cup S$ is larger than $H$ and is a proper subset of a selected
+width-$c$ clause.
+The priority for the largest shared set therefore gives
+\[
+ \#\{a:S\subseteq P_a\}
+ =\deg_c(H\cup S)<\theta_{c-|H\cup S|}
+ =\theta_{j-i}.
+\]
+The other new clauses $\{\neg\ell\}$ have width one.
+Thus the old and new clauses of width $j$ together satisfy the
+asserted bound. Deletion cannot increase it.
+\end{proof}
+
+\begin{lemma}\label{lem:spar-insertion-bound}
+Along any path or path prefix of this tree, let $T_j$ count the
+width-$j$ clauses inserted by branches, including those later deleted
+and excluding the input clauses. Then
+\[
+ T_j\le4(3M)^{j-1}n\qquad(1\le j<k).
+\]
+\end{lemma}
+\begin{proof}
+The case $n=0$ is immediate, so assume $n\ge1$.
+For the current path prefix, let $L_j$ be the number of marked
+width-$j$ clauses still present, and let $D_j$ be the number of
+width-$j$ insertions whose clauses have since been deleted.
+Then $T_j=L_j+D_j$.
+Units are never deleted, so $T_1\le2n\le4n$.
+For $j\ge2$, sum Lemma~\ref{lem:spar-marked-degree} over the $2n$
+single literals. This gives $L_j\le4n\theta_{j-1}$.
+
+Whenever a marked clause of width $j$ is deleted, assign that deletion
+to one newly introduced strict subset contained in it;
+Lemma~\ref{lem:spar-branch} guarantees such a subset.
+If the new clause has width $i<j$, Lemma~\ref{lem:spar-marked-degree}
+shows that it was contained in fewer than $2\theta_{j-i}$ marked
+clauses of width $j$ immediately before the branch.
+Thus one insertion of a width-$i$ clause receives at most that
+many deletions. Summing over the widths $i$ of the new clauses gives
+$D_j\le2\sum_{i=1}^{j-1}\theta_{j-i}T_i$. Therefore
+\begin{equation}\label{eq:spar-insertions}
+ T_j=L_j+D_j\le4n\theta_{j-1}
+       +2\sum_{i=1}^{j-1}\theta_{j-i}T_i.
+\end{equation}
+The first term counts clauses still present; the sum counts those that
+were deleted. In particular, the extra unit clauses making the
+$B$-child disjoint may delete marked wider clauses; those deletions
+are charged to the $i=1$ term, and the units themselves are included
+in $T_1\le2n$. Dividing by $nM^{j-1}$ and applying induction gives
+\[
+ \frac{T_j}{nM^{j-1}}
+ \le4+2\sum_{i=1}^{j-1}4\cdot3^{i-1}
+ =4\cdot3^{j-1},
+\]
+as required.
+\end{proof}
+
+\subsection{The size of the tree}
+We now convert Lemma~\ref{lem:spar-insertion-bound} into a bound on
+the number of tree nodes. It controls both the length of a path
+and the number of times that path chooses the $B$-child in
+\eqref{eq:spar-children}. Write these bounds as $Cn$ and
+$\Gamma n/M$, respectively, where
+\[
+ C=4\sum_{j=0}^{k-2}(3M)^j,\qquad
+ \Gamma=4\sum_{j=0}^{k-2}3^j=2(3^{k-1}-1).
+\]
+Lemma~\ref{lem:spar-insertion-bound} gives depth at most $Cn$.
+A choice of child $B$ with $|P_a|=j$ inserts at least $M^j$
+clauses of width $j$, so a path contains at most
+$4\cdot3^{j-1}n/M$ such choices.
+In total, a path chooses $B$ at most $\Gamma n/M$ times.
+
+A path with few choices of $B$ has a short description.
+Because the branching rule is deterministic, a node is determined
+by its depth and the positions at which its path chooses $B$;
+every other position chooses $A$.
+For $M\ge\Gamma$, this bounds the number of nodes by
+\[
+ (Cn+1)\sum_{a\le\lfloor\Gamma n/M\rfloor}\binom{Cn}{a}
+ \le (Cn+1)^2
+       2^{(\Gamma n/M)\log_2(4CM)}.
+\]
+Here $\Gamma n/M\le n\le Cn/4$.
+For a positive integer $a$, use
+$\binom{Cn}{a}\le(4Cn/a)^a$; this upper bound increases for
+$a\le Cn/4$.
+There are at most $Cn+1$ summands.
+The case $\Gamma n/M<1$ is immediate.
+
+We choose $M$ to make the exponent in this bound at most $\sigma n$.
+Test powers of two $M\ge\Gamma$ in increasing order.
+For each choice, compute $C$ and $h=\lceil\log_2(4CM)\rceil$,
+and stop when
+\[
+ \Gamma h\le\sigma M.
+\]
+All comparisons are exact. Since $C=O_k(M^{k-2})$ and $\Gamma$
+depends only on $k$, the first successful choice satisfies
+\[
+ M=O_k\bigl(\sigma^{-1}\log(2/\sigma)\bigr).
+\]
+For an explicit comparison, put $t=\log_2(2/\sigma)\ge1$ and
+take a power of two between $K\sigma^{-1}t$ and
+$2K\sigma^{-1}t$. Since $\log_2 t\le t$ and
+$\log_2 C=O_k(1+\log_2 M)$, this choice has
+$h=O_k(\log_2 K+t)$. A sufficiently large constant $K=K(k)$
+therefore gives $\Gamma h\le Kt\le\sigma M$ and $M\ge\Gamma$.
+The first successful power of two is no larger.
+The tree therefore has at most $(Cn+1)^2\,2^{\sigma n}$ nodes.
+
+At a leaf, \eqref{eq:spar-violation} fails for every nonempty proper
+subset of a clause.
+A fixed literal belongs to fewer than $\theta_{c-1}$ width-$c$
+clauses when $c\ge2$, and to at most one unit clause. Hence each variable
+occurs at most
+\[
+ B=2\sum_{j=0}^{k-1}M^j
+   \le4M^{k-1}
+   =O_k\Bigl(\bigl[\sigma^{-1}\log(2/\sigma)\bigr]^{k-1}\Bigr).
+\]
+Thus every leaf has the required bound on occurrences per variable.
+The repeated two-case partition also shows that each original
+satisfying assignment occurs at exactly one leaf, so summing the
+leaf counts gives the original count.
+
+To implement the branching rule at a node, we compute $\deg_c(H)$
+for its current formula. For each width-$c$ clause, we enumerate
+its nonempty proper subsets $H$ and increment the counter indexed
+by $(c,H)$. There are $O_k(n^k)$ possible nonempty normalized clauses,
+each with at most $2^k$ subsets. The clause counters use
+$O_k(\log(n+2))$ bits, and the thresholds use $O_k(\log M)$ bits.
+Computing the counts, choosing a branch, and normalizing its children
+therefore use $\poly_k(n,\log M)$ bit operations and bits of working
+space per node. The bound on $M$ gives
+$\log M=O_k(\log(2/\sigma))$.
+
+With $L_\sigma$ as in Lemma~\ref{lem:sparsify}, the parameter search
+examines $O_k(L_\sigma)$ powers of two. Its integer operands have
+$O_k(L_\sigma)$ bits, so constructing the numerical parameters uses
+$\poly_k(L_\sigma)$ bit operations and bits of working space.
+
+\section{Exact arithmetic and space}\label{app:arithmetic}
+Section~\ref{subsec:rational-lift-height} bounds the integer
+coefficients of the linear coefficient polynomials of
+Lemma~\ref{lem:rational-idempotent}. It uses only
+Section~\ref{subsec:rational-lift} and the coefficient norm defined
+below, and it is the only part of this appendix used in the proof of
+Theorem~\ref{thm:main}. The rest of the appendix concerns the
+interpolation algorithm.
+Section~\ref{sec:construction} bounds the rational coefficients of the
+substitution rows $\vec{P}_{f,v}(T)$. We complete the bit-cost and space
+estimates in Proposition~\ref{prop:count} by bounding the lifted factors,
+the sums used to compute the Taylor polynomials of $H$, and the final
+interpolation. The essential point is that each sum uses a fixed
+denominator. Its numerator grows with the number of summands, so its
+bit length grows only with the logarithm of that number.
+For any polynomial $G=\sum_\alpha c_\alpha \vec{X}^{\alpha}$ in finitely
+many indeterminates, write $\|G\|_1=\sum_\alpha|c_\alpha|$ for its
+coefficient norm.
+
+\subsection{Integer coefficients of the lifted indicator}
+\label{subsec:rational-lift-height}
+We first bound the coefficients of the linear coefficient polynomials supplied
+by Lemma~\ref{lem:rational-idempotent}. They occur in the test tensors
+of Section~\ref{subsec:tensor-sparse-proof} and in every equation
+factor $\mathcal B_i$ in \eqref{eq:lifted-factor}, so their sizes
+enter the bit-cost bounds for evaluating those tensors and factors.
+For an integer $\ell\ge1$, recall $h(Y)=Y(Y-1)$ and the polynomials
+from Lemma~\ref{lem:rational-idempotent}:
+\[
+ p_\ell(Y)=(1-Y)^\ell\sum_{j=0}^{\ell-1}
+                    \binom{\ell+j-1}{j}Y^j
+          =\sum_{j=0}^{\ell-1}e_j(Y)h(Y)^j,
+ \qquad \deg e_j\le1.
+\]
+That lemma proves the parity congruence and constructs the $e_j$ by
+successive monic division by $h$. Here we bound the integers occurring
+in this construction.
+
+\begin{lemma}\label{lem:rational-lift-height}
+Write $e_j(Y)=a_j+b_jY$ for $0\le j<\ell$. Then $a_j,b_j\in\mathbb Z$ and
+\[
+ |a_j|,|b_j|\le2^{C\ell^2}\qquad(0\le j<\ell)
+\]
+for an absolute constant $C$.
+Successive division of $p_\ell$ by $h$ constructs these polynomials
+using $\poly(\ell)$ bit operations and bits of working space.
+\end{lemma}
+\begin{proof}
+The coefficient-norm inequality
+$\|fg\|_1\le\|f\|_1\|g\|_1$, together with the binomial identity
+\[
+ \sum_{j=0}^{\ell-1}\binom{\ell+j-1}{j}
+ =\binom{2\ell-1}{\ell-1}
+\]
+gives
+\[
+ \|p_\ell\|_1\le2^\ell\binom{2\ell-1}{\ell-1}\le2^{3\ell}.
+\]
+Monic division by $h=Y^2-Y$ preserves integer coefficients. Each
+leading-term elimination increases the sum of the coefficient norms
+of the current quotient and remainder by at most a factor of three.
+There are $O(\ell^2)$ eliminations in all the successive divisions.
+Thus every intermediate coefficient has absolute value at most
+$2^{O(\ell^2)}$, which proves the stated bound for $a_j,b_j$.
+Its signed binary encoding consequently uses $O(\ell^2)$ bits.
+Each coefficient vector has $O(\ell)$
+entries. The successive divisions use $O(\ell^2)$ integer arithmetic
+operations on integers of $O(\ell^2)$ bits, giving the claimed
+$\poly(\ell)$ bit-operation and space bounds.
+\end{proof}
+
+\subsection{Bit complexity of the sums over Boolean assignments}
+\label{subsec:rational-streaming-height}
+We now bound every intermediate value in the computation of
+$\mathcal H_t(z)=H(t+z)\bmod z^J$ from \eqref{eq:full-taylor-sum}.
+Starting with the substitution rows $\vec{P}_{f,v}(T)$, we bound the
+substituted factors, their sums over each group of Boolean variables,
+and the accumulator $T_t$ for the Taylor data in
+Proposition~\ref{prop:count}.
+Fix a polynomial system $\mathcal P$ in $n$ Boolean variables, with
+$m_{\mathrm{test}}$ equations of degree at most $k$, precision
+$\ell$ such that $2^\ell>2^n$, and replacement rows, partitions, factor assignments, and measurement matrices for its
+equation factors. Suppose the rows $\vec{P}_{f,v}$,
+partitions $S_{t,g}$, and matrices $C_{t,g}$ satisfy
+Definition~\ref{def:layout}, with parameters $Q,R,r,D,\tau$.
+Recall the degree bound for $H$ and the number of Taylor coefficients
+retained at each node:
+\[
+ d_H=kR\bigl(m_{\mathrm{test}}+2(\ell-1)\bigr),\qquad
+ J=\left\lfloor\frac{d_H}{Q}\right\rfloor+1.
+\]
+Let $S\ge1$ bound the total length of the monomial lists and factor
+scopes, as in Proposition~\ref{prop:count}.
+All polynomials in the Taylor variable $z$ and the shared truncation
+marker $V$ are stored in their unique representative modulo
+$(z^J,V^\ell)$. Removing terms outside these degree ranges cannot
+increase the coefficient norm.
+
+The substitution rows have common denominator
+\[
+ d_{\mathrm{den}}=(R-1)!Q!.
+\]
+We use an integer $B_P\ge1$ such that every integer coefficient of every
+row $d_{\mathrm{den}}\vec{P}_{f,v}(T)$ has absolute value at most $2^{B_P}$.
+Definition~\ref{def:layout} gives $B_P=O(Q\log Q+\log D)$.
+At a fixed node $t\in[Q]$ and for a fixed correction set $U\subseteq[n]$,
+the input to factor $f$ at variable $v$ is
+\[
+ \theta_{f,v}(z;x)=\langle \vec{P}_{f,v}(t), x\rangle+
+       \bigl\langle \vec{P}_{f,v}(t+z)-\vec{P}_{f,v}(t),\mathbf1_U\bigr\rangle,
+ \qquad x\in\{0,1\}^n.
+\]
+Let $L_i(z;x)$ be the sum of the listed monomials of equation $i$
+after these substitutions. Each $d_{\mathrm{den}}\theta_{f,v}(z;x)$
+is an integer polynomial of coefficient norm at most
+\[
+ B_0=d_{\mathrm{den}}+3n(R+1)2^{B_P}(Q+1)^R .
+\]
+Indeed, each of the three row evaluations in $\theta_{f,v}$
+contributes at most $n(R+1)2^{B_P}(Q+1)^R$ after denominators are
+cleared. The bound holds also for the representatives in the group sums.
+
+Put $\Delta=d_{\mathrm{den}}^k$. For a monomial of degree $u\le k$,
+multiplying its substituted value by $\Delta$ gives an integer
+polynomial of norm at most $d_{\mathrm{den}}^{k-u}B_0^u\le B_0^k$,
+including the constant monomial. As $S$ bounds the total list length,
+\[
+ B=\max\{\Delta,SB_0^k\}
+ \quad\text{satisfies}\quad \|\Delta L_i(z;x)\|_1\le B .
+\]
+Consequently $\log d_{\mathrm{den}}=O(Q\log(Q+2))$,
+$\log B_0=O(Q\log(Q+2)+\log(nD+2))$, and
+$\log B=O(k\log B_0+\log(S+2))$.
+
+The substituted factor of equation $i$ is
+\[
+ \mathcal B_i(z,V;x)=\sum_{j=0}^{\ell-1}
+       e_j\bigl(L_i(z;x)\bigr)h\bigl(L_i(z;x)\bigr)^jV^j
+       \pmod{(z^J,V^\ell)}.
+\]
+Since $e_j$ is integral and has degree at most one, its substitution
+has denominator dividing $\Delta$; the denominator of
+$h(L_i)^j$ divides $\Delta^{2j}$. Thus, with
+\[
+ \Gamma=\Delta^{2\ell-1},
+\]
+every coefficient of $\Gamma\mathcal B_i(z,V;x)$ is an integer.
+To bound the resulting integer numerators, put
+\[
+ E_\ell=\max\{1,\|e_0\|_1,\ldots,\|e_{\ell-1}\|_1\},\qquad
+ B_1=\ell E_\ell(B+\Delta+2)^{2\ell-1}.
+\]
+For $A_i=\Delta L_i$, the two substituted factors have integer
+numerators $\Delta e_j(L_i)$ and $A_i(A_i-\Delta)$, with norms at most
+$E_\ell(B+\Delta)$ and $B(B+\Delta)$, respectively. Padding each term
+to denominator $\Gamma$ therefore gives
+\[
+ \|\Gamma\mathcal B_i\|_1\le B_1,\qquad B_1\ge\Gamma,
+ \qquad
+ \log B_1=O\!\left(\ell^2+
+       \ell\log(B+\Delta+2)+\log(\ell+1)\right).
+\]
+
+We next apply these estimates to the actual group sums.
+Write $S_g=S_{t,g}$ and $C_g=C_{t,g}$, and let $c_g$ be the number
+of rows of $C_g$. Thus $c=\sum_g c_g\le2\tau n$, and every coordinate
+of a Boolean measurement $C_gx_g$ lies in $[-D,D]\cap\mathbb Z$.
+Let $m_{\mathrm{test},g}$ be the number of equation factors assigned
+to group $g$ at $t$, so $\sum_g m_{\mathrm{test},g}=m_{\mathrm{test}}$.
+Their product $A_{g,U}(x;z)$ from \eqref{eq:group-polynomial} is
+represented in $\mathbb Q[z,V]/(z^J,V^\ell)$. It has denominator
+dividing $\Gamma^{m_{\mathrm{test},g}}$ and numerator norm, over that
+denominator, at most $B_1^{m_{\mathrm{test},g}}$. The neutral
+constant-one factors do not affect this bound.
+
+For a pair $U\subseteq E\subseteq[n]$ with $|E|<J$ and an attainable
+measurement tuple $\vec y=(y_1,\ldots,y_r)$, choose Boolean representatives
+$\bar x_h$ with $C_h\bar x_h=y_h$. The group sum in
+\eqref{eq:group-sum} is
+\[
+ \Sigma_g(\vec y)=
+ \sum_{\substack{x_g\in\{0,1\}^{S_g}\\ C_gx_g=y_g\\
+                  (x_g)_v=1\ (v\in E\cap S_g)}}
+ A_{g,U}\!\Bigl(x_g+\sum_{h\ne g}\bar x_h;z\Bigr).
+\]
+Here vectors on individual groups are extended by zero.
+The sum has at most $2^{|S_g|}$ terms, all over the same denominator,
+so
+\[
+ \left\|\Gamma^{m_{\mathrm{test},g}}\Sigma_g(\vec y)\right\|_1
+ \le 2^{|S_g|}B_1^{m_{\mathrm{test},g}}.
+\]
+For $1\le g\le r$, define the partial product
+$\Pi_g(\vec y)=\prod_{h=1}^g\Sigma_h(\vec y)$, with truncation after each
+multiplication. Its denominator divides
+\[
+ \Gamma^{\sum_{h\le g}m_{\mathrm{test},h}}.
+\]
+Consequently every full contribution $\Pi_r(\vec y)$ can be placed over
+the fixed denominator
+\[
+ \Omega=\Gamma^{m_{\mathrm{test}}},
+\]
+and it satisfies
+\[
+ \|\Omega\Pi_r(\vec y)\|_1
+ \le2^nB_1^{m_{\mathrm{test}}}.
+\]
+
+Let $T_t(z,V)$ be the accumulator that adds these full
+contributions with sign $(-1)^{|E|-|U|}$ over all pairs and measurement
+tuples. By \eqref{eq:full-taylor-sum}, its final value is the
+$\mathcal E_\ell$-valued Taylor polynomial $\mathcal H_t(z)$.
+The number $M_*$ of signed updates at one node is bounded by
+\[
+ M_*\le
+ \biggl(\sum_{s=0}^{\min(J-1,n)}2^s\binom ns\biggr)(2D+1)^c
+ \le3^n(2D+1)^c.
+\]
+Every intermediate value of $T_t$, not just its final value,
+therefore satisfies
+\[
+ \|\Omega T_t\|_1
+ \le M_*\,2^nB_1^{m_{\mathrm{test}}}.
+\]
+Each coefficient of the integer polynomial $\Omega T_t$ has
+\[
+ O\!\left(\log(M_*+1)+n+m_{\mathrm{test}}\log B_1\right)
+\]
+bits. This estimate also bounds the integer numerators of all group
+sums and partial products with the fixed denominators given above.
+The denominator satisfies
+\[
+ \log\Omega
+ =k m_{\mathrm{test}}(2\ell-1)\log d_{\mathrm{den}}
+ =O\!\left(k(m_{\mathrm{test}}\ell+1)Q\log(Q+2)\right).
+\]
+
+Each contribution multiplies at most $m_{\mathrm{test}}$ lifted equation factors. Processing further pairs or measurement tuples adds
+new contributions; it does not multiply them into the previous ones.
+This is why exponentially many iterations contribute only
+$\log(M_*+1)$ to the bit estimate. Each stored polynomial has at most
+$J\ell\le(d_H+1)\ell$ coefficients. The enumeration retains its current
+indices and Boolean representatives, one group sum, one partial
+product, and the accumulator $T_t$, without storing a table of
+all assignments or all measurement tuples. These estimates give
+\eqref{eq:sum-bit-bound} and polynomial bit cost per rational operation.
+The $QJ\ell$ Taylor coefficients and the working state fit in
+$\poly(n,m_{\mathrm{test}},\ell,D,Q,R,J,r,k,S)$ bits.
+
+\subsection{Interpolation and the integer answer}
+\label{subsec:rational-readout}
+For $0\le s<\ell$, let $H_s(T)=[V^s]H(T)\in\mathbb Q[T]$.
+Section~\ref{subsec:rational-streaming-height} bounds the computed data
+$[z^jV^s]\mathcal H_t(z)=[z^j]H_s(t+z)$ for $t\in[Q]$, $0\le j<J$.
+Fix $s$. We interpolate this coordinate, using the same rational
+Hermite matrix for all $\ell$ coordinates. Put $M_H=QJ>d_H$.
+In the monomial basis $1,T,\ldots,T^{M_H-1}$, the Hermite interpolation
+matrix is the integer matrix
+\[
+ \mathsf V_{(t,j),u}=
+ \begin{cases}\binom uj t^{u-j},&u\ge j,\\0,&u<j,\end{cases}
+ \qquad t\in[Q],\quad 0\le j<J,\quad 0\le u<M_H.
+\]
+It is nonsingular by the Hermite interpolation statement in
+Section~\ref{sec:counting}. Its entries have
+$O(M_H\log(Q+2))$ bits.
+Let $\mathbf y$ be the vector of computed coefficients
+$[z^jV^s]\mathcal H_t(z)$, ordered by $(t,j)$, and let $\mathbf h$ be
+the monomial coefficient vector of $H_s$, padded with zeros to length
+$M_H$. Thus $\mathsf V\mathbf h=\mathbf y$.
+The vector $\mathbf b=\Omega\mathbf y$ is integral; write
+$B_{\mathrm{data}}$ for a bound on its entries' bit lengths.
+The bounds in Section~\ref{subsec:rational-streaming-height} give
+\[
+ B_{\mathrm{data}}
+ \le\poly(n,m_{\mathrm{test}},\ell,k,Q,\log(D+2),\log(S+2)).
+\]
+
+Only the constant coefficient $h_0=H_s(0)$ is needed. Let
+$\mathsf V^{(0)}$ be obtained from $\mathsf V$ by replacing its
+column indexed by $u=0$ with $\mathbf b$, and put
+\[
+ N_H=\det\mathsf V^{(0)},\qquad D_H=\det\mathsf V\ne0.
+\]
+Cramer's rule for $\mathsf V(\Omega\mathbf h)=\mathbf b$ gives
+\begin{equation}\label{eq:exact-readout}
+ H_s(0)=h_0=\frac{N_H}{\Omega D_H}.
+\end{equation}
+We compute these two determinants by fraction-free Gaussian
+elimination~\cite[Sections~I--II and~IV--V]{Bareiss68}. In its
+one-step form, if $a_{ij}$ are the current entries, $a_{kk}$ is
+a nonzero pivot, and $d$ is the preceding pivot (initially $d=1$),
+the update on the remaining submatrix is
+\[
+ a'_{ij}=\frac{a_{kk}a_{ij}-a_{ik}a_{kj}}{d}
+ \qquad(i,j>k).
+\]
+Sylvester's determinant identity makes each division exact and
+identifies the new entries with bordered minors. Row and column
+interchanges bring any nonzero remaining entry to the pivot
+position, with their signs recorded. If a nonzero pivot cannot be
+found, the determinant is zero; otherwise the
+last pivot is the determinant up to the recorded sign. This is also
+the pivoting algorithm in~\cite[Algorithm~2 and proof of Theorem~6]{MJK21}.
+For an
+$M_H\times M_H$ integer matrix, this algorithm uses $O(M_H^3)$
+integer arithmetic operations; pivoting allows it to handle
+singular matrices as well. The retained elimination entries are
+signed minors of the input matrix. Each update forms products
+and a difference of such entries, followed by an exact integer
+division. Consequently, bounds on the minors of $\mathsf V$ and
+$\mathsf V^{(0)}$ also bound the intermediate integers used to
+compute $D_H$ and $N_H$.
+Every minor of $(\mathsf V\mid\mathbf b)$ has absolute value at most
+\[
+ 2^{O\left(M_H\left(B_{\mathrm{data}}+
+                M_H\log(Q+2)+\log(M_H+1)\right)\right)}.
+\]
+Indeed, its determinant is a sum of at most $M_H!$ products of at
+most $M_H$ entries. The intermediate integers in fraction-free
+elimination therefore have
+\[
+ O\!\left(M_H\bigl(B_{\mathrm{data}}+
+                   M_H\log(Q+2)+\log(M_H+1)\bigr)\right)
+\]
+bits in signed binary notation. Computing $N_H,D_H$ thus uses
+$\poly(M_H,B_{\mathrm{data}})$ bit operations and bits of working space.
+
+At $T=0$ every $H_s(0)$ is an integer by construction, so the
+division in \eqref{eq:exact-readout} is exact for each $s$. After
+computing these $\ell$ integers, put $u=\sum_{s=0}^{\ell-1}H_s(0)$.
+By \eqref{eq:origin-residue}, the least nonnegative residue
+\[
+ u-2^\ell\left\lfloor\frac{u}{2^\ell}\right\rfloor=N(\mathcal P)
+\]
+is the exact count. Reusing the same workspace for successive
+coordinates, all $\ell$ interpolations, the sum and the remainder
+use $\poly(M_H,B_{\mathrm{data}},\log(\Omega+1),\ell)$ bit operations
+and polynomially many bits of working space.
+
+\subsection{Arithmetic for the technique overview}
+\label{subsec:overview-arithmetic}
+We also justify the bit-complexity and space bounds for the
+bounded-occurrence algorithm in Section~\ref{sec:technical-overview}.
+Lemma~\ref{lem:row-coefficients} bounds the bit lengths of the
+replacement coefficients by a polynomial in $n$. Solving the
+polynomial-size rational linear systems in
+Section~\ref{subsec:preview-separation} gives measurement
+coefficients $\vec\lambda_{e,v,h}$ of polynomial bit length as well.
+Let $\delta$ be the product of the denominators of all these
+coefficients and all replacement coefficients, over all evaluation
+points. There are only polynomially many, so $\delta$ also has
+polynomial bit length. Every clause product uses at most $M\le3n$
+linear inputs; consequently, all coefficients in the restricted
+sums can be accumulated with common denominator $\delta^{3n}$.
+Products of polynomially many input coefficients of polynomial
+bit length, and sums of exponentially many such terms over this
+common denominator, still have polynomial bit length. The exact
+Hermite interpolation above therefore has polynomial bit cost
+for these Taylor data as well. Finally, the enumerations can be
+performed sequentially, retaining only the construction, current
+indices, coefficient arrays, running sums, and the polynomially
+many Taylor coefficients needed for interpolation. This gives
+polynomial space and only polynomial bit-operation overhead.
+
+\raggedbottom
+
+\section{Additional Consequences of Refuting ETH}\label{app:consequences}
+We first prove Corollaries~\ref{cor:max-sat-approximation}
+and~\ref{cor:graph-counting}. Theorem~\ref{thm:main} also gives a
+circuit lower bound and
+subexponential-time algorithms for inverting Boolean maps with constant
+output locality. The fixed-density case gives the quantitative circuit
+lower bound in Corollary~\ref{cor:quantitative-circuits}. Both circuit arguments use
+only the decision version of our $3$-SAT algorithm. Exact preimage
+counting uses its full counting guarantee.
+
+\subsection{Approximating \texorpdfstring{Max-$k$-SAT}{Max-k-SAT} and counting in graphs}\label{subsec:consequence-proofs}
+
+\begin{proof}[Proof of Corollary~\ref{cor:max-sat-approximation}]
+We may assume $m>0$.
+Let $f(x)$ be the fraction of clauses satisfied by $x$, and let
+$\widehat f(x)$ be that fraction in a sample of
+$N=K(n+1)$ clauses chosen independently and uniformly with replacement,
+where $K=\lceil8/\varepsilon^2\rceil$ is a fixed integer.
+Hoeffding's inequality~\cite[Lemma~3.3]{AW15}, applied to the
+satisfaction bits and their complements, bounds the failure
+probability for one assignment by $2e^{-N\varepsilon^2/2}$.
+A union bound over all $2^n$ assignments
+gives, with probability $1-2^{-\Omega(n)}$,
+\[
+ |\widehat f(x)-f(x)|\le\varepsilon/2
+ \qquad\text{for every }x\in\{0,1\}^n.
+\]
+Thus, if $\widehat x$ maximizes $\widehat f$, then
+$f(\widehat x)\ge\max_x f(x)-\varepsilon$.
+Given an integer threshold $b$, a Boolean circuit with at most two
+inputs per gate and size $O_{k,\varepsilon}(n)$ tests whether an
+assignment satisfies at least $b$ sampled clauses.
+Compute the $N$ clause bits and add them in a balanced binary tree.
+Pad the list of clause bits with zeros to the next power of two.
+At level $j$ there are $O(N/2^j)$ additions of $O(j)$-bit integers,
+each using $O(j)$ gates; their total size is
+$O(N\sum_{j\ge1}j/2^j)=O(N)$. Comparing the sum with $b$ uses
+$O(\log(N+1))$ more gates.
+The standard circuit-to-$3$-CNF reduction~\cite[Lemmas~15.9--15.10]{Bar23}
+produces a formula with $O_{k,\varepsilon}(n)$ variables and clauses
+that is satisfiable exactly when this threshold can be attained.
+For a gate $z=g(u,v)$, a direct version uses, for each
+$(a,c)\in\{0,1\}^2$, the clause
+\begin{equation}\label{eq:gate-truth-table-encoding}
+ (u\ne a)\ \vee\ (v\ne c)\ \vee\ (z=g(a,c)).
+\end{equation}
+Each parenthesized expression is one literal or a constant.
+The four clauses force exactly the gate's truth table. Introducing
+one variable per gate and requiring output one gives a unique
+extension of each accepting input, by induction through the gates.
+Theorem~\ref{thm:main}, binary search on the threshold, and
+self-reduction then find an exact sample optimizer within the stated bounds.
+Only the fixed-density bound of Theorem~\ref{thm:main} is used, for
+formulas with $O_{k,\varepsilon}(n)$ variables and clauses, so the
+exponent obtained is $O_{k,\varepsilon}(n/\sqrt{\log n})$, which is
+$O(\rho(n))$; the interpolation algorithm of
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}
+is not needed.
+The $N$ clause indices are drawn uniformly from $[m]$ by binary
+rejection sampling with fair coins. Truncating it after
+$O(n+\log(n/\varepsilon^2))$ trials per index gives worst-case
+$\poly(n,m,\varepsilon^{-1})$
+sampling time and adds
+at most $2^{-\Omega(n)}$ to the failure probability.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:graph-counting}]
+For $G=(V,E)$, introduce a Boolean variable $x_u$ for each $u\in V$.
+Satisfying assignments of
+\[
+ \bigwedge_{\{u,w\}\in E}(\neg x_u\vee\neg x_w)
+\]
+correspond bijectively to the independent sets $\{u\in V:x_u=1\}$.
+For proper $q$-colorings, use one Boolean variable per vertex and
+color, require exactly one color at each vertex, and forbid equal
+colors at adjacent vertices. This gives a counting-preserving
+$q$-CNF encoding with $qv$ variables and $O_q(v+e)$ clauses.
+
+For perfect matchings, use one Boolean variable per edge and a
+linear-size circuit checking that exactly one selected edge meets
+each vertex. For incident bits $z_1,\ldots,z_d$, maintain bits
+$s_j$ and $t_j$ for at least one and at least two selected edges
+among the first $j$ bits:
+\[
+ s_0=t_0=0,\qquad
+ s_j=s_{j-1}\vee z_j,\qquad
+ t_j=t_{j-1}\vee(s_{j-1}\wedge z_j).
+\]
+The vertex test is $s_d\wedge\neg t_d$, including value zero when
+$d=0$. Summing the degrees gives $2e$, so combining the vertex
+tests uses $O(v+e)$ gates. The circuit-to-$3$-CNF
+encoding~\cite[Lemmas~15.9--15.10]{Bar23}, in the form
+\eqref{eq:gate-truth-table-encoding}, gives $O(v+e)$ variables
+and clauses, with unique gate values for each accepted edge set.
+It therefore preserves the number of perfect matchings.
+Theorem~\ref{thm:main} gives the stated time and space bounds.
+\end{proof}
+
+\subsection{Circuit lower bounds for $\mathrm E^{\mathrm{NP}}$}\label{subsec:circuit-lower-bounds}
+For the qualitative bound below, write $\mathrm{SIZE}(O(n))$ for the
+languages having nonuniform circuits with $O(n)$ bounded-fan-in AND,
+OR, and NOT gates.
+
+\begin{corollary}\label{cor:consequence-circuits}
+We have
+\[
+ \mathrm E^{\mathrm{NP}}\not\subseteq\mathrm{SIZE}(O(n)).
+\]
+\end{corollary}
+\begin{proof}
+Williams proved that if ETH is false, then
+$\mathrm E^{\mathrm{NP}}$ does not have linear-size
+circuits~\cite[Theorem~6.1]{Wil13}. Apply this implication to the
+deterministic subexponential-time $3$-SAT algorithm supplied by
+Theorem~\ref{thm:main}.
+\end{proof}
+
+The connection is an instance of deriving circuit lower bounds from
+faster satisfiability algorithms. To encode a Boolean circuit with $s$
+gates and $n$ inputs, introduce a variable for each gate, enforce its
+value from its inputs, and add a unit clause requiring the output bit
+to equal $1$. The resulting $3$-CNF has $O(n+s)$ variables and clauses
+and is satisfiable exactly when the circuit is. Our theorem therefore
+decides satisfiability of linear-size circuits in $2^{o(n)}$ time.
+Williams's argument combines
+such a speedup with hypothetical small circuits for witnesses to
+contradict a nondeterministic time hierarchy. The corollary gives a
+language in $\mathrm E^{\mathrm{NP}}$ without a linear-size circuit
+family; it does not assert a superpolynomial circuit lower bound for NP.
+
+\input{quantitative-circuits}
+
+\subsection{Inverting Boolean maps with constant output locality}\label{subsec:local-inversion}
+Fix a constant $d$. Consider a Boolean map
+$G:\{0,1\}^n\to\{0,1\}^m$ whose $i$th output bit has the form
+\[
+ G(\vec{x})_i=g_i(\vec{x}|_{S_i}),
+ \qquad S_i\subseteq[n],\quad |S_i|\le d.
+\]
+The input description of $G$ lists the sets $S_i$ and the truth
+tables of the Boolean functions $g_i$. Thus each output inspects
+only constantly many input bits, although the sets $S_i$ may overlap
+arbitrarily. Given a target $\vec{b}\in\{0,1\}^m$, inversion asks
+for any $\vec{x}$ with $G(\vec{x})=\vec{b}$.
+
+\begin{corollary}\label{cor:consequence-local-inversion}
+For every fixed $d$ and $n\ge20$, given $G$ by the sets $S_i$
+and the truth tables of $g_i$ as above, and given
+$\vec b\in\{0,1\}^m$, the number $|G^{-1}(\vec b)|$ can be
+computed exactly, and a preimage can be
+found whenever one exists, in deterministic time
+\[
+ (n+m)^{O_d(1)}2^{O_d(\rho(n))}
+\]
+and space $(n+m)^{O_d(1)}$.
+\end{corollary}
+\begin{proof}
+For each $i$ and each local assignment
+$\vec{\alpha}\in\{0,1\}^{S_i}$ with $g_i(\vec{\alpha})\ne b_i$,
+include the clause
+\[
+ \bigvee_{j\in S_i}\ell_{j,\alpha_j},
+ \qquad
+ \ell_{j,0}=X_j,\quad \ell_{j,1}=\neg X_j.
+\]
+This clause forbids exactly the local assignment $\vec{\alpha}$.
+If $S_i$ is empty, its constraint is constant and can be checked
+directly. The conjunction of the remaining clauses is a CNF on the
+original $n$ declared variables, with width at most $d$ and at most
+$2^d m$ clauses. Its satisfying assignments are exactly
+$G^{-1}(\vec{b})$; no auxiliary variables or multiplicity corrections
+are needed. Apply Theorem~\ref{thm:main} with $k=\max\{2,d\}$;
+its arbitrary-density bound gives exponent
+$O_d(n\log\log n/\sqrt{\log n})$, which is $O(\rho(n))$, so the
+interpolation algorithm of
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}
+is not needed.
+The usual variable-by-variable self-reduction finds a preimage using
+at most $n$ further counting queries, which only changes the
+polynomial factor. Each query may be discarded before the next,
+preserving polynomial space.
+\end{proof}
+
+Conditional counts also allow an exactly uniform preimage to be
+sampled, when the preimage set is nonempty, with the same bound in
+expected time up to polynomial factors~\cite{JVV86}.
+In particular, the corollary applies to constant-locality versions
+of Goldreich's candidate one-way functions, which evaluate local
+predicates on overlapping subsets of input bits~\cite{Gol00}.
+For polynomially many output bits, it gives a $2^{o(n)}$-time
+inversion algorithm for every output in the image, ruling out
+$2^{\Omega(n)}$ inversion hardness for these families. This does not
+rule out one-wayness against polynomial-time algorithms.
+
+
+\begin{thebibliography}{CHKX06}
+
+\bibitem[ABHS19]{ABHS19}
+Amir Abboud, Karl Bringmann, Danny Hermelin, and Dvir Shabtay.
+\href{https://doi.org/10.1137/1.9781611975482.3}
+{\emph{SETH-Based Lower Bounds for Subset Sum and Bicriteria Path}}.
+30th ACM--SIAM Symposium on Discrete Algorithms, 2019, 41--57.
+
+\bibitem[AW14]{AW14}
+Amir Abboud and Virginia Vassilevska Williams.
+\href{https://doi.org/10.1109/FOCS.2014.53}
+{\emph{Popular Conjectures Imply Strong Lower Bounds for Dynamic Problems}}.
+55th IEEE Symposium on Foundations of Computer Science, 2014, 434--443.
+
+\bibitem[AGP23]{AGP23}
+Josh Alman, Yunfeng Guan, and Ashwin Padaki.
+\href{https://arxiv.org/abs/2211.05217}
+{\emph{Smaller Low-Depth Circuits for Kronecker Powers}}.
+34th ACM--SIAM Symposium on Discrete Algorithms, 2023, 4159--4187.
+
+\bibitem[AW15]{AW15}
+Josh Alman and Ryan Williams.
+\href{https://arxiv.org/abs/1507.05106}
+{\emph{Probabilistic Polynomials and Hamming Nearest Neighbors}}.
+56th IEEE Symposium on Foundations of Computer Science, 2015, 136--150.
+
+\bibitem[AW17]{AW17}
+Josh Alman and Ryan Williams.
+\href{https://arxiv.org/abs/1611.05558}
+{\emph{Probabilistic Rank and Matrix Rigidity}}.
+49th ACM Symposium on Theory of Computing, 2017, 641--652.
+
+\bibitem[AR94]{AR94}
+Noga Alon and Yuval Roichman.
+\href{https://doi.org/10.1002/rsa.3240050203}
+{\emph{Random Cayley Graphs and Expanders}}.
+Random Structures \& Algorithms \textbf{5}(2), 1994, 271--284.
+
+\bibitem[BI16]{BI16}
+Arturs Backurs and Piotr Indyk.
+\href{https://doi.org/10.1109/FOCS.2016.56}
+{\emph{Which Regular Expression Patterns Are Hard to Match?}}
+57th IEEE Symposium on Foundations of Computer Science, 2016, 457--466.
+
+\bibitem[BI18]{BackursIndyk18}
+Arturs Backurs and Piotr Indyk.
+\href{https://doi.org/10.1137/15M1053128}
+{\emph{Edit Distance Cannot Be Computed in Strongly Subquadratic Time
+(unless SETH is false)}}.
+SIAM Journal on Computing \textbf{47}(3), 2018, 1087--1097.
+Conference version in STOC 2015.
+
+\bibitem[Bar23]{Bar23}
+Boaz Barak.
+\href{https://introtcs.org/public/lec_13_Cook_Levin.html}
+{\emph{Introduction to Theoretical Computer Science}}.
+Online textbook, 2023. Chapter~15, Lemmas~15.9--15.10.
+\href{https://github.com/boazbk/tcs/releases/tag/v0.95}{Archived 2023 edition (v0.95)}.
+
+\bibitem[Bar68]{Bareiss68}
+Erwin H. Bareiss.
+\href{https://doi.org/10.1090/S0025-5718-1968-0226829-0}
+{\emph{Sylvester's Identity and Multistep Integer-Preserving Gaussian Elimination}}.
+Mathematics of Computation \textbf{22}(103), 1968, 565--578.
+
+\bibitem[BI13]{BeckImp13}
+Chris Beck and Russell Impagliazzo.
+\href{https://doi.org/10.1145/2488608.2488669}
+{\emph{Strong ETH Holds for Regular Resolution}}.
+45th ACM Symposium on Theory of Computing, 2013, 487--494.
+
+\bibitem[BZ10]{BZ10}
+Richard P. Brent and Paul Zimmermann.
+\emph{Modern Computer Arithmetic}.
+Cambridge University Press, 2010.
+Author version 0.5.9, October 7, 2010.
+
+\bibitem[BT94]{BT94}
+Richard Beigel and Jun Tarui.
+\href{https://doi.org/10.1007/BF01263423}
+{\emph{On ACC}}.
+Computational Complexity \textbf{4}(4), 1994, 350--366.
+
+\bibitem[BGKM23]{BGKM23}
+Vishwas Bhargava, Sumanta Ghosh, Mrinal Kumar, and Chandra Kanta Mohapatra.
+\href{https://doi.org/10.1145/3625226}
+{\emph{Fast, Algebraic Multivariate Multipoint Evaluation in Small
+Characteristic and Applications}}.
+Journal of the ACM \textbf{70}(6), 2023, 42:1--42:46.
+Conference version in STOC 2022.
+
+\bibitem[Bj\"o16]{Bjo16}
+Andreas Bj\"orklund.
+\href{https://doi.org/10.4230/LIPIcs.SWAT.2016.17}
+{\emph{Below All Subsets for Some Permutational Counting Problems}}.
+15th Scandinavian Symposium and Workshops on Algorithm Theory,
+LIPIcs \textbf{53}, 2016, 17:1--17:11.
+
+\bibitem[BKW19]{BKW19}
+Andreas Bj\"orklund, Petteri Kaski, and Ryan Williams.
+\href{https://doi.org/10.1007/s00453-018-0513-7}
+{\emph{Generalized Kakeya Sets for Polynomial Evaluation and Faster
+Computation of Fermionants}}.
+Algorithmica \textbf{81}, 2019, 4010--4028.
+Conference version in IPEC 2017.
+
+\bibitem[Bri14]{Bri14}
+Karl Bringmann.
+\href{https://doi.org/10.1109/FOCS.2014.76}
+{\emph{Why Walking the Dog Takes Time: Fr\'echet Distance Has No Strongly
+Subquadratic Algorithms Unless SETH Fails}}.
+55th IEEE Symposium on Foundations of Computer Science, 2014, 661--670.
+
+\bibitem[BK15]{BK15}
+Karl Bringmann and Marvin K\"unnemann.
+\href{https://doi.org/10.1109/FOCS.2015.15}
+{\emph{Quadratic Conditional Lower Bounds for String Problems and
+Dynamic Time Warping}}.
+56th IEEE Symposium on Foundations of Computer Science, 2015, 79--97.
+
+\bibitem[Cal09]{CalabroThesis}
+Chris Calabro.
+\href{https://cseweb.ucsd.edu/~ccalabro/dissertation_single_spaced.pdf}
+{\emph{The Exponential Complexity of Satisfiability Problems}}.
+Ph.D. dissertation, University of California, San Diego, 2009.
+Chapter~5.
+
+\bibitem[CIP06]{CIP}
+Chris Calabro, Russell Impagliazzo, and Ramamohan Paturi.
+\href{https://cseweb.ucsd.edu/~paturi/myPapers/pubs/CalabroImpagliazzoPaturi_2006_ccc.pdf}
+{\emph{A Duality between Clause Width and Clause Density for SAT}}.
+21st IEEE Conference on Computational Complexity, 2006, 252--260.
+
+\bibitem[CGI$^{+}$16]{CGIMPS16}
+Marco L. Carmosino, Jiawei Gao, Russell Impagliazzo, Ivan Mihajlin,
+Ramamohan Paturi, and Stefan Schneider.
+\href{https://doi.org/10.1145/2840728.2840746}
+{\emph{Nondeterministic Extensions of the Strong Exponential Time
+Hypothesis and Consequences for Non-reducibility}}.
+7th Innovations in Theoretical Computer Science Conference, 2016, 261--270.
+
+\bibitem[CCK$^{+}$20]{CCK20}
+Parinya Chalermsook, Marek Cygan, Guy Kortsarz, Bundit Laekhanukit,
+Pasin Manurangsi, Danupon Nanongkai, and Luca Trevisan.
+\href{https://doi.org/10.1137/18M1166869}
+{\emph{From Gap-Exponential Time Hypothesis to Fixed Parameter Tractable
+Inapproximability: Clique, Dominating Set, and More}}.
+SIAM Journal on Computing \textbf{49}(4), 2020, 772--810.
+Conference version in FOCS 2017.
+
+\bibitem[CW21]{CW21}
+Timothy M. Chan and R. Ryan Williams.
+\href{https://doi.org/10.1145/3402926}
+{\emph{Deterministic APSP, Orthogonal Vectors, and More:
+Quickly Derandomizing Razborov--Smolensky}}.
+ACM Transactions on Algorithms \textbf{17}(1), Article~2, 2021, 1--14.
+\href{https://people.csail.mit.edu/rrw/derand-apsp-ov-cr-talg.pdf}{Authors' manuscript}, Theorems~1.6 and~2.5.
+
+\bibitem[CHKX06]{CHKX06}
+Jianer Chen, Xiuzhen Huang, Iyad A. Kanj, and Ge Xia.
+\href{https://doi.org/10.1016/j.jcss.2006.04.007}
+{\emph{Strong Computational Lower Bounds via Parameterized Complexity}}.
+Journal of Computer and System Sciences \textbf{72}(8), 2006, 1346--1367.
+
+\bibitem[CLWYY25]{CLWYY25}
+Zongchen Chen, Aditya Lonkar, Chunyang Wang, Kuan Yang, and Yitong Yin.
+\href{https://doi.org/10.1145/3717823.3718163}
+{\emph{Counting Random $k$-SAT near the Satisfiability Threshold}}.
+57th ACM Symposium on Theory of Computing, 2025, 867--878.
+Theorem~1.2 is numbered as in the \href{https://wcysai.com/publication/randomksat/randomkSAT.pdf}{authors' full version}.
+
+\bibitem[Coo71]{Cook71}
+Stephen A. Cook.
+\href{https://www.cs.utoronto.ca/~sacook/homepage/1971.pdf}
+{\emph{The Complexity of Theorem-Proving Procedures}}.
+3rd ACM Symposium on Theory of Computing, 1971, 151--158.
+
+\bibitem[Cur18]{Cur18}
+Radu Curticapean.
+\href{https://doi.org/10.1016/j.ic.2018.02.008}
+{\emph{Block Interpolation: A Framework for Tight Exponential-Time
+Counting Complexity}}.
+Information and Computation \textbf{261}, Part~2, 2018, 265--280.
+Conference version in ICALP 2015.
+
+\bibitem[CDL$^{+}$16]{CDL16}
+Marek Cygan, Holger Dell, Daniel Lokshtanov, D\'aniel Marx,
+Jesper Nederlof, Yoshio Okamoto, Ramamohan Paturi, Saket Saurabh,
+and Magnus Wahlstr\"om.
+\href{https://doi.org/10.1145/2925416}
+{\emph{On Problems as Hard as CNF-SAT}}.
+ACM Transactions on Algorithms \textbf{12}(3), Article~41, 2016, 1--24.
+
+\bibitem[DHM$^{+}$14]{DHMTW}
+Holger Dell, Thore Husfeldt, D\'aniel Marx, Nina Taslaman, and Martin Wahl\'en.
+\href{https://arxiv.org/abs/1206.1775}
+{\emph{Exponential Time Complexity of the Permanent and the Tutte Polynomial}}.
+ACM Transactions on Algorithms \textbf{10}(4), Article~21, 2014, 1--32.
+
+\bibitem[Din16]{Din16}
+Irit Dinur.
+\href{https://eccc.weizmann.ac.il/report/2016/128/}
+{\emph{Mildly Exponential Reduction from Gap 3SAT to Polynomial-Gap
+Label-Cover}}.
+Electronic Colloquium on Computational Complexity, Report TR16-128, 2016.
+
+\bibitem[DL20]{DL20}
+Zeev Dvir and Allen Liu.
+\href{https://theoryofcomputing.org/articles/v016a020/}
+{\emph{Fourier and Circulant Matrices are Not Rigid}}.
+Theory of Computing \textbf{16}(20), 2020, 1--48.
+
+\bibitem[vzGG13]{vzGG13}
+Joachim von zur Gathen and J\"urgen Gerhard.
+\href{https://doi.org/10.1017/CBO9781139856065}{\emph{Modern Computer Algebra}}.
+3rd edition, Cambridge University Press, 2013.
+
+\bibitem[Gol00]{Gol00}
+Oded Goldreich.
+\href{https://eccc.weizmann.ac.il/eccc-reports/2000/TR00-090/index.html}
+{\emph{Candidate One-Way Functions Based on Expander Graphs}}.
+Electronic Colloquium on Computational Complexity, Report TR00-090, 2000.
+
+\bibitem[Gol08]{Gol08}
+Oded Goldreich.
+\href{https://www.wisdom.weizmann.ac.il/~oded/CC/bc-1.pdf}
+{\emph{P, NP, and NP-Completeness: The Basics of Computational Complexity}}.
+Author's draft, June 14, 2008, Proposition~4.7.
+The Cambridge University Press edition appeared in 2010.
+
+\bibitem[HKZZ19]{HKZZ19}
+Thomas Dueholm Hansen, Haim Kaplan, Or Zamir, and Uri Zwick.
+\href{https://doi.org/10.1145/3313276.3316359}
+{\emph{Faster $k$-SAT Algorithms Using Biased-PPSZ}}.
+51st ACM Symposium on Theory of Computing, 2019, 578--589.
+
+\bibitem[Her14]{Hertli14}
+Timon Hertli.
+\href{https://doi.org/10.1137/120868177}
+{\emph{3-SAT Faster and Simpler---Unique-SAT Bounds for PPSZ Hold in General}}.
+SIAM Journal on Computing \textbf{43}(2), 2014, 718--729.
+Conference version in FOCS 2011.
+
+\bibitem[Hus11]{Hus11}
+Thore Husfeldt.
+\href{https://doi.org/10.1007/978-3-642-22012-8_3}
+{\emph{Invitation to Algorithmic Uses of Inclusion--Exclusion}}.
+38th International Colloquium on Automata, Languages, and Programming,
+Part II, Lecture Notes in Computer Science \textbf{6756}, 2011, 42--59.
+
+\bibitem[IMP12]{IMP12}
+Russell Impagliazzo, William Matthews, and Ramamohan Paturi.
+\href{https://cseweb.ucsd.edu/~paturi/myPapers/pubs/ImpagliazzoMatthewsPaturi_2012_soda.pdf}
+{\emph{A Satisfiability Algorithm for $AC^0$}}.
+23rd ACM--SIAM Symposium on Discrete Algorithms, 2012, 961--972.
+\href{https://doi.org/10.1137/1.9781611973099.77}{Publisher's version}.
+
+\bibitem[IP01]{IP01}
+Russell Impagliazzo and Ramamohan Paturi.
+\href{https://doi.org/10.1006/jcss.2000.1727}
+{\emph{On the Complexity of $k$-SAT}}.
+Journal of Computer and System Sciences \textbf{62}(2), 2001, 367--375.
+
+\bibitem[IPZ01]{IPZ}
+Russell Impagliazzo, Ramamohan Paturi, and Francis Zane.
+\href{https://doi.org/10.1006/jcss.2001.1774}
+{\emph{Which Problems Have Strongly Exponential Complexity?}}
+Journal of Computer and System Sciences \textbf{63}(4), 2001, 512--530.
+
+\bibitem[JMV13]{JMV13}
+Hamid Jahanjou, Eric Miles, and Emanuele Viola.
+\href{https://eccc.weizmann.ac.il/report/2013/099/revision/2/download/}
+{\emph{Local Reductions}}.
+Electronic Colloquium on Computational Complexity, Report TR13-099,
+revision 2, 2013. Conference version in ICALP 2015, 749--760.
+
+\bibitem[JVV86]{JVV86}
+Mark R. Jerrum, Leslie G. Valiant, and Vijay V. Vazirani.
+\href{https://doi.org/10.1016/0304-3975(86)90174-X}
+{\emph{Random Generation of Combinatorial Structures from a Uniform Distribution}}.
+Theoretical Computer Science \textbf{43}(2--3), 1986, 169--188.
+
+\bibitem[JC26]{JC26}
+Tao Jiang and Shaowei Cai.
+\href{https://arxiv.org/abs/2607.10697}
+{\emph{A Better Analysis For PPSZ For 3-SAT}}.
+arXiv:2607.10697, 2026.
+
+\bibitem[Koi06]{Koi06}
+Mikko Koivisto.
+\href{https://doi.org/10.1016/j.ipl.2005.11.013}
+{\emph{Optimal 2-Constraint Satisfaction via Sum--Product Algorithms}}.
+Information Processing Letters \textbf{98}(1), 2006, 24--28.
+
+\bibitem[KSY14]{KSY14}
+Swastik Kopparty, Shubhangi Saraf, and Sergey Yekhanin.
+\href{https://doi.org/10.1145/2629416}
+{\emph{High-Rate Codes with Sublinear-Time Decoding}}.
+Journal of the ACM \textbf{61}(5), 2014, 28:1--28:20.
+
+\bibitem[KW16]{KW16}
+Ioannis Koutis and Ryan Williams.
+\href{https://doi.org/10.1145/2742544}
+{\emph{Algebraic Fingerprints for Faster Algorithms}}.
+Communications of the ACM \textbf{59}(1), 2016, 98--105.
+
+\bibitem[Kut26]{Kutzkov26}
+Konstantin Kutzkov.
+\href{https://doi.org/10.24963/ijcai.2026/254}
+{\emph{Complementary Branching for \#SAT: Bounded-Degree Bounds and Faster \#3-SAT}}.
+35th International Joint Conference on Artificial Intelligence, 2026, 2282--2290.
+
+\bibitem[Li21]{Li21}
+Ray Li.
+\href{https://arxiv.org/abs/2008.05106}
+{\emph{Settling SETH vs. Approximate Sparse Directed Unweighted Diameter
+(up to (NU)NSETH)}}.
+53rd ACM Symposium on Theory of Computing, 2021, 1684--1696.
+
+\bibitem[Liu18]{Liu18}
+Sixue Liu.
+\href{https://doi.org/10.4230/LIPIcs.ICALP.2018.88}
+{\emph{Chain, Generalization of Covering Code, and Deterministic Algorithm for $k$-SAT}}.
+45th International Colloquium on Automata, Languages, and Programming,
+LIPIcs \textbf{107}, 2018, 88:1--88:13.
+
+\bibitem[LQ15]{LQ15}
+Henri Lombardi and Claude Quitt\'e.
+\emph{Commutative Algebra: Constructive Methods. Finite Projective Modules}.
+Algebra and Applications 20, Springer, 2015.
+English translation by Tania K. Roblot; corrected author version,
+arXiv:1605.04832v4, September 18, 2024.
+
+\bibitem[LMS18]{LMS18}
+Daniel Lokshtanov, D\'aniel Marx, and Saket Saurabh.
+\href{https://doi.org/10.1145/3170442}
+{\emph{Known Algorithms on Graphs of Bounded Treewidth Are Probably Optimal}}.
+ACM Transactions on Algorithms \textbf{14}(2), Article~13, 2018, 1--30.
+Conference version in SODA 2011.
+
+\bibitem[MR17]{MR17}
+Pasin Manurangsi and Prasad Raghavendra.
+\href{https://doi.org/10.4230/LIPIcs.ICALP.2017.78}
+{\emph{A Birthday Repetition Theorem and Complexity of Approximating
+Dense CSPs}}.
+44th International Colloquium on Automata, Languages, and Programming,
+LIPIcs \textbf{80}, 2017, 78:1--78:15.
+
+\bibitem[MS08]{MS08}
+Igor L. Markov and Yaoyun Shi.
+\href{https://doi.org/10.1137/050644756}
+{\emph{Simulating Quantum Computation by Contracting Tensor Networks}}.
+SIAM Journal on Computing \textbf{38}(3), 2008, 963--981.
+The cited numbering is that of arXiv:quant-ph/0511069v7, 2009.
+
+\bibitem[Mar10]{Marx10}
+D\'aniel Marx.
+\href{https://doi.org/10.4086/toc.2010.v006a005}
+{\emph{Can You Beat Treewidth?}}
+Theory of Computing \textbf{6}, 2010, 85--112.
+
+\bibitem[MJK21]{MJK21}
+Johannes Middeke, David J. Jeffrey, and Christoph Koutschan.
+\emph{Common Factors in Fraction-Free Matrix Decompositions}.
+Mathematics in Computer Science \textbf{15}, 2021, 589--608.
+The cited numbering is that of the author preprint,
+arXiv:2005.12380, May 25, 2020.
+
+\bibitem[NN93]{NN93}
+Joseph Naor and Moni Naor.
+\href{https://doi.org/10.1137/0222053}
+{\emph{Small-Bias Probability Spaces: Efficient Constructions and Applications}}.
+SIAM Journal on Computing \textbf{22}(4), 1993, 838--856.
+
+\bibitem[Ope26]{OpenAIUGC26}
+OpenAI, \emph{The Unique Games Theorem},
+OpenAI Math Release preprint
+\href{https://github.com/openai/math/blob/main/preprints/The-Unique-Games-Theorem-September-23-2026/paper.pdf}{OAI:The-Unique-Games-Theorem-September-23-2026},
+2026.
+
+\bibitem[PPSZ05]{PPSZ05}
+Ramamohan Paturi, Pavel Pudl\'ak, Michael E. Saks, and Francis Zane.
+\href{https://doi.org/10.1145/1066100.1066101}
+{\emph{An Improved Exponential-Time Algorithm for $k$-SAT}}.
+Journal of the ACM \textbf{52}(3), 2005, 337--364.
+Conference version in FOCS 1998.
+
+\bibitem[Rag88]{Raghavan88}
+Prabhakar Raghavan.
+\href{https://doi.org/10.1016/0022-0000(88)90003-7}
+{\emph{Probabilistic Construction of Deterministic Algorithms:
+Approximating Packing Integer Programs}}.
+Journal of Computer and System Sciences \textbf{37}(2), 1988, 130--143.
+
+\bibitem[Rag08]{Rag08}
+Prasad Raghavendra.
+\href{https://doi.org/10.1145/1374376.1374414}
+{\emph{Optimal Algorithms and Inapproximability Results for Every CSP?}}
+40th ACM Symposium on Theory of Computing, 2008, 245--254.
+
+\bibitem[RV13]{RV13}
+Liam Roditty and Virginia Vassilevska Williams.
+\href{https://doi.org/10.1145/2488608.2488673}
+{\emph{Fast Approximation Algorithms for the Diameter and Radius of Sparse Graphs}}.
+45th ACM Symposium on Theory of Computing, 2013, 515--524.
+
+\bibitem[Sch24]{Scheder24}
+Dominik Scheder.
+\href{https://doi.org/10.46298/theoretics.24.5}
+{\emph{PPSZ is better than you think}}.
+TheoretiCS \textbf{3}, Article~5, 2024, 1--37.
+
+\bibitem[Sch99]{Schon99}
+Uwe Sch\"oning.
+\href{https://doi.org/10.1109/SFFCS.1999.814612}
+{\emph{A Probabilistic Algorithm for $k$-SAT and Constraint Satisfaction
+Problems}}.
+40th IEEE Symposium on Foundations of Computer Science, 1999, 410--414.
+
+\bibitem[Sho09]{Shoup09}
+Victor Shoup.
+\emph{A Computational Introduction to Number Theory and Algebra}.
+Second edition, Cambridge University Press, 2009.
+Author version 2, June 16, 2008.
+
+\bibitem[SS09]{SS09}
+Alexander D. Scott and Gregory B. Sorkin.
+\href{https://doi.org/10.1145/1597036.1597049}
+{\emph{Polynomial Constraint Satisfaction Problems, Graph Bisection,
+and the Ising Partition Function}}.
+ACM Transactions on Algorithms \textbf{5}(4), 2009, 45:1--45:27.
+
+\bibitem[SKC94]{SKC94}
+Bart Selman, Henry A. Kautz, and Bram Cohen.
+\href{https://cdn.aaai.org/AAAI/1994/AAAI94-051.pdf}
+{\emph{Noise Strategies for Improving Local Search}}.
+12th National Conference on Artificial Intelligence, 1994, 337--343.
+
+\bibitem[SS96]{SS96}
+Michael Sipser and Daniel A. Spielman.
+\href{https://doi.org/10.1109/18.556667}
+{\emph{Expander Codes}}.
+IEEE Transactions on Information Theory \textbf{42}(6), 1996, 1710--1722.
+
+\bibitem[Tan81]{Tanner81}
+R. Michael Tanner.
+\href{https://doi.org/10.1109/TIT.1981.1056404}
+{\emph{A Recursive Approach to Low Complexity Codes}}.
+IEEE Transactions on Information Theory \textbf{27}(5), 1981, 533--547.
+
+\bibitem[Tov84]{Tov84}
+Craig A. Tovey.
+\href{https://doi.org/10.1016/0166-218X(84)90081-7}
+{\emph{A Simplified NP-Complete Satisfiability Problem}}.
+Discrete Applied Mathematics \textbf{8}(1), 1984, 85--89.
+
+\bibitem[Val77]{Val77}
+Leslie G. Valiant.
+\href{https://doi.org/10.1007/3-540-08353-7_135}
+{\emph{Graph-Theoretic Arguments in Low-Level Complexity}}.
+Mathematical Foundations of Computer Science 1977,
+Lecture Notes in Computer Science \textbf{53}, 1977, 162--176.
+
+\bibitem[Val79]{Val79}
+Leslie G. Valiant.
+\href{https://doi.org/10.1137/0208032}
+{\emph{The Complexity of Enumeration and Reliability Problems}}.
+SIAM Journal on Computing \textbf{8}(3), 1979, 410--421.
+
+\bibitem[VW19]{VW19}
+Virginia Vassilevska Williams.
+\href{https://doi.org/10.1142/9789813272880_0188}
+{\emph{On Some Fine-Grained Questions in Algorithms and Complexity}}.
+Proceedings of the International Congress of Mathematicians (ICM 2018),
+World Scientific, 2019, 3447--3487.
+
+\bibitem[VW21]{VW21}
+Nikhil Vyas and Ryan Williams.
+\href{https://doi.org/10.1613/jair.1.11859}
+{\emph{On Super Strong ETH}}.
+Journal of Artificial Intelligence Research \textbf{70}, 2021, 473--495.
+
+\bibitem[Wah08]{Wahlstrom08}
+Magnus Wahlstr\"om.
+\href{https://doi.org/10.1007/978-3-540-79723-4_19}
+{\emph{A Tighter Bound for Counting Max-Weight Solutions to 2SAT Instances}}.
+3rd International Workshop on Parameterized and Exact Computation,
+Lecture Notes in Computer Science \textbf{5018}, 2008, 202--213.
+
+\bibitem[Wil05]{Wil05}
+Ryan Williams.
+\href{https://doi.org/10.1016/j.tcs.2005.09.023}
+{\emph{A New Algorithm for Optimal 2-Constraint Satisfaction and Its Implications}}.
+Theoretical Computer Science \textbf{348}(2--3), 2005, 357--365.
+
+\bibitem[Wil13]{Wil13}
+Ryan Williams.
+\href{https://doi.org/10.1137/10080703X}
+{\emph{Improving Exhaustive Search Implies Superpolynomial Lower Bounds}}.
+SIAM Journal on Computing \textbf{42}(3), 2013, 1218--1244.
+Conference version in STOC 2010. The numbering of Lemma~3.2 and Theorem~6.1 follows the
+\href{https://people.csail.mit.edu/rrw/improved-algs-lbs2.pdf}{author's full version}.
+
+\bibitem[Wil14]{Wil14}
+Richard Ryan Williams.
+\href{https://doi.org/10.4230/LIPIcs.FSTTCS.2014.47}
+{\emph{The Polynomial Method in Circuit Complexity Applied to Algorithm
+Design (Invited Talk)}}.
+34th International Conference on Foundation of Software Technology and
+Theoretical Computer Science, LIPIcs \textbf{29}, 2014, 47--60.
+
+\bibitem[Wil16]{Wil16}
+Richard Ryan Williams.
+\href{https://doi.org/10.4230/LIPIcs.CCC.2016.2}
+{\emph{Strong ETH Breaks With Merlin and Arthur: Short Non-Interactive
+Proofs of Batch Evaluation}}.
+31st Conference on Computational Complexity, LIPIcs \textbf{50}, 2016,
+2:1--2:17.
+
+\bibitem[WY07]{WY07}
+David Woodruff and Sergey Yekhanin.
+\href{https://doi.org/10.1137/06065773X}
+{\emph{A Geometric Approach to Information-Theoretic Private Information
+Retrieval}}.
+SIAM Journal on Computing \textbf{37}(4), 2007, 1046--1056.
+
+\bibitem[\v{Z}\'ak83]{Zak83}
+Stanislav \v{Z}\'ak.
+\href{https://doi.org/10.1016/0304-3975(83)90015-4}{\emph{A Turing
+Machine Time Hierarchy}}.
+Theoretical Computer Science \textbf{26}(3), 1983, 327--333.
+
+\end{thebibliography}
+\end{document}

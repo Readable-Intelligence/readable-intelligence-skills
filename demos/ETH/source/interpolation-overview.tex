@@ -1,0 +1,831 @@
+\section{An interpolation algorithm: technique overview}\label{sec:technical-overview}
+Sections~\ref{sec:technical-overview}--\ref{sec:interpolation-return}
+give an algorithm using polynomial interpolation over $\mathbb Q$ with exponent $O_k(\rho(n))$.
+It uses the same parity tests as the main theorem and a different
+method for counting their common zeros. This method separates the
+summation routine from the construction of the replacement forms:
+Section~\ref{sec:counting} gives the routine for arbitrary polynomial
+factors over a commutative $\mathbb Q$-algebra, with the replacement
+forms and measurements supplied. Its development is independent of
+the contraction recursion in Section~\ref{app:tensor}.
+We first illustrate the routine by counting satisfying assignments
+of a $3$-CNF in which each variable occurs in at most three clauses. The product of its clause
+polynomials has degree at most $3n$, so we can use interpolation to
+recover the exact count from sums over small groups of variables.
+Section~\ref{subsec:preview-general-sat} then uses disjoint
+sparsification and variable copying to count the satisfying assignments
+of an arbitrary $k$-CNF in $(n+m)^{O_k(1)}2^{o(n)}$ time for every
+fixed $k\ge2$. Taking $k=3$ already refutes ETH.
+Section~\ref{subsec:preview-full-case} explains how counting on the
+original variables gives the exponent $O_k(\rho(n))$ of
+Proposition~\ref{prop:interpolation-bound}.
+
+\subsection{The bounded-occurrence setting}\label{subsec:preview-setting}
+Let $F$ have $n$ declared Boolean variables. Each clause contains
+at most three literals, and each variable appears in at most
+three clauses, counting positive and negative occurrences together.
+Our task is to count the satisfying assignments of $F$ exactly.
+
+We remove tautological clauses and repeated literals within a
+clause. An empty clause gives count zero immediately.
+These operations preserve the occurrence bound. For each remaining
+clause $e$, let $I_e\subseteq[n]$ be its variable set.
+For each variable that occurs in no clause, add a factor equal to
+one with scope $\{v\}$. Such a factor leaves the count unchanged
+and ensures that every variable has an assigned position in the
+construction.
+Let $\mathcal F$ index the clause polynomials and these constant-one factors. Then
+\begin{equation}\label{eq:overview-incidences}
+ |I_e|\le3,\qquad
+ \#\{e\in\mathcal F:v\in I_e\}\le3,\qquad
+ n\le M:=\sum_{e\in\mathcal F}|I_e|\le3n.
+\end{equation}
+All sums below still range over the original $n$ Boolean variables.
+
+\subsection{A direct polynomial for the count}\label{subsec:preview-encoding}
+Write $L_{e,v}(X_v)=X_v$ for a positive literal and
+$L_{e,v}(X_v)=1-X_v$ for a negative literal. The satisfaction
+polynomial of clause $e$ is
+\[
+ \Phi_e((X_v)_{v\in I_e})
+ =1-\prod_{v\in I_e}(1-L_{e,v}(X_v)).
+\]
+For example, $x_a\vee\neg x_b\vee x_c$ gives
+\[
+ \Phi_e(X_a,X_b,X_c)=1-(1-X_a)X_b(1-X_c).
+\]
+On Boolean inputs this polynomial is one when the clause is
+satisfied and zero otherwise. For a constant-one factor $e$, put
+$\Phi_e=1$. Therefore
+\begin{equation}\label{eq:overview-direct-count}
+ \#F=\sum_{x\in\{0,1\}^n}\prod_{e\in\mathcal F}
+                   \Phi_e((x_v)_{v\in I_e}).
+\end{equation}
+The product has total degree at most $M\le3n$.
+This linear degree bound is the useful consequence of the
+three-occurrence assumption.
+
+Directly evaluating \eqref{eq:overview-direct-count} would be
+exhaustive search. If the variables admitted a partition into groups
+$S_1,\ldots,S_r$, each of size at most $2n/r$, with every clause
+contained in one group, we could instead count within groups.
+Writing $N_g$ for the number of assignments to the variables in $S_g$
+that satisfy that group's clauses, independence gives
+\[
+ \#F=\prod_{g=1}^r N_g.
+\]
+The local enumerations examine at most
+$\sum_{g=1}^r2^{|S_g|}\le r\,2^{2n/r}$ assignments,
+with polynomial work per assignment.
+An arbitrary formula need not admit such a partition. We will replace
+the clause inputs so that groups interact only through a small
+collection of shared linear summaries. Fixing those summaries will
+again let us sum over each group separately.
+
+\subsection{A polynomial family with easier evaluation points}
+\label{subsec:preview-deformation}
+We introduce a parameter $T$. At $T=0$, the replacements must
+restore the original factor inputs. At selected nonzero points
+$T=1,\ldots,Q$, they should let us separate the groups by fixing
+shared linear summaries. Here $Q$ is the number of selected points,
+and $R$ will bound the degree of the replacement coefficients.
+We choose both parameters later.
+
+Write $\vec{X}=(X_1,\ldots,X_n)$ for the vector of formal variables.
+For each occurrence $v\in I_e$, use the polynomial coefficient vector
+$\vec{P}_{e,v}(T)=(p_{e,v,1}(T),\ldots,p_{e,v,n}(T))$ to replace
+$X_v$ in factor $e$ by the scalar inner product
+\[
+ \langle \vec{P}_{e,v}(T),\vec{X}\rangle
+ =\sum_{i=1}^n p_{e,v,i}(T)X_i.
+\]
+We call this expression the \emph{replacement linear form} for
+the occurrence of variable $v$ in factor $e$. It replaces the
+input $X_v$ in the factor $\Phi_e$.
+We require
+\[
+ \langle \vec{P}_{e,v}(0),\vec{X}\rangle=X_v,
+ \qquad \deg \vec{P}_{e,v}\le R.
+\]
+Different factors may use different replacement linear forms
+for the same variable.
+Define
+\begin{equation}\label{eq:simple-counting-polynomial}
+ H(T)=\sum_{x\in\{0,1\}^n}\prod_{e\in\mathcal F}
+       \Phi_e\bigl((\langle \vec{P}_{e,v}(T), x\rangle)_{v\in I_e}\bigr)
+       \in\mathbb Q[T].
+\end{equation}
+At zero every replacement restores the original variable, while
+the degree of each factor grows by at most a factor of $R$. Hence
+\begin{equation}\label{eq:overview-value-degree}
+ H(0)=\#F,\qquad \deg H\le MR\le3nR.
+\end{equation}
+We will recover $H(0)$ from Taylor coefficients at $t=1,\ldots,Q$.
+The degree bound means that $O(1+nR/Q)$ coefficients per point
+suffice, as Section~\ref{subsec:preview-interpolation} explains.
+Our goal is therefore to make $R$ small relative to $Q$: many
+points with low-degree replacements require fewer coefficients
+at each point.
+
+At a nonzero $t$, the value $\langle\vec{P}_{e,v}(t),x\rangle$
+of a replacement linear form need not lie in $\{0,1\}$, even
+when $x$ is Boolean. The transformed factors
+therefore need not act as satisfaction indicators.
+
+\subsection{Separating the sum by fixing measurements}
+\label{subsec:preview-separation}
+Fix $t\in[Q]$. We are given the coefficient vectors
+$\vec{P}_{e,v}(t)$, whose entries are now constants. We explain
+what structure lets us compute $H(t)$ quickly, and how to use it.
+Throughout this subsection, write $S_g=S_{t,g}$ and $C_g=C_{t,g}$.
+
+\begin{definition}[Partitions and measurements]
+\label{def:overview-measurement-structure}
+For the given coefficient vectors $\vec{P}_{e,v}(t)$ and parameters $(r,\tau,D)$,
+the groups $S_g$, factor assignments $\sigma_e(t)$,
+and measurement matrices $C_g$ satisfy the following four
+conditions:
+\begin{enumerate}
+\item \emph{Small groups.} Partition the variables into disjoint
+groups $[n]=S_1\sqcup\cdots\sqcup S_r$, with $|S_g|\le2n/r$.
+\item \emph{One assigned group per factor.} Assign each factor
+$e$ to one group $\sigma_e(t)\in[r]$. Condition~4 must hold with
+this same group for every replacement linear form of factor $e$.
+\item \emph{Few bounded measurements.} Each group $g$ has an
+integer matrix $C_g$ with columns indexed by $S_g$ and $c_g$ rows.
+Each row specifies one linear measurement of the variables in
+$S_g$. There are at most $2\tau n$ rows in total, and the sum of
+absolute values of the coefficients in each row is at most $D$.
+For an assignment $x$, write
+\[
+ x_g=x|_{S_g},\qquad y_g=C_gx_g,\qquad
+ \vec{y}=(y_1,\ldots,y_r).
+\]
+\item \emph{Dependence on other groups only through measurements.}
+Suppose factor $e$ is assigned to group $g=\sigma_e(t)$.
+Each replacement linear form of this factor may depend freely on the
+variables in $S_g$. Its dependence on any other group $S_h$ must
+be a linear combination of that group's measurements $y_h$.
+Precisely, for every $v\in I_e$, there must be coefficient vectors
+$\vec{\lambda}_{e,v,h}\in\mathbb Q^{c_h}$, for $h\ne g$, such
+that, for every $x\in\mathbb Q^n$,
+\begin{equation}\label{eq:outline-separation}
+ \langle\vec{P}_{e,v}(t),x\rangle
+ =\langle\vec{P}_{e,v}(t)|_{S_g},x_g\rangle
+   +\sum_{h\ne g}\langle\vec{\lambda}_{e,v,h},y_h\rangle.
+\end{equation}
+Equivalently, $\vec{P}_{e,v}(t)|_{S_h}$ lies in the row space
+of $C_h$ for every $h\ne g$.
+\end{enumerate}
+\end{definition}
+The matrices $C_h$ are shared by all factors. A factor's assigned
+group need not contain its original variables. Once $\vec{y}$
+is fixed, however, the entire transformed factor
+depends only on the variables in its assigned group.
+
+Find the coefficient vectors $\vec\lambda_{e,v,h}$ by solving the
+linear systems guaranteed by condition~4. For a measurement tuple
+$\vec y=(y_1,\ldots,y_r)$, put
+\[
+ \mathcal X_{t,g}(y_g)
+ =\{u\in\{0,1\}^{S_g}:C_gu=y_g\},\qquad
+ \mathcal Y=\prod_{g=1}^r\{-D,\ldots,D\}^{c_g}.
+\]
+For $u\in\mathcal X_{t,g}(y_g)$, use \eqref{eq:outline-separation}
+to evaluate the transformed factors assigned to $g$ from $u$ and
+$\vec y$, and let $A_{t,g}(u;\vec y)$ be their product. It is one if
+no factor is assigned to $g$. Each measurement of a Boolean
+assignment is an integer in $[-D,D]$. Hence each full Boolean
+assignment has one measurement tuple in $\mathcal Y$ and one
+restriction to each group, and its product of factors is
+the product of the values $A_{t,g}$ at these restrictions.
+Conversely, because $S_1,\ldots,S_r$ partition $[n]$, any choice of
+$u_g\in\mathcal X_{t,g}(y_g)$ for every $g$ combines into exactly one
+assignment $x$ with $x_g=u_g$ for all $g$, and the measurement tuple
+of this $x$ is $\vec y$. Thus, for each $\vec y\in\mathcal Y$,
+restriction to the groups is a bijection from the assignments with
+measurement tuple $\vec y$ onto $\prod_{g=1}^r\mathcal X_{t,g}(y_g)$.
+Distributing the product over these restrictions therefore gives
+\begin{equation}\label{eq:outline-separated-sum}
+ H(t)=\sum_{\vec{y}\in\mathcal Y}\prod_{g=1}^r
+       \left(\sum_{u\in\mathcal X_{t,g}(y_g)}
+                         A_{t,g}(u;\vec{y})\right).
+\end{equation}
+An empty measurement fiber contributes a zero group sum.
+
+Evaluate this identity one measurement tuple at a time. For each
+group, scan its Boolean assignments, retaining those with $C_gu=y_g$,
+and accumulate the inner sum. Multiply the group sums and add the
+product to the running total. There are at most
+$(2D+1)^{2\tau n}$ measurement tuples and at most
+$\sum_g2^{|S_g|}\le r2^{2n/r}$ assignments to scan per tuple.
+The time is consequently
+\[
+ (2D+1)^{2\tau n}2^{2n/r}
+\]
+up to polynomial factors. Processing the groups sequentially retains
+only the current measurement tuple, assignment, and running sums and
+products; Lemma~\ref{lem:measurement-separation} gives the general
+routine.
+
+For the parameter choices in Section~\ref{subsec:preview-parameters},
+we can construct replacement forms of degree at most $R$ that
+restore the original variables at zero and admit partitions, factor assignments, and measurement matrices
+with parameters $(r,\tau,D)$ at every $t\in[Q]$.
+Section~\ref{subsec:preview-auxiliary} gives the construction.
+We first explain how these properties let us recover the count
+efficiently.
+
+\subsection{Recovering the count from Taylor coefficients}
+\label{subsec:preview-interpolation}
+Our goal is to recover $H(0)=\#F$ from information at the points
+$t=1,\ldots,Q$. Since $\deg H\le3nR$, the $Q$ values $H(t)$ alone
+may not determine $H$. We instead compute several Taylor
+coefficients at each point. Choose
+\[
+ q=\left\lfloor\frac{3nR}{Q}\right\rfloor,\qquad J=q+1.
+\]
+Suppose we know the coefficients of $z^0,\ldots,z^q$ in $H(t+z)$
+for every $t\in[Q]$. These data determine $H$ uniquely: if two
+polynomials of degree at most $3nR$ have the same data, their
+difference is divisible by $(T-t)^J$ for every $t\in[Q]$, hence by
+$\prod_{t=1}^Q(T-t)^J$. This product has degree $QJ>3nR$, so the
+difference must be zero. Each Taylor coefficient gives a linear
+equation in the coefficients of $H$. Solving this rational linear
+system recovers $H$, and its constant coefficient is the desired
+count $H(0)$.
+
+It remains to compute these Taylor coefficients. Fix $t\in[Q]$;
+we want $H(t+z)$ through degree $q$ in $z$. The row-space condition controls
+the replacement forms at $t$, but need not control their changes
+from $t$ to $t+z$. We first give those changes a separate input,
+so that fixing this input preserves the separation of groups.
+
+\smallskip\noindent
+\textbf{Keeping the shifted inputs separate.}
+Write
+\[
+ \Delta\vec P_{e,v}(z)=\vec P_{e,v}(t+z)-\vec P_{e,v}(t).
+\]
+Keep $x$ as the Boolean assignment being summed over, and introduce
+a separate formal vector $\vec X$ for the changes. Define
+\begin{equation}\label{eq:outline-taylor-product}
+ \mathcal G_x(\vec X,z)=
+ \prod_{e\in\mathcal F}\Phi_e\bigl(
+       (\langle\vec P_{e,v}(t),x\rangle+
+        \langle\Delta\vec P_{e,v}(z),\vec X\rangle)_{v\in I_e}\bigr).
+\end{equation}
+Here $x$ indexes the polynomial, while $\vec X$ and $z$ are its
+formal variables. Setting $\vec X=x$ restores each shifted input
+$\langle\vec P_{e,v}(t+z),x\rangle$, so
+\[
+ H(t+z)=\sum_{x\in\{0,1\}^n}\mathcal G_x(x,z).
+\]
+On the other hand, fixing $\vec X=\mathbf1_U$ for some
+$U\subseteq[n]$ makes every correction
+$\langle\Delta\vec P_{e,v}(z),\mathbf1_U\rangle$ independent of $x$.
+All dependence on $x$ then remains through
+$\langle\vec P_{e,v}(t),x\rangle$, where the row-space condition applies.
+Our task is therefore to recover the sum with $\vec X=x$
+from sums with $\vec X$ fixed.
+
+The degree bound makes this possible with few fixed substitutions.
+Every entry of $\Delta\vec P_{e,v}(z)$ is divisible by $z$, so
+each occurrence of an $X_i$ in an expanded term contributes at
+least one factor of $z$. Thus
+\[
+ \deg_{\vec X}([z^j]\mathcal G_x(\vec X,z))\le j.
+\]
+Thus, after discarding powers of $z$ above $q$, every monomial
+involves at most $q$ distinct variables from $\vec X$.
+
+\smallskip\noindent
+\textbf{Recovering the shifted sum by inclusion--exclusion.}
+Work modulo $z^J$, so that only the coefficients through $z^q$
+are retained. Replace every positive power of $X_i$ in
+$\mathcal G_x$ by $X_i$. This preserves its values on Boolean
+inputs. The degree bound above gives, for Boolean $\vec X$,
+\[
+ \mathcal G_x(\vec X,z)\equiv
+ \sum_{\substack{E\subseteq[n]\\|E|\le q}}
+       a_E(x,z)\prod_{i\in E}X_i\pmod{z^J},
+\]
+where $a_E(x,z)$ is the coefficient of the indicated monomial
+after this replacement. Evaluating at $\mathbf1_U$, the vector
+with ones precisely in $U$, sums the coefficients indexed by
+subsets of $U$. Inclusion--exclusion extracts each one:
+\[
+ a_E(x,z)\equiv
+ \sum_{U\subseteq E}(-1)^{|E|-|U|}
+                 \mathcal G_x(\mathbf1_U,z)\pmod{z^J}.
+\]
+When we set $\vec X=x$, the monomial $\prod_{i\in E}x_i$
+equals one exactly when all the bits in $E$ are one.
+Its contribution to the sum over $x$ is therefore
+$\sum_{x:\,x_i=1\ (i\in E)}a_E(x,z)$, with $x$ Boolean.
+Substituting the coefficient formula above reduces this to sums
+with the formal input fixed.
+
+\smallskip\noindent
+\textbf{Computing the restricted sums.}
+For $U\subseteq E\subseteq[n]$ with $|E|\le q$, define
+\begin{equation}\label{eq:outline-restricted-taylor-sum}
+ \mathcal Z_{t,E,U}(z)=
+ \sum_{\substack{x\in\{0,1\}^n\\x_i=1\ (i\in E)}}
+                    \mathcal G_x(\mathbf1_U,z)
+       \quad\text{in }\mathbb Q[z]/(z^J).
+\end{equation}
+Here $U$ fixes the formal input $\vec X=\mathbf1_U$, while $E$
+fixes bits of the summation variable $x$ to one.
+Summing the monomial contributions gives
+\begin{equation}\label{eq:outline-taylor-recovery}
+ H(t+z)\equiv
+ \sum_{\substack{E\subseteq[n]\\|E|\le q}}
+       \sum_{U\subseteq E}(-1)^{|E|-|U|}
+                         \mathcal Z_{t,E,U}(z)\pmod{z^J}.
+\end{equation}
+This recovers all $J=q+1$ Taylor coefficients together.
+Lemma~\ref{lem:boolean-differences} states the general identity
+used here.
+
+Each sum $\mathcal Z_{t,E,U}$ can be evaluated by the algorithm
+of Section~\ref{subsec:preview-separation}. With
+$\vec X=\mathbf1_U$ fixed, each correction
+$\langle\Delta\vec P_{e,v}(z),\mathbf1_U\rangle$ is independent of $x$.
+All dependence on $x$ comes through the forms
+$\langle\vec P_{e,v}(t),x\rangle$, so fixing $\vec y$ still separates
+the factors. The restrictions $x_i=1$ are local to each
+group. The separation identity uses only addition, multiplication,
+and distributivity, so it also applies to these truncated polynomial
+values. Each factor is evaluated after substituting
+$\vec X=\mathbf1_U$, using only univariate polynomials in $z$
+of degree less than $J$ and discarding higher powers after each
+multiplication. The multivariate expansion and its coefficients
+$a_E(x,z)$ are used only to justify the identity; the algorithm
+never constructs them.
+
+Repeating this calculation at $t=1,\ldots,Q$ provides all the
+Taylor coefficients needed for the interpolation above, and
+therefore recovers $H(0)=\#F$.
+
+\subsection{The three costs and the running time}
+\label{subsec:preview-parameters}
+Jumping ahead, Section~\ref{subsec:preview-auxiliary} will construct
+replacement forms that restore the original variables at zero,
+have degree at most $R$, and admit partitions, factor assignments, and measurement matrices with parameters $(r,\tau,D)$ at every
+$t\in[Q]$. For sufficiently large $n$, the construction takes
+polynomial time and achieves the following parameter bounds:
+\begin{equation}\label{eq:overview-parameter-bounds}
+ \begin{aligned}
+ r&=\Theta\!\left(\frac{\sqrt{\log n}}{(\log\log n)^2}\right),
+ &Q&=\Theta\!\left(\frac{\log n}{\log\log n}\right),\\
+ R&=\Theta(\sqrt{\log n}),
+ &\tau&=\Theta\!\left(\frac1{r\log n}\right),\qquad
+ D=r^{2Q}\le(2n)^{1/128}.
+ \end{aligned}
+\end{equation}
+We first show how these bounds give a fast counting algorithm;
+the next subsection will justify that they can all be achieved
+simultaneously.
+
+Recall that $q=J-1=\lfloor3nR/Q\rfloor$. For each evaluation
+point $t$, Section~\ref{subsec:preview-interpolation} computes one
+restricted sum for each pair $U\subseteq E$ with $|E|\le q$.
+There are $\binom nj$ choices of an $E$ of size $j$, and then
+$2^j$ choices of $U$. Each restricted sum enumerates measurement
+tuples and assignments within individual groups. Thus the three
+costs multiply to give, up to polynomial factors,
+\begin{equation}\label{eq:overview-three-costs}
+ \underbrace{\sum_{j=0}^{\min(q,n)}2^j\binom nj}_{\text{Taylor data}}
+ \ \cdot\
+ \underbrace{(2D+1)^{2\tau n}}_{\text{measurements}}
+ \ \cdot\
+ \underbrace{2^{2n/r}}_{\text{one group}}.
+\end{equation}
+To bound the first cost, note that $1\le q\le n/2$ for
+sufficiently large $n$, since $R/Q\to0$. Using
+$\binom nj\le(en/j)^j$ and the fact that $(2en/j)^j$ increases
+for $1\le j\le n$, we obtain
+\[
+ \sum_{j=0}^q2^j\binom nj
+ \le(q+1)\left(\frac{2en}{q}\right)^q.
+\]
+Since $q=\Theta(nR/Q)$, the logarithm of this cost is
+$O(n(R/Q)\log(2Q/R))$. Taking logarithms of all three costs in
+\eqref{eq:overview-three-costs} therefore gives
+\[
+ O\!\left(n\left[
+       \frac RQ\log\frac{2Q}{R}
+       +\tau\log(2D+1)+\frac1r\right]\right).
+\]
+Each term is small under \eqref{eq:overview-parameter-bounds}:
+\[
+ \begin{aligned}
+ \frac RQ\log\frac{2Q}{R}
+   &=O\!\left(\frac{\log\log n}{\sqrt{\log n}}
+                      \cdot\log\log n\right),\\
+ \tau\log(2D+1)&=O\!\left(\frac1{r\log n}\cdot\log n\right)
+                  =O(1/r),\\
+ \frac1r&=O\!\left(\frac{(\log\log n)^2}{\sqrt{\log n}}\right).
+ \end{aligned}
+\]
+Thus the bounded-occurrence instance can be counted in
+\begin{equation}\label{eq:overview-bounded-time}
+ n^{O(1)}2^{O(n(\log\log n)^2/\sqrt{\log n})}
+\end{equation}
+bit operations and polynomial space. The finitely many smaller
+inputs are handled by exhaustive search.
+
+The number of points $Q$, the number of groups $r$, and the
+truncation order $J=O(1+nR/Q)$ are polynomial in $n$. Hence the
+loops over points and groups, arithmetic on polynomials of degree
+less than $J$, and the final interpolation add only polynomially
+many operations per iteration of the three enumerations above.
+
+For the bit-complexity and space bounds, see
+Appendix~\ref{subsec:overview-arithmetic}.
+
+\subsection{Constructing the low-degree replacement linear forms}
+\label{subsec:preview-auxiliary}
+Consider one occurrence of $X_v$ in a factor. At $T=0$ its
+replacement must equal $X_v$. At each $t=1,\ldots,Q$, the factor
+must be able to evaluate that same replacement using only its
+assigned group and a few shared measurements. Choosing a different
+linear form at each point and interpolating would generally cost
+degree $Q$. To keep Taylor recovery cheap, we need degree $R$
+much smaller than $Q$.
+
+Suppose a term uses a variable outside the factor's assigned group
+only at $t=2$. Multiplying it by $1-T/2$ preserves its value at zero
+and removes it at $t=2$. More generally, one such factor per
+incompatible point suffices. We therefore seek a decomposition of
+each input into a part determined by measurements and terms that
+are incompatible at at most $R-1$ points. We describe the mechanism
+here; Section~\ref{sec:construction} proves the construction for
+general factor scopes.
+
+\paragraph{The auxiliary decomposition.}
+An occurrence has a variable-group choice and a factor-group choice
+at every point. Index all possible choices by
+\[
+ \mathcal U=([r]\times[r])^Q,\qquad D=r^{2Q},\qquad
+ u=((a_u(t),d_u(t)))_{t\in[Q]}.
+\]
+For placeholders $\vec\zeta=(\zeta_w)_{w\in\mathcal U}$, the
+replacement for $\zeta_u$ may freely use $\zeta_w$ at point $t$
+when $a_w(t)=d_u(t)$. Put
+\[
+ E_{u,w}=\{t\in[Q]:a_w(t)\ne d_u(t)\}.
+\]
+We need a rational matrix $M_0$ and an integer measurement matrix
+$C\in\{0,1,-1\}^{c\times D}$ satisfying
+\begin{equation}\label{eq:outline-matrix-conditions}
+ \begin{gathered}
+ c\le D\tau/(3r),\qquad
+ M_0\vec\xi=\vec\xi\quad(\vec\xi\in\ker C),\\
+ M_0[u,w]\ne0\quad\Longrightarrow\quad |E_{u,w}|\le R-1.
+ \end{gathered}
+\end{equation}
+The kernel condition makes $(I_D-M_0)\vec\zeta$ a linear function
+of $C\vec\zeta$. Thus the identity
+\[
+ \zeta_u=((I_D-M_0)\vec\zeta)_u+
+                   \sum_w M_0[u,w]\zeta_w
+\]
+has the desired form. Define its replacement by
+\begin{equation}\label{eq:outline-auxiliary-row}
+ \langle\vec P_u(T),\vec\zeta\rangle
+ =((I_D-M_0)\vec\zeta)_u+
+   \sum_{w:M_0[u,w]\ne0}M_0[u,w]
+       \prod_{t\in E_{u,w}}(1-T/t)\,\zeta_w.
+\end{equation}
+It equals $\zeta_u$ at zero and has degree at most $R-1$.
+At point $t$, every surviving term outside the measured correction
+belongs to group $d_u(t)$. This is the replacement property proved
+in Lemma~\ref{lem:swaps-forms}.
+
+\paragraph{Why a matrix can satisfy both conditions.}
+Let $\Pi_s$ be the permutation matrix that
+swaps the two entries of pair $s$ in every index, leaving all
+other pairs unchanged.
+The commuting swaps give
+\[
+ V_0=\prod_{s=1}^Q\Pi_s,\qquad
+ W_0=\tfrac12\sum_{s=1}^Q(I_D-\Pi_s),\qquad M_0=V_0f(W_0).
+\]
+The complete swap $V_0$ connects matching groups at every point.
+A polynomial $f$ of degree at most $R-1$ can undo at most $R-1$
+swaps in any term of its expansion. Hence its nonzero entries have
+at most $R-1$ incompatible points
+(Lemma~\ref{lem:swaps-support}).
+
+To make $M_0$ fix most directions, use the tensor products of the
+symmetric and antisymmetric eigenvectors of a single swap. A basis
+vector with $j$ antisymmetric factors has eigenvalues $j$ for $W_0$
+and $(-1)^j$ for $V_0$. For a uniformly chosen basis vector,
+$j$ has distribution $W\sim\operatorname{Bin}(Q,(r-1)/(2r))$.
+Interpolate $f(j)=(-1)^j$ on an interval $\mathcal I$ of $R$
+consecutive integers around the mean. Then $M_0$ fixes the basis
+vectors with $j\in\mathcal I$. The transposes of the other,
+orthogonal basis vectors form $C$; their entries are $0,1,-1$.
+Lemma~\ref{lem:swaps-matrix} gives
+\[
+ c=D\Pr[W\notin\mathcal I].
+\]
+The standard deviation of $W$ is $\sqrt{Q\cdot\frac{r-1}{2r}\cdot\frac{r+1}{2r}}=\Theta(\sqrt Q)$ for $r\ge2$.
+Taking $R$ much larger than $\sqrt Q$ therefore puts most basis vectors inside $\mathcal I$, so only a small fraction of them need to be measured.
+We can still take $R$ much smaller than $Q$, so that Taylor recovery needs only $J=1+\lfloor3nR/Q\rfloor=o(n)$ coefficients per point.
+
+\paragraph{Returning to the original variables.}
+Choose variable schedules $a_v\in[r]^Q$ and factor schedules
+$d_e\in[r]^Q$, so that occurrence $(e,v)$ receives label
+$u(e,v)=((a_v(t),d_e(t)))_{t\in[Q]}$. With $M$ as in
+\eqref{eq:overview-incidences}, Lemma~\ref{lem:incidence-labels}
+gives groups of size at most $2n/r$ and at
+most $h\le2M/D$ occurrences per label, provided
+\[
+ 12D^2\le M,\qquad 2Qr^2\le n.
+\]
+Place occurrences sharing a label into different copies of
+$\mathcal U$. In each used coordinate put its original variable
+$X_v$, and put zero in unused coordinates. These copies introduce
+no new Boolean variables. Apply \eqref{eq:outline-auxiliary-row}
+in the copy containing each occurrence. At zero it restores $X_v$;
+at $t$, its unmeasured terms use only variables in the factor's
+assigned group $\{v':a_{v'}(t)=d_e(t)\}$.
+
+Split each of the $hc$ auxiliary measurements into its contributions
+from the $r$ actual variable groups. Fixing these separate values
+allows independent summation within groups; fixing only their total
+would still couple the groups. Since $hD\le2M\le6n$, the resulting
+matrices have at most
+\[
+ rhc\le rh\frac{D\tau}{3r}\le2\tau n
+\]
+rows in total at each point. Each row has integral coefficients
+with absolute sum at most $D$: substitution and restriction cannot
+increase the absolute sum of the $D$ entries of an auxiliary row.
+This supplies the partitions, factor assignments, and measurement matrices with parameters $(r,\tau,D)$ from
+Section~\ref{subsec:preview-separation}. The full transfer and its
+kernel condition are proved in Section~\ref{subsec:embedding}.
+
+\paragraph{Parameters and construction cost.}
+Put $\lambda=\lceil\log_2 n\rceil$ and
+$\nu=\lceil\log_2\lambda\rceil$, and choose
+\begin{equation}\label{eq:overview-explicit-parameters}
+ \begin{aligned}
+ r&=\left\lfloor\frac{\sqrt\lambda}{\nu^2}\right\rfloor,
+ &Q&=\left\lfloor\frac{\lambda}{128\nu}\right\rfloor,
+ &R&=4\lceil\sqrt\lambda\rceil,\\
+ \tau&=\frac1{r\lambda},&D&=r^{2Q}.
+ \end{aligned}
+\end{equation}
+These are precisely the parameters of
+Lemma~\ref{lem:incidence-parameters} with $\beta=1$.
+Apply that lemma with $b=w=3$: each variable occurs in at most three
+clauses and each clause has at most three literals, so
+$b,w\le\lambda$, and its hypotheses hold with $n\le M\le3n$ for
+sufficiently large $n$. The lemma gives an interval
+\[
+ \mathcal I=\{A_0,\ldots,A_0+R-1\},\qquad
+ A_0=\left\lfloor\frac{Q(r-1)}{2r}-\frac{R-1}{2}\right\rfloor,
+\]
+and states that these parameters satisfy the numerical hypotheses of
+Lemma~\ref{lem:layout}. With $b=w=3$, these hypotheses are the two
+balancing inequalities $2(b+w)D^2=12D^2\le M$ and $2Qr^2\le n$, and
+$\Pr[W\notin\mathcal I]\le\tau/(rb)=\tau/(3r)$.
+It also gives $D\le2^{\lambda/128}\le(2n)^{1/128}$ and the
+orders in \eqref{eq:overview-parameter-bounds}.
+Lemma~\ref{lem:layout}, including the coefficient estimates of
+Lemma~\ref{lem:row-coefficients}, therefore constructs these forms, partitions, factor assignments,
+and measurement matrices in polynomial time. The parameter checks are exact;
+only finitely many sizes fail them and are handled by enumeration.
+This completes the construction needed for
+\eqref{eq:overview-bounded-time}.
+
+
+\subsection{A weaker algorithm for general \texorpdfstring{$\#k$-SAT}{\#k-SAT}}
+\label{subsec:preview-general-sat}
+The algorithm above already gives a subexponential algorithm for
+general $\#k$-SAT: after disjoint sparsification, we reduce each
+instance directly to a $3$-CNF in which every variable occurs at
+most three times. Both steps preserve the count, as follows.
+
+Fix $k\ge2$. We use the counting-preserving version~\cite[Appendix~A]{DHMTW}
+of sparsification~\cite{IPZ}, with quantitative bounds
+from~\cite[Section~6]{CIP} and
+\cite[Lemma~5.14 and equation~(5.4)]{CalabroThesis}.
+As recorded in Lemma~\ref{lem:sparsify}, this expresses the input count as the sum of
+the counts of at most
+$\operatorname{poly}_k(n,\sigma^{-1})2^{\sigma n}$ formulas $G$.
+Each $G$ has the same $n$ declared variables, with at most
+\[
+ B=O_k\!\left((\sigma^{-1}\log(2/\sigma))^{k-1}\right)
+\]
+occurrences per variable, and hence at most $Bn$ nonempty clauses.
+An empty clause gives count zero immediately.
+
+First turn $G$ into a $3$-CNF without changing its count. Keep
+clauses of size at most three. For each longer clause, compute its
+disjunction with binary OR gates and require the final output to
+be one. For a gate $z=u\vee v$, impose
+\[
+ (\neg u\vee z)\ \wedge\ (\neg v\vee z)\ \wedge\
+ (u\vee v\vee\neg z).
+\]
+Here $u,v$ are input literals or earlier gate outputs, and $z$ is
+fresh. These clauses enforce equality with the OR, so the gate
+values are uniquely determined by the original assignment.
+Consequently, a satisfying assignment of $G$ has exactly one
+extension to the new formula, and an assignment not satisfying
+$G$ has none. This uses $O(k)$ gates per clause.
+
+Next reduce the occurrences. If a variable $x$ occurs $s\ge2$
+times in this $3$-CNF, replace its occurrences by distinct copies
+$x_1,\ldots,x_s$, preserving their signs, and add Tovey's implication
+cycle~\cite[p.~86]{Tov84}:
+\[
+ (\neg x_1\vee x_2)\ \wedge\cdots\wedge\
+ (\neg x_{s-1}\vee x_s)\ \wedge\ (\neg x_s\vee x_1).
+\]
+The cycle forces all copies to agree. Each copy appears in one
+clause inherited from the $3$-CNF and two cycle clauses, hence
+in exactly three clauses. Variables with at most one occurrence
+are kept unchanged, including unused declared variables.
+This standard variable-copy reduction~\cite[Proposition~4.7]{Gol08}
+therefore also gives a bijection between satisfying assignments.
+The final formula $\widehat G$ has $\#\widehat G=\#G$ and
+\[
+ n\le N:=\#\{\text{variables of }\widehat G\}=O_k(Bn).
+\]
+All its clauses have size at most three, including the two-literal
+cycle clauses, and every variable occurs at most three times.
+Thus it is exactly an instance of the setting of this overview.
+
+Apply \eqref{eq:overview-bounded-time} to each $\widehat G$ and add
+the counts. When $\sigma^{-1}$ is bounded by a fixed power of
+$\log n$, so is $B$, and the resulting time is
+\[
+ (n+m)^{O_k(1)}
+ 2^{O_k\!\left(\sigma n+
+          Bn(\log\log n)^2/\sqrt{\log n}\right)}.
+\]
+For example, choosing $\sigma$ within a constant factor of
+$(\log n)^{-1/(2k)}$ yields
+\[
+ (n+m)^{O_k(1)}
+ 2^{O_k\!\left(n(\log\log n)^{k+1}/(\log n)^{1/(2k)}\right)}
+   = (n+m)^{O_k(1)}2^{o(n)}
+\]
+with polynomial space, processing the sparsification tree and
+the reduced instances one at a time. The parameter $\sigma$ may
+be chosen rational.
+
+\subsection{A faster algorithm for \texorpdfstring{$\#k$-SAT}{\#k-SAT} via counting solutions to sparse low-degree polynomial equations over \texorpdfstring{$\mathbb F_2$}{F\_2}}
+\label{subsec:preview-full-case}
+
+The running-time exponent in Section~\ref{subsec:preview-general-sat}
+is $O_k(\sigma n+B\rho(n))$, where
+$\rho(n)=n(\log\log n)^2/\sqrt{\log n}$. If sparsification gave
+$B=O_k(1)$ at $\sigma=\Theta(\rho(n)/n)$, we would already have a
+$2^{O_k(\rho(n))}$-time algorithm for general $\#k$-SAT up to
+polynomial factors: copying would use only $O_k(n)$ variables per
+leaf, and the number of leaves would fit within the same bound.
+At this choice of $\sigma$, however, the guarantee is only
+$B=(\log n)^{O_k(1)}$.
+
+We obtain the $2^{O_k(\rho(n))}$ bound in two steps. First, the counting
+algorithm of this overview extends to systems of $O(n)$ polynomial
+equations over $\mathbb F_2$, each of degree at most $k$ with
+polylogarithmically many monomials
+(Theorem~\ref{thm:overview-sparse-polynomials}). Second, even if a
+leaf $G$ has $Bn$ clauses, we can construct such a system on the
+original $n$ variables whose common zeros are exactly the satisfying
+assignments of $G$. We illustrate the reduction first with a
+self-contained randomized construction, then explain the counting
+algorithm.
+
+\medskip\noindent
+\textbf{A randomized reduction to sparse polynomial equations.}
+Write $v_e(x)=1$ if $x$ violates clause $e$, and $0$ otherwise. A
+\emph{parity test} on a set $S$ of clauses is the polynomial equation
+$\sum_{e\in S}v_e(x)=0$ over $\mathbb F_2$: it accepts if $x$ violates
+an even number of clauses in $S$. Every satisfying assignment passes,
+so we need only catch every nonsatisfying one. If $G$ has $m_G\le n$
+clauses, one test per clause suffices. Suppose $m_G>n$.
+
+A short test can easily miss a single violated clause, but all
+assignments that violate only that clause give identical answers.
+Thus there are only $m_G$ singleton patterns to catch. Use $8n$
+independent tests. For each, draw $L=2B\lceil\log_2(2m_G)\rceil$
+clauses uniformly with replacement. For each draw, independently add
+its violation bit to the parity sum with probability $1/2$; two
+included copies cancel. Since $m_G\le Bn$, each clause is drawn
+at least logarithmically often in expectation overall. For a fixed
+set of $w\ge1$ violated clauses, let $u=Lw/m_G$ be the expected number
+of hits per test. If the sample hits the set, the coin on the first
+hit makes the parity odd with probability $1/2$, even with all other
+coins fixed. Thus the rejection probability is
+\[
+ p_w=\tfrac12\bigl(1-(1-w/m_G)^L\bigr)\ge\tfrac12(1-e^{-u}).
+\]
+
+We count \emph{sets} for few violations and \emph{assignments} for many:
+\begin{itemize}
+\item If $u\le1$, then $p_w\ge u/4$. There are at most $m_G^w$ sets
+of size $w$, so the chance that at least one escapes all tests is
+at most $m_G^w e^{-8np_w}\le m_G^w e^{-2nLw/m_G}\le16^{-w}$.
+Summing over $w\ge1$ gives failure probability at most $1/15$.
+\item If $u>1$, then $p_w>1/4$. A union bound over the $2^n$
+assignments bounds the chance that any assignment in this case
+escapes by $2^n(3/4)^{8n}<1/4$.
+\end{itemize}
+Thus with probability greater than $2/3$, the common zeros are
+exactly the satisfying assignments of $G$. Each $v_e$ is a product
+of at most $k$ factors of the form $x_j$ or $1+x_j$, so each test has degree at
+most $k$ and at most $2^kL$ monomials, polylogarithmic in $n$.
+Section~\ref{sec:hashes} constructs short tests with the same
+solution set deterministically.
+
+\medskip\noindent
+\textbf{Counting the common zeros.}
+Recall from Section~\ref{subsec:preview-encoding} that $\Phi_e(x)$ is
+$1$ if $x$ satisfies clause $e$ and $0$ otherwise. What should replace
+this factor when we test a whole set $S_i$ of clauses at once? First
+count how many clauses in \emph{this test} are violated, using ordinary
+integer addition:
+\[
+ \Lambda_i(x)=\sum_{e\in S_i}v_e(x)=\sum_{e\in S_i}\bigl(1-\Phi_e(x)\bigr).
+\]
+The test passes exactly when $\Lambda_i(x)$ is even. Choose $\ell=n+1$, so
+that a count of at most $2^n$ is determined by its residue modulo
+$2^\ell$. The complemented Beigel--Tarui polynomial $p_\ell$
+(Lemma~\ref{lem:rational-idempotent}) is $1$ modulo $2^\ell$ on even
+integers and $0$ on odd integers. For example, violating two clauses
+in $S_i$ still passes the test: $p_\ell(2)\equiv1\pmod{2^\ell}$.
+Writing $m_{\mathrm{test}}$ for the number of tests, our counting expression becomes
+\[
+ \underbrace{\sum_x\prod_{e\in G}\Phi_e(x)}_{\text{one factor per clause}}
+ \qquad\longrightarrow\qquad
+ \underbrace{\sum_x\prod_{i=1}^{m_{\mathrm{test}}} p_\ell(\Lambda_i(x))}_{\text{one factor per test}}.
+\]
+The left side is $\#G$. The least nonnegative residue of the right
+side modulo $2^\ell$ is the number of assignments passing every test.
+When the tests catch every nonsatisfying assignment, this is exactly
+$\#G$. The same encoding works for
+any sparse polynomial equation $P_i(x)=0$ over $\mathbb F_2$: take
+$L_i(x)$ to be the integer sum of its listed monomials. Again the
+equation holds exactly when this sum is even.
+
+To reuse the Taylor step, we need a product of input degree $O(n)$.
+Multiplying the $m_{\mathrm{test}}$ test factors directly gives only the bound
+$O(km_{\mathrm{test}}\ell)$, potentially quadratic in $n$. The key is to truncate
+the product \emph{across all tests together}. Section~\ref{subsec:rational-lift}
+writes $p_\ell(y)$ as a sum of terms $e_j(y)h(y)^j$, where
+$e_j$ has degree at most one and $h(y)=y(y-1)$ is even at every
+integer. A product term containing $\ell$ or more copies of $h$ is
+therefore zero modulo $2^\ell$ on Boolean assignments, even if those
+copies come from different tests. We keep just the terms with fewer
+than $\ell$ copies in total, tracking that number as we multiply.
+Each retained term has at most $m_{\mathrm{test}}$ linear factors and $\ell-1$
+quadratic factors in the $L_i$'s. Since $\deg L_i\le k$, its input
+degree is at most $k(m_{\mathrm{test}}+2(\ell-1))=O(n)$.
+
+For the replacement forms, what matters is which variables each factor
+reads. Where Section~\ref{subsec:preview-deformation} used one form
+for each variable in a clause, we now use one for each variable in a
+test, reusing it throughout that test. Each sparse equation reads only
+polylogarithmically many variables. Branching on the values of the
+$O(n/\sqrt{\log n})$ most frequent variables leaves each remaining
+variable in only polylogarithmically many tests, as required by
+Section~\ref{sec:construction}. On each branch, fixing the shared
+measurements again lets us sum one group at a time. Because the
+truncated product has input degree $O(n)$, the degree-$R$ replacements
+give $\deg_T H=O(nR)$: the same $O(1+nR/Q)$ Taylor coefficients per
+point recover the contributions at $T=0$ with $0,1,\ldots,\ell-1$
+copies of $h$. Their sum modulo $2^\ell$, taken as the least nonnegative
+residue, is the exact branch count. Adding the branch counts gives the
+number of common zeros.
+
+\begin{theorem}[Counting common zeros of sparse polynomials]
+\label{thm:overview-sparse-polynomials}
+Fix integers $k\ge2$ and $c\ge1$. Let $P_1,\ldots,P_{m_{\mathrm{test}}}$ be polynomials
+over $\mathbb F_2$ in $n\ge20$ Boolean variables, with $m_{\mathrm{test}}\le cn$.
+Suppose each $P_i$ is given as a list of at most $(\log n)^c$
+monomials of degree at most $k$. The exact number of common zeros in
+$\{0,1\}^n$ can be computed deterministically in
+$2^{O_{k,c}(n(\log\log n)^2/\sqrt{\log n})}$ bit operations and
+$n^{O_{k,c}(1)}$ space.
+\end{theorem}
+Section~\ref{sec:setup} proves the theorem.
+
+For the final system constructed for $G$, the number of common zeros is $\#G$.
+Section~\ref{sec:hashes} uses only $2^{(\log n)^{O_k(1)}}$ calls
+to the counter per leaf, which preserves the running-time exponent in
+Theorem~\ref{thm:overview-sparse-polynomials}. Finally, choosing
+$\sigma$ of order $(\log\log n)^2/\sqrt{\log n}$ in
+Section~\ref{subsec:general-reduction} keeps $B$ polylogarithmic
+and the number of leaves within $2^{O_k(n(\log\log n)^2/\sqrt{\log n})}$.
+Their satisfying assignments are disjoint, so adding their counts
+gives the bound in Proposition~\ref{prop:interpolation-bound}.
+

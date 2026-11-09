@@ -1,0 +1,138 @@
+\section{Sampling matrices for retained vertex sets}\label{sec:env}
+
+The hierarchy will use random retained sets to detect columns with many
+substantial entries.  The table construction will use the same sets to
+represent matrix entries.  We define the sampling matrices and prove the
+marginal, conditional-pair, and count estimates needed for these two
+constructions.  Section~\ref{sec:averaging} later constructs averaging
+walks that preserve specified retention conditions.
+
+The environment consists of the independent sampling matrices below together
+with a finite string of independent uniform auxiliary bits.  The length
+and uses of that string will be specified when needed.
+
+We use a fixed number of independent sampling matrices, including sampling matrices
+denoted $X,Y,Z$. Extra sampling matrices, when needed, are also a fixed finite
+number. A sampling matrix is a uniformly random matrix
+\[
+A=(a_0,F)\in\mathbb F_P^{H\times h_0}
+\]
+conditioned on the last $r=h_0-1$ columns $F$ being linearly
+independent.
+The integer $P$ is prime. It is chosen larger than every
+identifier and sufficiently large for all rate comparisons below.
+For a numerical identifier $y$, set
+\[
+v(y)=(1,y,\ldots,y^{h_0-1})^{\mathsf T},
+\qquad a(y)=Av(y)\in\mathbb F_P^H.
+\]
+Field elements in a retention test use their representatives in
+$\{0,\ldots,P-1\}$. At nominal rate $b_k$, let
+\[
+L_k=\lceil P2^{-k}\rceil,\qquad
+\pi_{b_k}=(L_k/P)^H.
+\]
+The identifier is retained if all coordinates of $a(y)$ lie in
+$\{0,\ldots,L_k-1\}$. Write $X_a(y)$ for the indicator on sampling matrix
+$X$ at rate $a$, and similarly for other sampling matrices.
+A role sampling matrix may have a fixed radix-$D_0$ suffix $\xi$.
+For a numerical identifier $x$, write
+\[
+ x\Vert\xi=D_0^{|\xi|}x+[\xi]_{D_0},
+\]
+where $[\xi]_{D_0}$ is the radix value of the suffix and the empty suffix
+has length and value zero.  Appending a fixed suffix is an affine map
+of the identifier (Section~\ref{sec:model}).  With suffix $\xi$ on
+sampling matrix $X$, the
+notation $X_a(x)$ means the retention test at $x\Vert\xi$ using that
+same sampling matrix.  The suffix is common to every argument of that
+role sampling matrix.  If $x_i=(x,i)$ is a copy, then
+\begin{equation}
+ x_i\Vert\xi=x\Vert(i\xi),
+ \label{eq:env-suffix-identity}
+\end{equation}
+with numerical copy identifier $D_0x+i$.  Thus a projection to the
+parent replaces the suffix $\xi$ by $i\xi$ and preserves every retention
+indicator pointwise, at every rate and in every fixed environment.
+All padded identifiers are included in the range below $P$.
+Retention boxes are nested.
+All rates in this section belong to the grid $b_k=2^{-Hk}$, and the
+admissible range satisfies $P2^{-k}\ge1$. The choices of $H,h_0$ and
+the identifier range are those of Section~\ref{sec:model}.
+
+\begin{lemma}[Sampling matrix estimates]\label{lem:env-ranks}
+There are positive constants $c_\pi,C_\pi,C_{\rm pair},C_{\rm var}$,
+depending only on $H,h_0$, with the following properties in every
+admissible finite range.
+\begin{enumerate}
+\item A specified identifier is retained at rate $a$ with probability
+$\pi_a$, where $c_\pi a\le\pi_a\le C_\pi a$.
+\item For distinct identifiers $x,y$ and any admissible rates $u,a$,
+\[
+\Pr\{X_a(y)=1\mid X_u(x)=1\}\le C_{\rm pair}a.
+\]
+\item If $A_0$ is a deterministic set of $q$ distinct identifiers and
+$T_a=\sum_{y\in A_0}X_a(y)$, then
+\[
+\Pr\{T_a<q\pi_a/2\}\le \frac{C_{\rm var}}{q\pi_a}
+\quad(q>0).
+\]
+\item Replacing every sampling matrix argument $y$ by the same injective affine
+map $\alpha y+\beta$ leaves the joint law of all evaluations unchanged,
+provided $\alpha\ne0$ in $\mathbb F_P$. In particular, a common fixed
+padding suffix leaves their law unchanged.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The probability that an unrestricted $H$-by-$r$ matrix has independent columns is
+\[
+q_{\rm ind}=\prod_{j=0}^{r-1}(1-P^{j-H})\ge c_{\rm ind}>0.
+\]
+For fixed positive-degree coefficients, $a_0$ is uniform, so any one
+evaluation is uniform in $\mathbb F_P^H$ and independent of the event that the columns are independent. This proves the exact marginal retention probability.
+In the ranges used, take $P2^{-k}\ge1$. Then
+$P2^{-k}\le L_k\le2P2^{-k}$, proving comparability. The prime
+exponent can in fact make all these sides much larger than one.
+
+Without conditioning on independent columns, two evaluations at distinct field
+points are independent uniform vectors: the two evaluation functionals
+have rank two since $h_0\ge2$. Consequently
+\[
+\Pr\{X_a(y)=1,X_u(x)=1\mid F\text{ has independent columns}\}
+\le \frac{\pi_a\pi_u}{q_{\rm ind}}.
+\]
+The first marginal after conditioning is still $\pi_u$, which proves
+the second assertion.
+
+For the third assertion, in the unrestricted distribution the hit count
+has mean $q\pi_a$ and variance at most $q\pi_a$, by pairwise
+independence. Chebyshev's inequality bounds the stated lower-tail event
+by $4/(q\pi_a)$. If $\mathcal E$ denotes this lower-tail event, then
+\[
+ \Pr(\mathcal E\mid F\text{ has independent columns})
+ \le \frac{\Pr(\mathcal E)}{q_{\rm ind}}
+ \le \frac{4}{q_{\rm ind}q\pi_a}
+ \le \frac{4}{c_{\rm ind}q\pi_a}.
+\]
+Thus one may take $C_{\rm var}=4/c_{\rm ind}$.
+
+Finally, write $r=h_0-1$ and let $a_j$ be coefficient column $j$.
+After substituting $\alpha y+\beta$, the new columns are
+\[
+ a'_0=\sum_{j=0}^r\beta^j a_j,\qquad
+ a'_k=\alpha^k\sum_{j=k}^r\binom jk\beta^{j-k}a_j
+       \quad(1\le k\le r).
+\]
+Thus $F'=FT$ for an invertible triangular $r$-by-$r$ matrix $T$
+with diagonal $\alpha,\ldots,\alpha^r$. In particular,
+$\operatorname{rank}F'=\operatorname{rank}F$, and the constant
+column is translated by a function of $F$. The full coefficient
+change is bijective, with inverse given by substitution
+$y\mapsto\alpha^{-1}(y-\beta)$. It preserves the uniform measure on
+arrays conditioned on independent nonconstant columns and sends $A'v(y)$ to $Av(\alpha y+\beta)$
+for every $y$ simultaneously. This proves invariance of the joint
+evaluations, including retention tests at different rates. Appending
+digits in radix $D_0$ has $\alpha$ a power of $D_0$; taking
+$P>D_0$ ensures the required invertibility.
+\end{proof}

@@ -1,0 +1,196 @@
+\section{From partitions to the width map}\label{sec:width-map}
+
+The geometric construction will produce signed partitions whose separating sets
+have no $(n-1)$-fold intersection. We first state this output and deduce
+the width bound from it. Its proof is in Section~\ref{sec:reconstruction},
+after the stretching and cutting constructions.
+
+\subsection{The original scale and the partition statement}
+
+Let \(D=WR_0\) be the length fixed in \eqref{rounds:original-scale},
+at the start of Section~\ref{sec:rounds}; it depends only on \(n\), and
+it is the only constant of the stretching construction used in this
+section.
+
+Now fix $n\ge4$ and $(M,g)$ satisfying \Cref{thm:main}. Distances
+are measured in this original metric: write $d_0=d_g$ and
+$B_0(x,R)=B_g(x,R)$. Let the centers $x_i$ be those supplied by
+\Cref{rounds:wide}; its proof chooses them as a maximal $D$-separated set. Each center carries a
+label $i$, with the ball pair
+\[
+ A_i=\overline B_0(x_i,D),\qquad
+ B_i=M\setminus B_0(x_i,2D).
+\]
+The $A_i$ cover $M$.  Every family of balls with these centers and a
+fixed finite radius is locally finite: a compact set has a compact
+neighborhood of that radius by completeness, and a compact metric
+space contains only finitely many $D$-separated points.  The family is
+countable, since $M$ is second countable.  If some $B_i$ is empty,
+$\diam_{g}M\le 4D$ and a constant map gives the required bound.  We therefore
+assume that all $B_i$ are nonempty.
+
+\begin{proposition}[Reconstructed partitions]\label{topology:partitions}
+For the manifold, scale, centers, and nonempty ball pairs fixed above,
+there are a continuous proper map $q:M\to M$ and closed sets
+$P_i,N_i,W_i$ for each label $i$ such that
+\begin{align}
+ &d_0(q(x),x)<1,\label{topology:displacement}\\
+ &P_i\cup N_i=M,\qquad P_i\cap N_i=W_i,
+   \qquad W_i\subset q^{-1}\bigl(B_0(x_i,2D)\bigr),
+   \label{topology:sides}\\
+ &q^{-1}(A_i)\subset P_i\setminus W_i,
+   \qquad q^{-1}(B_i)\subset N_i\setminus W_i.
+   \label{topology:forced}
+\end{align}
+The separating set family $(W_i)$ is locally finite, and no $n-1$ distinct separating sets
+have a common point.
+\end{proposition}
+
+The proof of \Cref{topology:partitions} uses
+\Cref{rounds:wide} to obtain the separated ball pairs,
+\Cref{countable:construction} to obtain the finite-stage separating sets, and
+collar compressions to put their locally stationary limit on $M$.
+For the width map, the properties in the statement are sufficient.
+
+
+\subsection{Thickening the separating sets without increasing their multiplicity}
+
+Put $k=n-2$.  We need open neighborhoods of the whole separating sets, rather
+than independently chosen neighborhoods of their individual compact
+pieces.
+
+\begin{lemma}[Simultaneous separating set neighborhoods]\label{topology:thicken}
+For the map and separating sets in \Cref{topology:partitions}, there are open
+sets $T_i\supset W_i$ forming a locally finite family and satisfying
+\begin{equation}\label{topology:thickening}
+ T_i\subset q^{-1}\bigl(B_0(x_i,2D)\bigr)
+                  \setminus q^{-1}(A_i\cup B_i),
+ \qquad
+ \#\{i:x\in T_i\}\le k\quad(x\in M).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Set $O_i=q^{-1}(B_0(x_i,2D))$ and
+$F_i=q^{-1}(A_i\cup B_i)$.  By
+\cref{topology:partitions}, $W_i$ is disjoint from the closed set $F_i$
+and lies in the open set $O_i$.  At a point $x$, local finiteness and
+closedness of the separating sets give an open neighborhood meeting only separating sets
+that contain $x$.  Shrink it to a neighborhood $U_x$ contained in
+$O_i\setminus F_i$ for every such separating set.  Therefore $U_x$ meets at most
+$k$ separating sets, and
+\begin{equation}\label{topology:cover-property}
+ U_x\cap W_i\ne\varnothing\quad\Longrightarrow\quad
+ U_x\subset O_i\setminus F_i.
+\end{equation}
+
+Choose an open cover $\mathcal V$ such that the union
+of its members meeting any fixed member is contained in some $U_x$.
+For completeness, one is given by the balls
+$V_x=B_0(x,\rho(x)/8)$, where
+\[
+ \rho(x)=\sup_U\min\{1,d_0(x,M\setminus U)\},
+ \qquad U\in\{U_x:x\in M\},
+\]
+with distance to the empty set truncated to $1$. This function is
+positive and $1$-Lipschitz. If $V_y$ meets $V_x$, the Lipschitz
+inequality gives $d_0(x,y)<2\rho(x)/7$, and hence
+$V_y\subset B_0(x,25\rho(x)/56)$. Thus the union of all balls meeting
+$V_x$ is contained in $B_0(x,\rho(x)/2)$, which lies in a member of
+the original cover. Take $\mathcal V=\{V_x:x\in M\}$.
+
+Define
+\[
+ T_i=\bigcup\{V\in\mathcal V:V\cap W_i\ne\varnothing\}.
+\]
+It contains $W_i$, and \eqref{topology:cover-property} implies the
+containment in \eqref{topology:thickening}.  If $z$ belongs to several
+$T_i$, choose $V_0\in\mathcal V$ containing $z$.  For each such $i$
+there is a $V_i\in\mathcal V$ containing $z$ and meeting $W_i$.
+All the $V_i$ meet $V_0$, so their union lies in a single $U_x$.
+That $U_x$ meets each of these separating sets, and therefore there are at most
+$k$ of them.  Finally, $(T_i)$ is locally finite because $T_i\subset O_i$
+and the family $(O_i)$ is locally finite.
+\end{proof}
+
+\subsection{Proof of the width bound}
+
+\begin{proof}[Proof of \Cref{thm:main}]
+
+For each $i$ the closed sets
+\[
+ C_i^+=P_i\setminus T_i,\qquad C_i^-=N_i\setminus T_i
+\]
+are disjoint and cover $M\setminus T_i$.  For a closed set $C$ write
+$\delta_C(x)=\min\{1,d_0(x,C)\}$, with $\delta_\varnothing=1$, and put
+\begin{equation}\label{topology:coordinates}
+ t_i(x)=\frac{\delta_{C_i^-}(x)}
+                    {\delta_{C_i^-}(x)+\delta_{C_i^+}(x)}.
+\end{equation}
+The denominator is positive because the two closed sets are disjoint.
+These continuous coordinates have the following properties:
+\begin{enumerate}[label=(\roman*)]
+ \item $t_i=1$ on $q^{-1}(A_i)$ and $t_i=0$ on $q^{-1}(B_i)$;
+ \item $0<t_i(x)<1$ implies $x\in T_i$;
+ \item $\supp t_i\subset q^{-1}(\overline B_0(x_i,2D))$,
+       so the coordinate supports are locally finite;
+ \item at every point at least one coordinate equals $1$, and at most
+       $k$ coordinates lie strictly between $0$ and $1$.
+\end{enumerate}
+Here the last assertion uses the inner-ball cover and
+\cref{topology:thicken}.
+
+Consider the cubical set of finitely supported coordinate vectors
+described by these properties.  Its cubes are
+\[
+ Q(S,A)=\{t:t_i=1\ (i\in S),\ 0\le t_i\le1\ (i\in A),
+                    \ t_i=0\ (i\notin S\cup A)\},
+\]
+where $S,A$ are disjoint finite sets of labels, $S\ne\varnothing$, and
+$|A|\le k$.  Triangulate each cube as follows: for
+every ordering $a_1,\ldots,a_j$ of $A$, take the simplex with vertices
+\begin{equation}\label{topology:triangulation}
+ \mathbf1_S,\quad \mathbf1_{S\cup\{a_1\}},\quad\ldots,\quad
+ \mathbf1_{S\cup A}.
+\end{equation}
+The triangulations agree on faces: setting a free coordinate to zero
+removes it, while setting it to one moves it to $S$.  They therefore
+define a simplicial complex $K$ of dimension at most $k$.
+
+We use the usual polyhedral topology on $|K|$.  To verify continuity,
+fix a point of $M$ and a neighborhood meeting only finitely many
+coordinate supports.  On that neighborhood all other coordinates
+are identically zero.  The vector $(t_i)$ thus takes values in the
+finite cubical complex using this finite set of labels, and is a
+continuous map to that complex.  Its triangulation is a
+finite geometric simplicial complex, whose inclusion in $|K|$ is
+continuous.  The coordinate map consequently defines a continuous map
+\begin{equation}\label{topology:final-map}
+ F:M\longrightarrow |K|,\qquad \dim K\le n-2.
+\end{equation}
+The triangulation retains the entire coordinate vector: the affine
+map from each simplex in \eqref{topology:triangulation} to its coordinate
+simplex agrees on faces and is injective on their union.  One can see
+injectivity by restricting any two finite supports to their finite
+union; there it is the usual triangulation of a cubical complex.
+Thus $F(x)=F(y)$ implies $t_i(x)=t_i(y)$ for every $i$.
+
+Choose, for any two points of the same fiber, a coordinate that equals
+$1$ at the first point.  It also equals $1$ at the second.  Since
+$t_i=0$ on $q^{-1}(B_i)$ by (i), neither point lies in $q^{-1}(B_i)$.
+Thus both collapse images lie in the same open outer ball
+$B_0(x_i,2D)=M\setminus B_i$, and hence
+\[
+ d_0(x,y)
+ \le d_0(x,q(x))+d_0(q(x),x_i)
+       +d_0(x_i,q(y))+d_0(q(y),y)
+ <4D+2.
+\]
+This applies to every pair of points in the fiber, regardless of its
+number of components.  Consequently
+\begin{equation}\label{topology:fiber-bound}
+ \sup_{z\in|K|}\diam_{g}F^{-1}(z)\le4D+2=4WR_0+2.
+\end{equation}
+The length $D$ depends only on $n$, so this proves
+\Cref{thm:main}.
+\end{proof}

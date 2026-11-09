@@ -1,0 +1,262 @@
+\section{Proof of the main theorem}\label{app:quantitative}
+We deduce both bounds of Theorem~\ref{thm:main} from Boolean tensor
+contraction. A formula of fixed clause density has a network with
+$O_{k,D}(n)$ wires. For arbitrary density, disjoint sparsification and
+parity tests reduce the count to sparse polynomial systems, whose
+networks have $O_k(n\log\log n)$ wires. We state the needed outputs
+first and give the two deductions in
+Sections~\ref{subsec:sharp-fixed-density} and~\ref{subsec:sharp-dense}.
+
+\subsection{Boolean tensor contraction}
+\label{subsec:tensor-interface}
+
+A Boolean tensor network is a bipartite multigraph $G$ in which each
+edge, also called a wire, carries a single bit. Each vertex $v$ has an ordered list
+$\delta(v)$ of incident edges and a tensor $T_v$ assigning a ring
+element to each Boolean assignment to those edges. Parallel edges
+have distinct edge ends. The \emph{contraction} of the network is
+\[
+ Z=\sum_{x\in\{0,1\}^{E(G)}}\prod_{v\in V(G)} T_v(x|_{\delta(v)}).
+\]
+An isolated vertex contributes its scalar entry. We measure the size
+of the network by its number of edges.
+
+\begin{theorem}[Boolean tensor contraction]\label{thm:tensor-contraction}
+Fix positive constants $C,A,b$.  Let $s\ge2$ be an integer, and let
+$\mathcal L$ be the total length of the graph and tensor descriptions
+of a bipartite tensor network with at most $Cs$ edges and maximum
+degree at most $\lceil s^{9/10}\rceil$. Let $P_0,\ell$ be positive
+integers. Suppose that the number of
+vertices is bounded by a fixed polynomial in $s$, and that the entries
+belong to
+\[
+ \mathcal B_{P_0,\ell}
+   =(\mathbb Z/2^{P_0}\mathbb Z)[V]/(V^\ell),
+ \qquad 1\le P_0,\ell\le Cs.
+\]
+Suppose, uniformly for every vertex and Boolean choice of its edge ends,
+that its entry can be computed from the description in time
+$(s+\mathcal L)^b2^{A s^{9/10}}$ and space $(s+\mathcal L)^b$.
+Then the contraction can be computed deterministically in
+\[
+ (s+\mathcal L)^{O(1)}
+  2^{O(s/\sqrt{\log s})}
+\]
+bit operations and $(s+\mathcal L)^{O(1)}$ bits of space.  Constants
+depend only on the fixed bounds in the hypotheses.
+\end{theorem}
+
+The proof is in Section~\ref{app:tensor}. At recursion depth $d$,
+a call that is not a leaf has $M=O(s8^{-d})$ wires and
+$u=\Theta((\log s)/2^d)$ retained two-adic valuation levels.
+Interactions between groups are expanded in auxiliary variables representing linear forms in column bits.
+Only $2^{O(M/\sqrt u)}$ monomials in these auxiliary variables survive the working precision,
+and each factors into contractions with at most $M/8$ wires.
+The exponents therefore sum geometrically to $O(s/\sqrt{\log s})$.
+
+
+\subsection{Counting sparse polynomial systems}
+The following consequence of contraction provides the counter needed
+for every candidate system in the reduction, including candidates
+that still accept nonsatisfying assignments.
+
+\begin{lemma}[Counting sparse polynomial systems by contraction]
+\label{lem:tensor-sparse-query}
+Fix integers $k,c\ge1$. Given polynomials $P_1,\ldots,P_a$ over
+$\mathbb F_2$ on $n\ge20$ declared Boolean variables, with
+$a\le cn$ and each $P_i$ listed as at most
+$\lceil\log_2 n\rceil^c$ monomials of degree at most $k$, the number
+of common zeros in $\{0,1\}^n$ is computable deterministically in
+$n^{O_{k,c}(1)}2^{O_{k,c}(n\log\log n/\sqrt{\log n})}$ bit operations and
+$n^{O_{k,c}(1)}$ bits of space.
+\end{lemma}
+The proof is in Section~\ref{sec:tensor-encoding}.
+
+\subsection{Sparsification and parity tests}\label{subsec:main-reductions}
+Sparsification supplies formulas with few occurrences per variable,
+and the parity tests compress each leaf into $O(n)$ equations.
+
+\begin{lemma}\label{lem:sparsify}
+Fix $k\ge2$. Let $F$ be a $k$-CNF on $n$ declared variables with
+$m$ clauses, and let $0<\sigma\le1$ be rational. Write $L_\sigma$
+for the total binary encoding length of its supplied numerator and
+denominator. A deterministic algorithm constructs a tree of $k$-CNFs
+on the same variables with the following properties.
+An assignment satisfies the input exactly when it satisfies one
+leaf formula, and it cannot satisfy two distinct leaves.
+The tree has
+\[
+ \operatorname{poly}_k(n,\sigma^{-1})\,2^{\sigma n}
+\]
+nodes and depth $\poly_k(n,\sigma^{-1})$.
+In every leaf, each variable occurs at most $B$ times, where $B$
+is an explicitly computed integer satisfying
+\[
+ B=O_k\!\Bigl(\bigl[\sigma^{-1}\log(2/\sigma)\bigr]^{k-1}\Bigr).
+\]
+Input normalization uses $\poly_k(n,m)$ bit operations.
+Constructing the numerical parameters uses $\poly_k(L_\sigma)$
+bit operations. Thereafter, processing each node uses
+$\poly_k(n,\log(2/\sigma))$ bit operations.
+\end{lemma}
+Thus the input count is the sum of the leaf counts.
+Appendix~\ref{app:sparsify} proves the lemma, including the disjoint
+branching rule and the bounds for a varying rational parameter.
+
+For a system $\mathcal P$ of equations $P_i(x)=0$ on $n$ Boolean
+variables, write
+\begin{equation}\label{eq:common-zero-count}
+ N(\mathcal P)=\#\{x\in\{0,1\}^n:P_i(x)=0\text{ for every }i\}.
+\end{equation}
+Let $F$ be a $k$-CNF on $n$ declared variables with $m\ge1$
+indexed clauses, and let $v_e(x)$ be the violation bit
+of clause $e$. As a polynomial over $\mathbb F_2$, $v_e$ is a product
+of the factors $1+x_v$ for positive literals and $x_v$ for negative
+literals. A tautological clause has $v_e=0$ and an empty clause has
+$v_e=1$. After removing repeated literals, $\deg v_e\le k$ and $v_e$
+expands to at most $2^k$ monomials. Put $v(x)=(v_1(x),\ldots,v_m(x))$.
+For a binary matrix $A$ with $m$ columns, row $i$ specifies the equation
+\begin{equation}\label{eq:hash-query}
+ P_i(x):=\sum_{e:A_{ie}=1} v_e(x)=0\qquad\text{over }\mathbb F_2.
+\end{equation}
+Write $\mathcal P_A$ for this system and $N(A)=N(\mathcal P_A)$ for its
+number of common zeros. Every satisfying assignment passes every row.
+Hence $N(A)=\#F+D(A)$, where $D(A)$ counts the nonsatisfying assignments
+still passing. We do not know $\#F$, but it is the same for every
+candidate next row: the row minimizing $N$ also minimizes $D$.
+
+We represent a test row by a list of pairs $(e,c)$ with
+$e\in[m]$ and $c\in\{0,1\}$, summing coefficients modulo $2$ if a
+clause index is repeated. The length of this list counts all pairs,
+including repeated indices and pairs with coefficient zero. A row of
+list length $s$ thus reads at most $ks$ variables before cancellation.
+
+
+The initial tests exclude every nonzero violation vector with small
+support. They will leave only assignments that a short additional
+test catches with constant probability.
+
+\begin{lemma}\label{lem:sparse-checks}
+Let $n,m,B$ be positive integers with $m\le Bn$, and put
+\[
+ \mu=\lfloor\log_2 m\rfloor+1,\qquad
+ P=20000B^2\mu^2,\qquad D_0=320000B^2\mu^3.
+\]
+There is a deterministic construction of a binary matrix
+$A^{(0)}$ with $m$ columns and at most $3n$ rows such that every row
+has at most $D_0$ nonzero entries and
+\[
+ z\in\{0,1\}^m\setminus\{\vec{0}\},\quad
+ A^{(0)}z=\vec{0}\pmod2
+ \quad\Longrightarrow\quad
+ |\operatorname{supp}z|\ge m/P.
+\]
+The construction uses $\exp(\poly(B,\log(m+2)))$
+bit operations and $\poly(n,m,B)$ bits of working space.
+\end{lemma}
+
+\begin{lemma}\label{lem:greedy-hashes}
+Let $F$ be a $k$-CNF on $n$ declared variables with $1\le m\le Bn$
+indexed clauses, and take $P,D_0,A^{(0)}$ from
+Lemma~\ref{lem:sparse-checks}. Using common-zero counts of the
+systems \eqref{eq:hash-query}, a deterministic procedure extends
+$A^{(0)}$ by $3n$ rows of list length $P$ to a matrix $A$ satisfying
+$N(A)=\#F$. It uses at most $3n(2m)^P$
+common-zero counts. Every candidate system has at most $6n$ equations,
+each involving at most $2^k\max(D_0,P)$ monomials of degree at most $k$.
+\end{lemma}
+Section~\ref{sec:hashes} proves these two lemmas.
+
+\subsection{Fixed clause density}\label{subsec:sharp-fixed-density}
+
+\begin{proof}[Proof of the fixed-density bound in Theorem~\ref{thm:main}]
+Give each clause a vertex carrying its Boolean satisfaction table, with
+one edge-end for each distinct variable in the clause. A tautology may be
+dropped, and an empty clause gives count zero. For a variable with
+$d\ge1$ edge ends, require their bits to agree. For $d=1$ attach the unary
+tensor $(1,1)$, and for $d=2$ attach a binary equality tensor. For
+$d\ge3$ take a tree with $d$ external edge ends and trivalent equality
+tensors at its internal vertices. Such a tree has $d-2$ internal
+vertices, and each common value on its edge ends extends uniquely to all
+its internal edges.
+
+There are at most $km$ clause edge ends. The graph has $O_k(n+m)$ edges
+and vertices, and maximum degree at most $\max\{k,3\}$. Subdivide
+every edge once by a binary equality tensor. The old vertices and the
+new vertices form the two sides of a bipartite network. The two bits
+on a subdivided edge must be equal, so this preserves the contraction.
+Every satisfying assignment on the occurring variables contributes
+one and every other assignment contributes zero.
+
+With $s=n+m$, apply Theorem~\ref{thm:tensor-contraction} over
+$\mathbb Z/2^{n+1}\mathbb Z$, taking $P_0=n+1$ and $\ell=1$. The
+local tables have bounded size for fixed $k$. The
+degree and precision bounds hold for all sufficiently large $s$, and
+bounded instances can be enumerated directly. If $u$ declared
+variables are unused, multiply the contraction by $2^u$ modulo
+$2^{n+1}$. Its least nonnegative residue is $\#F$, since
+$0\le\#F\le2^n$. This includes the empty formula, for which the
+empty network has contraction one. The time is
+$s^{O_k(1)}2^{O_k(s/\sqrt{\log s})}$ and the space is polynomial.
+When $m\le Dn$, we have $n\le s\le(1+D)n$, giving exponent
+$O_{k,D}(n/\sqrt{\log n})$.
+\end{proof}
+
+
+\subsection{Arbitrary clause density}\label{subsec:sharp-dense}
+\begin{proof}[Proof of the arbitrary-density bound in
+Theorem~\ref{thm:main}]
+Normalize the formula by deleting repeated literals, tautological
+clauses, duplicate clauses, and clauses containing another clause.
+Retain all $n$ declared variables. Empty clauses and
+formulas with no clauses have immediate answers. For $n\ge20$
+apply Lemma~\ref{lem:sparsify} with
+$\sigma=1/\lceil\sqrt{\lambda}\rceil$, where
+$\lambda=\lceil\log_2 n\rceil$. The tree has
+$n^{O_k(1)}2^{O(n/\sqrt{\lambda})}$ nodes and polynomial depth.
+Every leaf has occurrence bound
+$B=O_k((\sigma^{-1}\log(2/\sigma))^{k-1})=\lambda^{O_k(1)}$
+and at most $Bn$ nonempty clauses.
+
+For a nontrivial leaf with $m_G$ clauses, use the initial parity
+checks of Lemma~\ref{lem:sparse-checks} and the greedy procedure
+of Lemma~\ref{lem:greedy-hashes}. Each initial row has support size
+at most $D_0$, and each additional row has list length $P$.
+Both bounds are $\lambda^{O_k(1)}$. By \eqref{eq:hash-query}, every row
+gives a degree-at-most-$k$ equation with at most
+$2^k\max\{P,D_0\}$ monomials, and every queried system has at
+most $6n$ equations. A single constant $c=c(k)$ bounds both the
+ratio of equations to variables and the exponent of $\lambda$ in
+the monomial bound for all sufficiently large $n$.
+At each greedy step, use Lemma~\ref{lem:tensor-sparse-query} to
+compute $N(A;h_\gamma)$ for every candidate row $h_\gamma$, where
+$h_\gamma$ is the row represented by the list $\gamma$ and
+$A;h_\gamma$ is $A$ with that row appended. Append a candidate
+attaining the minimum. The evaluator applies also to
+discarded candidates whose systems still accept nonsatisfying
+assignments. One final call gives $N(A)$ for the selected matrix,
+which equals the leaf count by Lemma~\ref{lem:greedy-hashes}.
+
+Constructing the initial checks and enumerating candidates costs
+$2^{\lambda^{O_k(1)}}$ bit operations apart from the evaluations.
+There are at most $3n(2m_G)^P+1=2^{\lambda^{O_k(1)}}$ evaluations
+per leaf. Since every fixed power of $\lambda$ is
+$o(n\log\log n/\sqrt{\log n})$, these costs and the number of leaves
+are absorbed in the claimed time bound
+\[
+ (n+m)^{O_k(1)}2^{O_k(n\log\log n/\sqrt{\log n})}.
+\]
+Here $m$ counts the input clauses. Traverse the tree
+depth first and process one query at a time. The leaf solution sets
+are disjoint, so their exact counts add with an $(n+1)$-bit
+accumulator. Together with polynomial space per query and per
+tree path, this gives the asserted polynomial-space bound.
+\end{proof}
+
+A single algorithm attains both bounds. With
+$\lambda=\lceil\log_2 n\rceil$ and $\nu=\lceil\log_2\lambda\rceil$,
+use the clause network when $m\le n\nu$ and the parity queries
+otherwise. In the first branch $n\le s=n+m=O(n\log\log n)$,
+so its exponent is $O_k(n\log\log n/\sqrt{\log n})$ even at growing
+density. For each fixed $D$ and all sufficiently large $n$, every
+input with $m\le Dn$ takes that branch with $s=O_D(n)$.

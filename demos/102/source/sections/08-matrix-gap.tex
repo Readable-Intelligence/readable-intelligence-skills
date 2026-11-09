@@ -1,0 +1,259 @@
+\section{The matrix-game gap}\label{sec:matrix-gap}
+
+The matrix game's soundness follows by comparing two bounds for the same
+advice experiment.  Proposition~\ref{prop:matrix-decoding} extracts local
+strategies with a fixed positive agreement probability from test acceptance
+at least $0.99$.  Lemma~\ref{lem:zero-advice} makes every such agreement probability
+tend to zero on a NO parity instance.  We state the inputs and give the
+deduction here; their proofs occupy Sections~\ref{sec:matrix}
+and~\ref{sec:zero-advice}.
+
+\subsection{The shortcode soundness theorem}
+
+The structural input describes functions that often keep their value
+under a uniform rank-one perturbation.  Such a function agrees with an
+affine evaluation on a set obtained by fixing a bounded number of linear
+combinations of rows and columns.
+
+Write $\operatorname{Mat}_{\ell,m}=\Hom(\F_2^m,\F_2^\ell)$.
+A \emph{row and column slice} is a nonempty set specified by equations
+\begin{equation}
+ \mathcal S=
+ \{M:d_i^\top M=s_i^\top\ (1\le i\le n_r),\quad
+          Mq_j=t_j\ (1\le j\le n_c)\},
+ \label{eq:shortcode-slice}
+\end{equation}
+where $d_i\in\F_2^\ell$, $s_i\in\F_2^m$, $q_j\in\F_2^m$, and
+$t_j\in\F_2^\ell$.  The counts $n_r,n_c$ need not be the ranks of their
+respective systems.
+
+\begin{theorem}[Equality soundness for degree-two shortcode]
+\label{thm:shortcode}
+For every $\eta\in(0,1)$ there are $\alpha\in(0,1]$, an integer
+$r_{\rm s}\ge1$, and an integer $\ell_0$, depending only on $\eta$,
+with the following property.  For every $\ell\ge\ell_0$ there is
+$m_0=m_0(\eta,\ell)$ such that, for every $m\ge m_0$ and every function
+$f:\operatorname{Mat}_{\ell,m}\to\F_2^\ell$, if
+\begin{equation}
+ \Pr_{M,a,l}\bigl[f(M)=f(M+a l^\top)\bigr]\ge\eta,
+ \label{eq:shortcode-acceptance}
+\end{equation}
+then there are a nonempty row and column slice $\mathcal S$ as in
+Equation~\eqref{eq:shortcode-slice} with
+$n_r,n_c\le r_{\rm s}$, $z\in\F_2^m$, and $u\in\F_2^\ell$ such that
+\begin{equation}
+ \Pr_{M\mid\mathcal S}[f(M)=Mz+u]\ge\alpha.
+ \label{eq:shortcode-conclusion}
+\end{equation}
+Here $M\in\operatorname{Mat}_{\ell,m}$, $a\in\F_2^\ell$, and $l\in\F_2^m$ are independent and
+uniform, and $M\mid\mathcal S$ is uniform on the slice.  No folding
+condition is imposed on $f$.
+\end{theorem}
+
+
+Theorem~\ref{thm:shortcode} is the soundness statement of Barak,
+Kothari, and Steurer for the equality form of their degree-two shortcode
+test~\cite[Hypothesis~2.1 and Section~1.6]{BKS18}, with the dimension
+requirements stated explicitly: first $\ell\ge\ell_0$, then
+$m\ge m_0(\eta,\ell)$.  They derive it from their hypothesis on
+non-expanding sets of the shortcode graph by passing to a fiber of
+$f$~\cite[Hypothesis~1.8 and Lemma~2.3]{BKS18}, and show that this
+hypothesis is equivalent to the Grassmann expansion
+hypothesis~\cite[Theorem~1.11]{BKS18}, which Khot, Minzer, and Safra
+proved~\cite[Theorem~1.12]{KMS23}.  The proof in
+Section~\ref{subsec:shortcode-proof} gives this derivation directly: it
+applies Grassmann expansion to a fiber of $f$ in the matrix chart.
+
+The constants and dimension thresholds in Theorem~\ref{thm:shortcode}
+can be chosen effectively, with rational $\alpha$ when $\eta$ is rational.
+This follows from the quantitative bound in
+\cite[Theorem~2.13 and Section~2.4]{KMS23} and the comparison estimates
+in \cite[Lemmas~2.7--2.8]{KMS23}, with theorem numbers referring to
+the 2018 revision.  The proof in Section~\ref{subsec:shortcode-proof}
+gives explicit sufficient inequalities for these choices.
+
+We now fix the parameters needed below.  Choose $p_*>0$ and the associated
+$r_*$ from Lemma~\ref{lem:equivariant-noise}, and put $\eta=2^{-r_*}/16$.
+For this $\eta$, take $\alpha,r_{\rm s},\ell_0$ from
+Theorem~\ref{thm:shortcode}.  Then choose $\ell\ge\ell_0$ sufficiently
+large for Lemma~\ref{lem:equivariant-noise} and for
+\begin{equation}
+ 2^{-(\ell-r_{\rm s})}<\alpha/8,\qquad 2^{-\ell}<\eta/4.
+ \label{eq:matrix-parameters}
+\end{equation}
+The value of $\eta$ is
+the acceptance level at which Theorem~\ref{thm:shortcode} is applied:
+Lemma~\ref{lem:matrix-spectral} gives average ordinary acceptance at least
+$0.9\cdot2^{-r_*}=14.4\eta$, which leaves room for the erasure in
+Lemma~\ref{lem:row-advice-agreement}.  The first inequality in
+Equation~\eqref{eq:matrix-parameters} supplies slack for erasure and
+folding in Lemma~\ref{lem:row-advice-agreement} and for the Fourier estimate in
+Equation~\eqref{eq:nontrivial-correlation}.
+
+Obtain the map and noise data $(\mathcal V,K,C,\mu)$ at this value of $\ell$,
+and fix a linear splitting $\mathcal V=K\oplus W$.  All these objects
+are fixed before $k$ grows.  In particular, $\ell>r_{\rm s}$.
+We write a table as $P=(M,T)$, with $M:L_U\to K$ and $T:L_U\to W$.
+
+\subsection{The advice experiment and the decoding statement}
+
+We first specify the local inputs for two strategies whose answer agreement
+will contradict the outer-game gap.  This experiment is defined for every positive integer $k$
+and every $0<\beta<1$.  Let $\mathcal Q_k$ consist of all equation
+questions $U\in\mathcal E^k$ and all questions $O$
+obtained from them by the coordinate projections of Section~\ref{sec:game}.
+The questions $U,O$ and the projection
+$\bar\pi:L_U\to L_O$ have the law in Section~\ref{sec:game}: independently
+in each block, an equation is retained with probability $1-\beta$, and a
+uniformly chosen variable position is retained with probability $\beta$.
+
+\begin{definition}[Projected advice experiment]
+\label{def:projected-advice}
+Sample $U,O,\pi$, then an independent uniform map
+$A:K\to\F_2^{r_{\rm s}}$ and independent uniform maps
+\[
+ T_O:L_O\to W,\qquad M_O:L_O\to K.
+\]
+Put $S_O=AM_O$ and send the following inputs to the two provers:
+\begin{equation}
+ \begin{aligned}
+  &\text{$U$-prover:}&& (U,A,T_O\bar\pi,S_O\bar\pi),\\
+  &\text{$O$-prover:}&& (O,A,T_O,S_O).
+ \end{aligned}
+ \label{eq:projected-advice}
+\end{equation}
+The map $M_O$ beyond the stated advice is hidden.  Each prover returns an
+actual answer, that is, a vector of first bit one in its coordinate
+space.  They succeed when their answers $a_U,a_O$ satisfy
+$\bar\pi a_U=a_O$.
+\end{definition}
+
+The $U$-message contains the maps
+$(T_U,S_U)=(T_O\bar\pi,S_O\bar\pi)$, obtained by padding maps sampled
+on $O$.  We will first find advice admitting agreement on a slice under a different law: an
+unrestricted uniform table $(M,T)$ on $U$, with $S_U=AM$.  Later we
+compare the full padded table $(M_O\bar\pi,T_O\bar\pi)$ with this
+unrestricted table after averaging over the projection choices.  This
+comparison is the bridge from the extraction argument to the experiment.
+
+\begin{proposition}[Matrix decoding]
+\label{prop:matrix-decoding}
+Fix $p_*>0$ and choose $r_*$, $\eta$, $\alpha$, $r_{\rm s}$, $\ell_0$, $\ell$,
+the map and noise data and the splitting $\mathcal V=K\oplus W$, in this order,
+as in the paragraph containing Equation~\eqref{eq:matrix-parameters};
+all of them are fixed before $k$.  There are a constant $\gamma>0$ and an integer $k_0\ge8$, depending only on
+these fixed parameters, with the following property.
+
+For every integer cube $k\ge k_0$ and every weighted parity instance
+with three distinct variable IDs per equation, suppose a function
+\[
+ F_Q:\Hom(L_Q,\mathcal V)\longrightarrow K
+\]
+is given for every $Q\in\mathcal Q_k$.  Assume folding for every such
+$Q$, every $P\in\Hom(L_Q,\mathcal V)$, and every $c\in K$, and assume
+sharing for every coordinate projection $\bar\pi:L_U\to L_O$ and every
+$P'\in\Hom(L_O,\mathcal V)$:
+\begin{equation}
+ \begin{aligned}
+ F_Q(P+c e_0^\top)&=F_Q(P)+c,\\
+ F_U(P'\bar\pi)&=F_O(P').
+ \end{aligned}
+ \label{eq:matrix-family-identities}
+\end{equation}
+If this family passes the table test of Equation~\eqref{eq:matrix-test}
+with probability at least $0.99$, then the projected advice experiment
+with $\beta=k^{-2/3}$ has local strategies whose probability of full
+answer agreement is at least $\gamma$.
+\end{proposition}
+
+Here, and in Lemma~\ref{lem:zero-advice} and Proposition~\ref{prop:matrix-gap},
+$k$ ranges over integer cubes so that $\beta=k^{-2/3}$ is rational; the
+search for $k$ in Section~\ref{subsec:effective-k} uses this to check its
+conditions exactly.
+
+Every labeling of the vertices of $\mathcal G$ supplies such a family:
+its restored functions satisfy Equation~\eqref{eq:matrix-family-identities}
+by Equations~\eqref{eq:table-folding} and~\eqref{eq:table-sharing}.  The family is fixed when the
+two response rules are defined and may be built into those rules.
+
+
+The proof of Proposition~\ref{prop:matrix-decoding} is in
+Section~\ref{sec:matrix}.  Its constant is uniform in the instance and
+in the table family, which allows the following upper bound to contradict it.
+
+\subsection{The upper bound and the gap}
+
+The upper bound uses the same fixed advice spaces as
+Definition~\ref{def:projected-advice}; it applies to every pair of local
+strategies, independently of how they were obtained.
+
+\begin{lemma}[Agreement bound from vanishing advice slopes]
+\label{lem:zero-advice}
+Let $\mathcal E$ be a weighted parity instance with three distinct
+variable IDs in each equation and $\OPT(\mathcal E)\le4/5$.
+For every integer cube $k>1$, every pair of local randomized strategies
+in Definition~\ref{def:projected-advice}, with $\beta=k^{-2/3}$, satisfies
+\begin{equation}
+ \Pr\bigl[\bar\pi(a_U)=a_O\bigr]
+ \le \left(1-\frac{\beta\,2^{-\dim W-r_{\rm s}}}{3600}\right)^k
+ \le
+ \exp\!\left(
+ -\frac{2^{-\dim W-r_{\rm s}}}{3600}\,k^{1/3}
+ \right).
+ \label{eq:zero-advice-agreement-bound}
+\end{equation}
+In particular, the upper bound tends to zero uniformly over the parity
+instance as $k$ tends to infinity along cubes, with the advice spaces
+fixed.
+\end{lemma}
+
+Section~\ref{sec:zero-advice} proves this bound by restricting to singleton
+coordinates on which the advice slopes vanish, and applying
+Theorem~\ref{thm:repetition} to the remaining equation--variable questions.
+
+\subsection{Deduction of the matrix-game gap}
+
+We can now compare the upper bound for every advice strategy with the
+strategies extracted from a highly accepting matrix labeling.
+
+\begin{proposition}[A fixed gap with adjustable completeness]
+\label{prop:matrix-gap}
+Fix $p_*>0$ and choose $r_*$, $\eta$, $\alpha$, $r_{\rm s}$, $\ell_0$, $\ell$,
+the map and noise data and the splitting $\mathcal V=K\oplus W$, in this order,
+as in the paragraph containing Equation~\eqref{eq:matrix-parameters}.  There is a threshold, depending only on these fixed data, such that for
+every integer cube $k$ above it and every weighted parity instance
+$\mathcal E$ with three distinct variable IDs per equation, the matrix
+game $\mathcal G$ of Equation~\eqref{eq:matrix-test} satisfies
+\[
+ \begin{aligned}
+ \OPT(\mathcal E)\ge1-\xi
+ &\quad\Longrightarrow\quad
+ \val(\mathcal G)\ge1-k\xi-p_*/2,\\
+ \OPT(\mathcal E)\le4/5
+ &\quad\Longrightarrow\quad
+ \val(\mathcal G)\le99/100.
+ \end{aligned}
+\]
+The threshold is also independent of $\xi$.
+\end{proposition}
+
+\begin{proof}
+Completeness is Lemma~\ref{lem:outer-completeness}.  For soundness,
+fix a labeling of $\mathcal G$.  Its restored table functions satisfy
+the folding and sharing identities of Section~\ref{sec:game}.
+Proposition~\ref{prop:matrix-decoding} supplies a constant $\gamma>0$
+and, for every sufficiently large cube $k$, gives local advice
+strategies with agreement at least $\gamma$ whenever those functions
+have matrix-test acceptance at least $0.99$.  For all sufficiently large
+cubes $k$, the upper
+bound in Equation~\eqref{eq:zero-advice-agreement-bound} is smaller than
+$\gamma$.
+Lemma~\ref{lem:zero-advice} contradicts the existence of those strategies
+whenever $\OPT(\mathcal E)\le4/5$.  All thresholds are uniform over
+the parity instance.
+\end{proof}
+
+The order matters: $p_*$ can be made arbitrarily small before the
+map and noise parameters are fixed, and $\xi$ can be made arbitrarily small
+after $k$ is fixed.  Thus the same NO gap is compatible with any
+prescribed small completeness error.

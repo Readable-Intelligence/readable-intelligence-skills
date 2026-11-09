@@ -1,0 +1,342 @@
+\section{Introduction}\label{sec:introduction}
+
+A permutation constraint prescribes exactly one label at one endpoint for
+each label at the other. The Unique Games Conjecture asserts that systems
+of such constraints can be hard to approximate even when almost all
+constraints can be satisfied. We resolve this conjecture positively, with an
+explicit unweighted reduction from \(\mathrm{3SAT}\).
+
+\subsection{The theorem}
+
+A \emph{Unique Games instance} has a finite vertex set, a finite alphabet
+\(\Sigma\), and a nonempty list of oriented constraints
+\(e=(u_e,v_e,\pi_e)\), where \(\pi_e\) is a permutation of \(\Sigma\).
+A labeling \(a\) satisfies \(e\) when
+\(a(v_e)=\pi_e(a(u_e))\). Its value is the fraction of satisfied
+constraints, and \(\val(G)\) is the maximum value of a labeling.
+The instance is \emph{explicit and unweighted} when the entire vertex
+and constraint lists are written out, including the table of each
+permutation. A simple bipartite instance has two disjoint vertex sets
+and at most one constraint on each pair of opposite vertices.
+
+\begin{theorem}[Unique Games Theorem]\label{thm:ugc}
+For every fixed \(\varepsilon,\delta\in(0,1/2)\), there are an integer
+\(s\ge1\) and a deterministic polynomial-time reduction that maps each
+\(\mathrm{3SAT}\) formula \(\varphi\) to an explicit unweighted Unique
+Games instance \(G_\varphi\) over \(\Sigma=\F_2^s\), with
+\[
+\begin{aligned}
+ \varphi\text{ satisfiable}
+ &\quad\Longrightarrow\quad \val(G_\varphi)\ge1-\varepsilon,\\
+ \varphi\text{ unsatisfiable}
+ &\quad\Longrightarrow\quad \val(G_\varphi)\le\delta.
+\end{aligned}
+\]
+The graph is simple and bipartite, and every constraint is a translation
+\(a(v_e)=a(u_e)+c_e\) of \(\Sigma\). The alphabet, the degree of the
+running-time polynomial, and its constants depend only on
+\(\varepsilon,\delta\).
+\end{theorem}
+
+Thus the result resolves the Unique Games Conjecture positively in its
+usual edge-value formulation~\cite[Conjecture~2.5]{Khot10}.
+The two errors are prescribed independently, before the alphabet is chosen.
+Binary translation constraints are a known equivalent formulation of the
+conjecture~\cite[Corollary~13 and Section~11.1]{KKMO07}; the reduction
+here produces that form directly.
+
+Theorem~\ref{thm:ugc} supplies the Unique Games hypothesis in earlier
+hardness reductions for cut, covering, constraint-satisfaction, ordering,
+deletion, and clustering problems
+\cite{KKMO07,KhotRegev2008,Raghavendra08,GuruswamiEtAl2011OrderingCSP,CKKRS2006,DemaineEtAl2006Clustering}.
+The reductions and the resulting approximation thresholds are due to
+those authors. Section~\ref{sec:consequences} gives the precise problem
+formulations, strict thresholds, and reduction qualifications, together
+with proofs of the consequences.
+
+\subsection{Proofs, codes, and the quantifiers}
+
+The central difficulty is to retain completeness near one when every
+label permits only one reply. The earlier connection between proof
+verification and approximation hardness was developed by Feige,
+Goldwasser, Lov\'asz, Safra, and Szegedy~\cite{FGLSS96}, by Arora and
+Safra through proof composition~\cite{AroraSafra98}, and by Arora,
+Lund, Motwani, Sudan, and Szegedy through the constant-query PCP
+theorem~\cite{ALMSS98}. Bellare, Goldreich, and Sudan introduced the
+long code and folding for verifier composition~\cite[Section~3.3]{BGS98}.
+The long code of an answer \(a\) is the table \(f\mapsto f(a)\),
+indexed by Boolean functions on the answer set. In H\aa stad's
+parity-hardness proof, Fourier analysis recovers an outer-game strategy
+from arbitrary proof tables that make his verifier accept sufficiently
+often, without first recovering nearby codewords. His nearly satisfiable
+parity gap is our starting hardness input~\cite{Hastad01}.
+
+Khot introduced the Unique Games Conjecture in 2002 and gave an algorithm
+based on semidefinite rounding~\cite{Khot02}.
+Several algorithmic guarantees explain why its order of quantifiers
+matters. For a fixed target error, Trevisan combines semidefinite rounding
+with graph decomposition to obtain a polynomial-time
+guarantee when the input error shrinks at the reciprocal-logarithmic
+rate in the instance size~\cite{Trevisan08}. Charikar, Makarychev, and
+Makarychev use randomized semidefinite rounding to obtain expected value
+\(1-O(\sqrt{\epsilon\log q})\) from
+a \(q\)-label instance of value at least \(1-\epsilon\)~\cite{CMM06};
+this guarantee loses accuracy as the alphabet grows, whereas the
+conjecture permits a large fixed alphabet after the errors are chosen.
+Kolla's spectral enumeration gives a running-time bound in terms of the
+dimension of a suitable spectral subspace of the label-extended graph,
+whose vertices are variable--label pairs~\cite{Kolla11}. Arora, Barak, and Steurer use
+spectral decomposition and enumeration to obtain near-satisfying
+solutions for sufficiently small fixed completeness error, with a
+guarantee independent of the fixed alphabet size~\cite{ABS10}; their
+running-time bound is subexponential, not polynomial, for fixed positive
+error.
+
+Integrality gaps concern the strength of a relaxation. Khot and Vishnoi
+constructed Unique Games with semidefinite value arbitrarily close to
+one and integral value arbitrarily close to zero, even with triangle
+inequalities~\cite{KV15}. Barak, Gopalan, H\aa stad, Meka, Raghavendra,
+and Steurer introduced the short code, based on Reed--Muller codes, as a
+shorter substitute for the long code in applications including alphabet
+reduction and quantitative integrality gaps~\cite{BGHMRS15}. These constructions constrain particular
+relaxations; a hardness reduction requires a separate argument.
+Bafna, Barak, Kothari, Schramm, and Steurer obtain polynomial-time
+constant-value guarantees for nearly satisfiable translation games
+whose graphs have suitable low-degree sum-of-squares hypercontractivity
+certificates, including noisy hypercube and noisy Reed--Muller short-code
+graphs~\cite{BBKSS21}. The rank-one matrix shortcode used below is a
+different graph.
+
+\subsection{Grassmann expansion and the completeness obstacle}
+
+The closest preceding hardness breakthrough concerns 2-to-1 and
+2-to-2 games with imperfect completeness. A 2-to-1 constraint is a
+projection with exactly two preimages per right label. A 2-to-2
+constraint partitions the labels on each side into pairs and matches
+these pairs bijectively, allowing the four combinations within a
+matched pair. Khot, Minzer, and Safra's STOC~2017 work proposed a
+Grassmann-graph reduction whose nonstandard soundness guarantee was
+conditional on a structural hypothesis~\cite{KMS17}. Dinur, Khot,
+Kindler, Minzer, and Safra's STOC~2018 work proposed a reduction with
+ordinary edge-satisfaction soundness, conditional on an agreement
+hypothesis~\cite{DKKMS25}; their expansion work formulated the relevant
+structural problem and established partial cases~\cite{DKKMS21Expansion}.
+Barak, Kothari, and Steurer connected expansion to the needed agreement
+test through a binary matrix representation~\cite{BKS18}. The expansion
+theorem of Khot, Minzer, and Safra completed this line in
+2018~\cite{KMS23}.
+
+These results established hardness for almost satisfiable 2-to-1 and
+2-to-2 games and, as a consequence, a Unique Games gap with completeness
+close to one half and arbitrarily small soundness. Obtaining Unique
+Games completeness arbitrarily close to one was a separate problem.\footnote{A
+separate companion proves hardness for exact 2-to-1 games with perfect
+completeness and arbitrarily small fixed soundness, over fixed
+alphabets~\cite[Theorem~1.1]{OpenAIPerfectTwoToOne2026}.}
+
+The degree-two matrix shortcode of Barak, Kothari, and
+Steurer~\cite{BKS18} is the formulation used here: its vertices are
+binary matrices and its steps add rank-one matrices. Their two-reply rule
+permits either the old answer or its translate by the update's left factor;
+requiring equality alone gives a one-half completeness guarantee. They
+discussed higher-degree tests as a possible route to improving this
+completeness~\cite[Section~1.6]{BKS18}. The inverse statement we use is
+the soundness of their equality test~\cite[Hypothesis~2.1]{BKS18}, which
+follows from Grassmann expansion; it appears in Theorem~\ref{thm:shortcode}.
+Ellis, Kindler, and Lifshitz later gave a shorter expansion proof using
+hypercontractivity on spaces of linear maps~\cite{EKL26}; our external
+input remains the Khot--Minzer--Safra theorem. Our proof keeps the
+established degree-two inverse theorem and changes the noise using a
+nonlinear map. The following comparison explains that choice.
+
+\subsection{The construction and proof}
+
+\paragraph{The nonlinear evaluation.}
+For the uniform rank-one test, a nonzero evaluation \(M\mapsto Mz\)
+changes by \(a(l^\top z)\) under \(M\mapsto M+a l^\top\). Here \(M\)
+is a binary \(\ell\)-by-\(m\) matrix, \(z\in\F_2^m\setminus\{0\}\),
+and \(a\in\F_2^\ell\), \(l\in\F_2^m\) are independent and uniform.
+This evaluation passes the equality test with probability \((1+2^{-\ell})/2\).
+We replace this evaluation by a nonlinear one that is almost unchanged
+by a different noise law. The noise must still be detected by sufficiently
+many independent linear observations: this is what will let soundness
+return to the ordinary shortcode test.
+
+For any prescribed \(p_*>0\), Lemma~\ref{lem:equivariant-noise} fixes a rank threshold
+\(r_*\) and, for every sufficiently large \(\ell\), constructs a binary
+space \(\mathcal V\) containing \(K=\F_2^\ell\), a map
+\(C:\mathcal V\to K\), and a noise law \(\mu\) on \(\mathcal V\) such that
+\[
+ C(x+h)=C(x)+h\quad(x\in\mathcal V,\ h\in K),\qquad
+ \Pr[C(x+a)\ne C(x)]\le p_*,
+\]
+where in the probability \(x\) is uniform and independent of
+\(a\sim\mu\). Every family of linear functionals whose restrictions to
+\(K\) have rank at least \(r_*\) detects \(a\) with probability at least
+\(1/8\). The threshold \(r_*\) depends only on \(p_*\), leaving \(\ell\)
+free to meet the later shortcode and folding requirements. For uniform
+\(P\in\Hom(\F_2^m,\mathcal V)\), the new evaluation \(C(Pz)\) changes
+to \(C(Pz+a(l^\top z))\) under the rank-one update. Since \(Pz\) is
+uniform and \(l^\top z\) is an independent fair bit, its equality test
+fails with probability at most \(p_*/2\).
+
+The separation between nonlinear stability and linear detection is proved
+in Section~\ref{sec:equivariant-noise}. A quadratic block over a finite field gives
+a nonzero output perturbation a fixed probability of disappearing.
+Concatenating these blocks, with noise on one random leaf, makes the
+nonlinear change probability decay geometrically with the depth
+(Lemma~\ref{lem:equivariant-noise-noise}). For linear detection, we track the rank
+of a subfamily of observations down the same branch. Random changes of
+coordinates make the surviving space of linear functionals likely to satisfy the
+following bound: at rank \(r\), restriction loses at most one dimension,
+with loss probability at most a constant times \(r\) times the block's
+cancellation probability. Taking the field large controls the exceptional
+spaces. A one-dimensional loss reduces the sum
+\(\sum_{j=1}^r1/j\) by \(1/r\), cancelling that rank factor.
+Starting with sufficiently large rank therefore permits enough levels
+to make the nonlinear change small while leaving positive rank with
+constant probability. A surviving linear functional detects the uniform leaf
+noise with constant probability
+(Proposition~\ref{prop:equivariant-noise-all-extensions-detection}). Finally, copies
+indexed by injections of the smaller output space into \(K\) allow
+\(\ell\) to grow with \(r_*\) fixed: a high-rank family restricts onto
+the whole smaller dual for most injections
+(Section~\ref{subsec:equivariant-noise-enlargement}).
+
+\paragraph{The permutation test and its completeness.}
+Section~\ref{sec:game} uses this evaluation to encode tuples
+\(U=(e_1,\ldots,e_k)\) of binary parity equations on three distinct
+variables. A table is an affine map from the product of their solution
+planes to \(\mathcal V\), represented by a matrix with \(m=1+2k\)
+columns, including the intercept. We adapt Khot--Safra's virtual
+tables~\cite[Section~1.1]{KS13} by identifying tables that induce the
+same affine map on the same retained coordinates. Thus a projected
+table and its pullback have the same answer. Folding by constant
+\(K\)-translations, following Bellare--Goldreich--Sudan~\cite[Section~3.3]{BGS98},
+assigns one label to each translation orbit. Checking equality of the
+restored answers at \(P\) and \(P+a l^\top\) is then a translation
+constraint on those labels. The equivariance of \(C\) makes nonlinear
+evaluation compatible with these labels. A global parity assignment of error \(\xi\) supplies
+one common evaluation vector on every tuple it satisfies, so the matrix
+game has value at least \(1-k\xi-p_*/2\)
+(Lemma~\ref{lem:outer-completeness}).
+
+\paragraph{Soundness: reduction to the shortcode test.}
+For soundness, suppose a labeling passes the matrix test with probability
+at least \(0.99\). A matrix frequency consists of one linear functional
+per column. Averaging over \(l\) makes its noise eigenvalue the probability
+that all these functionals vanish on \(a\). The detection bound makes
+this nonnegative eigenvalue at most \(7/8\) when their restrictions to
+\(K\) have rank at least \(r_*\). High acceptance therefore forces a
+fixed amount of Fourier mass below that rank. Under uniform noise in
+\(K\), the eigenvalue at restriction rank \(r\) is \(2^{-r}\), so this
+mass gives positive acceptance of the ordinary rank-one test
+(Lemma~\ref{lem:matrix-spectral}). Split \(\mathcal V=K\oplus W\) and
+write \(P=(M,T)\) for its two components. The ordinary test fixes \(T\);
+on a positive fraction of pairs \((U,T)\), Theorem~\ref{thm:shortcode}
+therefore gives agreement with an affine evaluation \(Mz+u\), for some
+\(z\in\F_2^m\) and \(u\in K\), on a nonempty slice defined by at most
+\(r_{\rm s}\) row equations and \(r_{\rm s}\) column equations, for a
+fixed \(r_{\rm s}\).
+
+\paragraph{Row advice and agreement on slices.}
+To turn these slices into outer-game strategies, we need a positive
+fraction of advice admitting agreement on a slice. The equation prover's advice is
+\((A,T,AM)\), where \(A:K\to\F_2^{r_{\rm s}}\) is independently
+uniform; it specifies the row fiber \(\{M':AM'=AM\}\).
+Lemma~\ref{lem:row-advice-agreement} shows that a fixed positive fraction of
+such advice admits a slice with substantial agreement. Its erasure
+argument is the key: if the union of row fibers admitting such agreement were too small,
+random replacements of their entries could be chosen to preserve enough
+shortcode acceptance while destroying the agreement promised by the
+inverse theorem on every slice.
+The inverse theorem applies to the modified function and gives a
+contradiction. Each such advice then determines a fixed choice of
+slice and target. Writing its column equations as \(Mq_j=t_j\), we can
+vary \(z\) by \(\Span\{q_j\}\) while absorbing the change into \(u\).
+Folding forces the resulting coset to contain valid answers to \(U\);
+these give a nonempty list of at most \(2^{r_{\rm s}}\) answers.
+
+\paragraph{Transfer to sparsely projected questions.}
+We compare \(U\) with a question \(O\) obtained by independently
+replacing each equation by one uniformly chosen variable with probability
+\(\beta\). This uses Khot--Safra's smooth outer-game method
+\cite[Section~3 and Lemma~3.1]{KS13}, with correlated advice as in
+Khot--Minzer--Safra~\cite[Sections~3.3--3.4]{KMS17}, also used by
+Minzer--Zheng~\cite[Section~3]{MZ26}. The referee samples a uniform
+table on \(O\), gives its \(W\)-component and random linear combinations
+of its \(K\)-valued rows as advice there, and gives their pullbacks as advice
+on \(U\), with the same map \(A\). With all spaces fixed, take \(k\)
+large and \(\beta=k^{-2/3}\). Since \(k\beta^2\to0\),
+the full pulled-back table law, averaged over projection choices,
+approaches the unrestricted uniform law
+(Lemma~\ref{lem:projected-tv}). A chosen slice can become empty on
+projection; comparing the full table laws transfers both membership in
+that slice and agreement with its target. Consequently the chosen slice
+survives and retains agreement with positive probability
+(Lemma~\ref{lem:projected-witness}).
+
+\paragraph{Decoding.}
+On advice admitting such a slice, the \(U\)-strategy samples uniformly from its list. Adapting
+Khot--Safra's Fourier-list decoding~\cite[Section~1.1]{KS13}, the
+\(O\)-strategy samples Fourier mass on its own row fiber. Agreement on
+the transferred slice puts positive mass on frequencies that decode into
+the projected list. Each strategy uses only its own question and advice; the
+transferred slice certifies their success in the analysis. The
+independent sample from the bounded list then gives full answer agreement
+with probability at least a constant \(\gamma>0\), independent of \(k\)
+(Lemma~\ref{lem:fourier-coset-decoding} and
+Proposition~\ref{prop:matrix-decoding}).
+
+\paragraph{The bound from vanishing advice slopes.}
+On a NO parity instance, the advice game has vanishing value.
+Section~\ref{sec:zero-advice} restricts to singleton coordinates where all
+advice slopes are zero. Each singleton has a fixed positive probability
+that its advice slopes vanish, and the same sparse choice of \(\beta\) leaves
+\(k\beta=k^{1/3}\to\infty\). These coordinates contribute neither
+slopes nor intercept corrections to the advice. Fixing \(A\), the positions of these
+coordinates, the original intercept, and the other coordinate data therefore
+leaves independent equation--variable questions. Each prover can reconstruct
+its original input from its own questions on these coordinates and the fixed data, so
+parallel repetition applies to these coordinates. Averaging over their
+number bounds full advice agreement by \(\exp(-c k^{1/3})\), for a
+constant \(c>0\) depending only on the fixed advice spaces
+(Lemma~\ref{lem:zero-advice}). This contradicts the decoded lower bound for
+large \(k\), giving the fixed matrix-game gap in
+Proposition~\ref{prop:matrix-gap}.
+
+\paragraph{Completing the reduction.}
+Section~\ref{sec:finish} rounds the weights and replaces each constraint
+occurrence by a path of four edges, producing a simple bipartite game
+while preserving a fixed gap and the translation form. The final step
+uses the same projection-game repetition bound as the argument using vanishing advice
+slopes, namely Dinur--Steurer's alphabet-independent bound
+\cite[Corollary~1.2]{DS14}.\footnote{Raz proved exponential decay for
+general two-prover games~\cite{Raz98}, and Holenstein simplified the
+proof~\cite{Holenstein2009}. Those bounds depend on the answer alphabet;
+Rao removed that dependence for projection games~\cite[Theorem~4]{Rao11}.}
+Its exponent \(t\) can be chosen from the fixed gap and \(\delta\) before
+the answer alphabet \(K\); the \(t\)-fold repeated game then has the
+alphabet \(\Sigma=K^t\) of Theorem~\ref{thm:ugc}. We then choose the nonlinear change bound and alphabet,
+the tuple length \(k\), and finally the parity error, making the
+completeness losses small enough for the prescribed \(\varepsilon\).
+All dimensions and repetition counts are fixed by the two errors, so
+enumerating the finite experiments gives the deterministic polynomial-time
+reduction of Theorem~\ref{thm:ugc}.
+
+Figure~\ref{fig:overview} displays the reduction and the two incompatible
+bounds that establish soundness.
+\input{figures/overview}
+
+\paragraph{Organization.}
+Section~\ref{sec:preliminaries} fixes the conventions and the repetition
+bound. Section~\ref{sec:game} states the properties of the equivariant map with additive noise and constructs the
+permutation test. Section~\ref{sec:matrix-gap} states the two bounds on
+advice agreement and deduces the matrix-game gap; Section~\ref{sec:finish}
+then fixes the parameters and proves Theorem~\ref{thm:ugc} from these inputs.
+The three supporting branches are proved in Sections~\ref{sec:equivariant-noise},
+\ref{sec:matrix}, and~\ref{sec:zero-advice}: the construction of the equivariant map with additive noise, matrix
+decoding, and the bound from vanishing advice slopes, respectively.
+Section~\ref{sec:consequences} gives the approximation consequences.
+Appendix~\ref{app:finite-consequences} proves the simple formulation with completeness on left
+vertices and the finite rational conversions used there.

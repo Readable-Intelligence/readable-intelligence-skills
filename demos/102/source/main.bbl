@@ -1,0 +1,348 @@
+\begin{thebibliography}{10}
+
+\bibitem{ABS10}
+Sanjeev Arora, Boaz Barak, and David Steurer.
+\newblock Subexponential algorithms for {Unique Games} and related problems.
+\newblock In {\em Proceedings of the 51st Annual IEEE Symposium on Foundations
+  of Computer Science}, pages 563--572. IEEE Computer Society, 2010.
+\newblock
+  \href{https://doi.org/10.1109/FOCS.2010.59}{doi:10.1109/FOCS.2010.59}.
+  \url{https://www.dsteurer.org/paper/subexpug.pdf}.
+
+\bibitem{ALMSS98}
+Sanjeev Arora, Carsten Lund, Rajeev Motwani, Madhu Sudan, and Mario Szegedy.
+\newblock Proof verification and the hardness of approximation problems.
+\newblock {\em Journal of the ACM}, 45(3):501--555, 1998.
+\newblock Preliminary version in FOCS 1992.
+  \href{https://doi.org/10.1145/278298.278306}{doi:10.1145/278298.278306}.
+  \url{https://people.csail.mit.edu/madhu/papers/1992/almss-journ.pdf}.
+
+\bibitem{AroraSafra98}
+Sanjeev Arora and Shmuel Safra.
+\newblock Probabilistic checking of proofs: A new characterization of {NP}.
+\newblock {\em Journal of the ACM}, 45(1):70--122, 1998.
+\newblock Preliminary version in FOCS 1992.
+  \href{https://doi.org/10.1145/273865.273901}{doi:10.1145/273865.273901}.
+  \url{https://www.cs.umd.edu/~gasarch/TOPICS/pcp/AS.pdf}.
+
+\bibitem{BBKSS21}
+Mitali Bafna, Boaz Barak, Pravesh~K. Kothari, Tselil Schramm, and David
+  Steurer.
+\newblock Playing {Unique Games} on certified small-set expanders.
+\newblock In {\em Proceedings of the 53rd Annual ACM SIGACT Symposium on Theory
+  of Computing}, pages 1629--1642. ACM, 2021.
+\newblock
+  \href{https://doi.org/10.1145/3406325.3451099}{doi:10.1145/3406325.3451099}.
+  \url{https://arxiv.org/abs/2006.09969v3}.
+
+\bibitem{BGHMRS15}
+Boaz Barak, Parikshit Gopalan, Johan H{\aa}stad, Raghu Meka, Prasad
+  Raghavendra, and David Steurer.
+\newblock Making the long code shorter.
+\newblock {\em SIAM Journal on Computing}, 44(5):1287--1324, 2015.
+\newblock Preliminary version in FOCS 2012.
+  \href{https://doi.org/10.1137/130929394}{doi:10.1137/130929394}.
+  \url{https://www.csc.kth.se/~johanh/shortcode.pdf}.
+
+\bibitem{BKS18}
+Boaz Barak, Pravesh~K. Kothari, and David Steurer.
+\newblock Small-set expansion in shortcode graph and the 2-to-2 conjecture.
+\newblock In {\em 10th Innovations in Theoretical Computer Science Conference
+  (ITCS 2019)}, volume 124 of {\em Leibniz International Proceedings in
+  Informatics}, pages 9:1--9:12. Schloss Dagstuhl--Leibniz-Zentrum f{\"u}r
+  Informatik, 2019.
+\newblock First circulated in 2018. Section-based theorem locators refer to
+  arXiv:1804.08662v1.
+  \href{https://doi.org/10.4230/LIPIcs.ITCS.2019.9}{doi:10.4230/LIPIcs.ITCS.2019.9}.
+  \url{https://arxiv.org/abs/1804.08662v1}.
+
+\bibitem{BGS98}
+Mihir Bellare, Oded Goldreich, and Madhu Sudan.
+\newblock Free bits, {PCPs}, and nonapproximability---towards tight results.
+\newblock {\em SIAM Journal on Computing}, 27(3):804--915, 1998.
+\newblock
+  \href{https://doi.org/10.1137/S0097539796302531}{doi:10.1137/S0097539796302531}.
+  \url{https://people.seas.harvard.edu/~madhusudan/papers/1995/bgs-journ.pdf}.
+
+\bibitem{CMM06}
+Moses Charikar, Konstantin Makarychev, and Yury Makarychev.
+\newblock Near-optimal algorithms for {Unique Games}.
+\newblock In {\em Proceedings of the Thirty-Eighth Annual ACM Symposium on
+  Theory of Computing}, pages 205--214. ACM, 2006.
+\newblock
+  \href{https://doi.org/10.1145/1132516.1132547}{doi:10.1145/1132516.1132547}.
+  \url{https://konstantin.makarychev.net/pdf/unique.pdf}.
+
+\bibitem{CKKRS2006}
+Shuchi Chawla, Robert Krauthgamer, Ravi Kumar, Yuval Rabani, and D.~Sivakumar.
+\newblock On the hardness of approximating multicut and sparsest-cut.
+\newblock {\em Computational Complexity}, 15(2):94--114, 2006.
+\newblock Numbered locators refer to the author manuscript.
+  \href{https://doi.org/10.1007/s00037-006-0210-9}{doi:10.1007/s00037-006-0210-9}.
+  \url{https://www.wisdom.weizmann.ac.il/~robi/papers/CKKRS-CutHardness-CompComp06.pdf}.
+
+\bibitem{DemaineEtAl2006Clustering}
+Erik~D. Demaine, Dotan Emanuel, Amos Fiat, and Nicole Immorlica.
+\newblock Correlation clustering in general weighted graphs.
+\newblock {\em Theoretical Computer Science}, 361(2--3):172--187, 2006.
+\newblock Numbered locators refer to the author manuscript dated February 5,
+  2005.
+  \href{https://doi.org/10.1016/j.tcs.2006.05.008}{doi:10.1016/j.tcs.2006.05.008}.
+  \url{https://erikdemaine.org/papers/Clustering_TCS/paper.pdf}.
+
+\bibitem{DKKMS21Expansion}
+Irit Dinur, Subhash Khot, Guy Kindler, Dor Minzer, and Muli Safra.
+\newblock On non-optimally expanding sets in {Grassmann} graphs.
+\newblock {\em Israel Journal of Mathematics}, 243(1):377--420, 2021.
+\newblock First circulated in 2017; preliminary version in STOC 2018.
+  \href{https://doi.org/10.1007/s11856-021-2164-7}{doi:10.1007/s11856-021-2164-7}.
+
+\bibitem{DKKMS25}
+Irit Dinur, Subhash Khot, Guy Kindler, Dor Minzer, and Muli Safra.
+\newblock Towards a proof of the 2-to-1 games conjecture?
+\newblock {\em Theory of Computing}, 21(11):1--50, 2025.
+\newblock Preliminary version in STOC 2018.
+  \href{https://doi.org/10.4086/toc.2025.v021a011}{doi:10.4086/toc.2025.v021a011}.
+  \url{https://theoryofcomputing.org/articles/v021a011/v021a011.pdf}.
+
+\bibitem{DS14}
+Irit Dinur and David Steurer.
+\newblock Analytical approach to parallel repetition.
+\newblock In {\em Proceedings of the Forty-Sixth Annual ACM Symposium on Theory
+  of Computing}, pages 624--633. ACM, 2014.
+\newblock Numbered locators refer to the author manuscript dated June 10, 2014.
+  \href{https://doi.org/10.1145/2591796.2591884}{doi:10.1145/2591796.2591884}.
+  \url{https://www.dsteurer.org/paper/productgames.pdf}.
+
+\bibitem{EKL26}
+David Ellis, Guy Kindler, and Noam Lifshitz.
+\newblock An analogue of {Bonami}'s lemma for functions on spaces of linear
+  maps, and 2-2 games, 2026.
+\newblock First circulated in 2022; version 2, January 22, 2026.
+  \url{https://arxiv.org/abs/2209.04243v2}.
+
+\bibitem{FGLSS96}
+Uriel Feige, Shafi Goldwasser, L{\'a}szl{\'o} Lov{\'a}sz, Shmuel Safra, and
+  Mario Szegedy.
+\newblock Interactive proofs and the hardness of approximating cliques.
+\newblock {\em Journal of the ACM}, 43(2):268--292, 1996.
+\newblock
+  \href{https://doi.org/10.1145/226643.226652}{doi:10.1145/226643.226652}.
+  \url{https://www.cs.tau.ac.il/~safra/PapersAndTalks/FGLSS.pdf}.
+
+\bibitem{GW95}
+Michel~X. Goemans and David~P. Williamson.
+\newblock Improved approximation algorithms for maximum cut and satisfiability
+  problems using semidefinite programming.
+\newblock {\em Journal of the ACM}, 42(6):1115--1145, 1995.
+\newblock
+  \href{https://doi.org/10.1145/227683.227684}{doi:10.1145/227683.227684}.
+
+\bibitem{GuruswamiEtAl2011OrderingCSP}
+Venkatesan Guruswami, Johan H{\aa}stad, Rajsekar Manokaran, Prasad Raghavendra,
+  and Moses Charikar.
+\newblock Beating the random ordering is hard: Every ordering {CSP} is
+  approximation resistant.
+\newblock {\em SIAM Journal on Computing}, 40(3):878--914, 2011.
+\newblock Numbered locators refer to ECCC TR11-027.
+  \href{https://doi.org/10.1137/090756144}{doi:10.1137/090756144}.
+  \url{https://eccc.weizmann.ac.il/report/2011/027/download}.
+
+\bibitem{Hastad01}
+Johan H{\aa}stad.
+\newblock Some optimal inapproximability results.
+\newblock {\em Journal of the ACM}, 48(4):798--859, 2001.
+\newblock Theorem locators refer to the author manuscript dated February 18,
+  2002.
+  \href{https://doi.org/10.1145/502090.502098}{doi:10.1145/502090.502098}.
+  \url{https://people.kth.se/~johanh/optimalinap.pdf}.
+
+\bibitem{Hoeffding1963}
+Wassily Hoeffding.
+\newblock Probability inequalities for sums of bounded random variables.
+\newblock {\em Journal of the American Statistical Association},
+  58(301):13--30, 1963.
+\newblock
+  \href{https://doi.org/10.1080/01621459.1963.10500830}{doi:10.1080/01621459.1963.10500830}.
+
+\bibitem{Holenstein2009}
+Thomas Holenstein.
+\newblock Parallel repetition: Simplifications and the no-signaling case.
+\newblock {\em Theory of Computing}, 5(8):141--172, 2009.
+\newblock
+  \href{https://doi.org/10.4086/toc.2009.v005a008}{doi:10.4086/toc.2009.v005a008}.
+  \url{https://theoryofcomputing.org/articles/v005a008/v005a008.pdf}.
+
+\bibitem{IsakssonMossel2009}
+Marcus Isaksson and Elchanan Mossel.
+\newblock Maximally stable gaussian partitions with discrete applications.
+\newblock arXiv:0903.3362v3 [math.PR], 2009.
+\newblock Numbered locators refer to arXiv:0903.3362v3 (3 August 2009).
+  \url{https://arxiv.org/pdf/0903.3362v3}.
+
+\bibitem{Khot02}
+Subhash Khot.
+\newblock On the power of unique 2-prover 1-round games.
+\newblock In {\em Proceedings of the Thirty-Fourth Annual ACM Symposium on
+  Theory of Computing}, pages 767--775. ACM, 2002.
+\newblock
+  \href{https://doi.org/10.1145/509907.510017}{doi:10.1145/509907.510017}.
+
+\bibitem{Khot10}
+Subhash Khot.
+\newblock On the {Unique Games Conjecture}.
+\newblock In {\em Proceedings of the 25th Annual IEEE Conference on
+  Computational Complexity}, pages 99--121. IEEE Computer Society, 2010.
+\newblock Conjecture locators refer to the author manuscript.
+  \href{https://doi.org/10.1109/CCC.2010.19}{doi:10.1109/CCC.2010.19}.
+  \url{https://cs.nyu.edu/~khot/papers/UGCSurvey.pdf}.
+
+\bibitem{KKMO07}
+Subhash Khot, Guy Kindler, Elchanan Mossel, and Ryan O'Donnell.
+\newblock Optimal inapproximability results for {MAX-CUT} and other 2-variable
+  {CSPs}?
+\newblock {\em SIAM Journal on Computing}, 37(1):319--357, 2007.
+\newblock Numbered theorem references use the author manuscript dated September
+  19, 2005. \href{https://www.cs.cmu.edu/~odonnell/papers/maxcut.pdf}{Author
+  manuscript}.
+  \href{https://doi.org/10.1137/S0097539705447372}{doi:10.1137/S0097539705447372}.
+
+\bibitem{KMS23}
+Subhash Khot, Dor Minzer, and Muli Safra.
+\newblock Pseudorandom sets in {Grassmann} graph have near-perfect expansion.
+\newblock {\em Annals of Mathematics}, 198(1):1--92, 2023.
+\newblock Theorem locators refer to ECCC TR18-006, revision 2, May 19, 2018;
+  the expansion theorem is Theorem 1.12.
+  \href{https://doi.org/10.4007/annals.2023.198.1.1}{doi:10.4007/annals.2023.198.1.1}.
+  \url{https://eccc.weizmann.ac.il/report/2018/006/revision/2/download}.
+
+\bibitem{KMS17}
+Subhash Khot, Dor Minzer, and Muli Safra.
+\newblock On independent sets, 2-to-2 games and {Grassmann} graphs.
+\newblock {\em Theory of Computing}, 21(10):1--55, 2025.
+\newblock Preliminary version in STOC 2017.
+  \href{https://doi.org/10.4086/toc.2025.v021a010}{doi:10.4086/toc.2025.v021a010}.
+
+\bibitem{KhotRegev2008}
+Subhash Khot and Oded Regev.
+\newblock Vertex cover might be hard to approximate to within {$2-\epsilon$}.
+\newblock {\em Journal of Computer and System Sciences}, 74(3):335--349, 2008.
+\newblock Numbered locators refer to the linked author manuscript.
+  \href{https://doi.org/10.1016/j.jcss.2007.06.019}{doi:10.1016/j.jcss.2007.06.019}.
+  \url{https://cims.nyu.edu/~regev/papers/vc_hard.pdf}.
+
+\bibitem{KS13}
+Subhash Khot and Muli Safra.
+\newblock A two-prover one-round game with strong soundness.
+\newblock {\em Theory of Computing}, 9(28):863--887, 2013.
+\newblock Preliminary version in FOCS 2011.
+  \href{https://doi.org/10.4086/toc.2013.v009a028}{doi:10.4086/toc.2013.v009a028}.
+
+\bibitem{KV15}
+Subhash Khot and Nisheeth~K. Vishnoi.
+\newblock The {Unique Games Conjecture}, integrality gap for cut problems and
+  embeddability of negative-type metrics into {$\ell_1$}.
+\newblock {\em Journal of the ACM}, 62(1):8:1--8:39, 2015.
+\newblock Preliminary version in FOCS 2005.
+  \href{https://doi.org/10.1145/2629614}{doi:10.1145/2629614}.
+  \url{https://arxiv.org/abs/1305.4581}.
+
+\bibitem{Kolla11}
+Alexandra Kolla.
+\newblock Spectral algorithms for {Unique Games}.
+\newblock {\em Computational Complexity}, 20(2):177--206, 2011.
+\newblock Preliminary version in CCC 2010.
+  \href{https://doi.org/10.1007/s00037-011-0011-7}{doi:10.1007/s00037-011-0011-7}.
+  \url{https://arxiv.org/abs/1102.2300}.
+
+\bibitem{MZ26}
+Dor Minzer and Kai~Zhe Zheng.
+\newblock Near optimal alphabet-soundness tradeoff {PCPs}, 2026.
+\newblock Version 4, revised May 13, 2026. Preliminary version in STOC 2024,
+  pages 15--23, doi:10.1145/3618260.3649606.
+  \url{https://arxiv.org/abs/2404.07441v4}.
+
+\bibitem{MOO10}
+Elchanan Mossel, Ryan O'Donnell, and Krzysztof Oleszkiewicz.
+\newblock Noise stability of functions with low influences: Invariance and
+  optimality.
+\newblock {\em Annals of Mathematics}, 171(1):295--341, 2010.
+\newblock
+  \href{https://doi.org/10.4007/annals.2010.171.295}{doi:10.4007/annals.2010.171.295}.
+
+\bibitem{OpenAIUniformSparsest2026}
+{OpenAI}.
+\newblock {Constant-factor hardness of uniform sparsest cut}.
+\newblock OpenAI Math Release preprint
+  \href{https://github.com/openai/math/blob/main/preprints/Constant-factor-hardness-of-uniform-sparsest-cut-September-24-2026/Constant-factor-hardness-of-uniform-sparsest-cut-September-24-2026.pdf}{OAI:Constant-factor-hardness-of-uniform-sparsest-cut-September-24-2026},
+  2026.
+
+\bibitem{OpenAIPerfectTwoToOne2026}
+{OpenAI}.
+\newblock {Perfect completeness for 2-to-1 games}.
+\newblock OpenAI Math Release preprint
+  \href{https://github.com/openai/math/blob/main/preprints/Perfect-completeness-for-2-to-1-games-September-23-2026/paper.pdf}{OAI:Perfect-completeness-for-2-to-1-games-September-23-2026},
+  2026.
+
+\bibitem{OpenAIGaussianPropeller2026}
+{OpenAI}.
+\newblock {The Gaussian propeller bound in every dimension}.
+\newblock OpenAI Math Release preprint
+  \href{https://github.com/openai/math/blob/main/preprints/The-Gaussian-Propeller-Bound-in-Every-Dimension-September-24-2026/main.pdf}{OAI:The-Gaussian-Propeller-Bound-in-Every-Dimension-September-24-2026},
+  2026.
+
+\bibitem{Raghavendra08}
+Prasad Raghavendra.
+\newblock Optimal algorithms and inapproximability results for every {CSP}?
+\newblock In {\em Proceedings of the Fortieth Annual ACM Symposium on Theory of
+  Computing}, pages 245--254. ACM, 2008.
+\newblock
+  \href{https://doi.org/10.1145/1374376.1374414}{doi:10.1145/1374376.1374414}.
+
+\bibitem{RaghavendraThesis09}
+Prasad Raghavendra.
+\newblock {\em Approximating {NP}-hard Problems: Efficient Algorithms and Their
+  Limits}.
+\newblock PhD thesis, University of Washington, 2009.
+\newblock \url{https://people.eecs.berkeley.edu/~prasad/Files/thesis.pdf}.
+
+\bibitem{Rao11}
+Anup Rao.
+\newblock Parallel repetition in projection games and a concentration bound.
+\newblock {\em SIAM Journal on Computing}, 40(6):1871--1891, 2011.
+\newblock Theorem~4 refers to the author manuscript dated September 17, 2010.
+  \href{https://doi.org/10.1137/080734042}{doi:10.1137/080734042}.
+  \url{https://homes.cs.washington.edu/~anuprao/pubs/parrep.pdf}.
+
+\bibitem{Raz98}
+Ran Raz.
+\newblock A parallel repetition theorem.
+\newblock {\em SIAM Journal on Computing}, 27(3):763--803, 1998.
+\newblock Preliminary version in STOC 1995.
+  \href{https://doi.org/10.1137/S0097539795280895}{doi:10.1137/S0097539795280895}.
+
+\bibitem{Schwartz80}
+Jacob~T. Schwartz.
+\newblock Fast probabilistic algorithms for verification of polynomial
+  identities.
+\newblock {\em Journal of the ACM}, 27(4):701--717, 1980.
+\newblock
+  \href{https://doi.org/10.1145/322217.322225}{doi:10.1145/322217.322225}.
+
+\bibitem{Trevisan08}
+Luca Trevisan.
+\newblock Approximation algorithms for {Unique Games}.
+\newblock {\em Theory of Computing}, 4(5):111--128, 2008.
+\newblock Preliminary version in FOCS 2005.
+  \href{https://doi.org/10.4086/toc.2008.v004a005}{doi:10.4086/toc.2008.v004a005}.
+  \url{https://theoryofcomputing.org/articles/v004a005/v004a005.pdf}.
+
+\bibitem{Zippel79}
+Richard Zippel.
+\newblock Probabilistic algorithms for sparse polynomials.
+\newblock In {\em Symbolic and Algebraic Computation (EUROSAM 1979)}, volume~72
+  of {\em Lecture Notes in Computer Science}, pages 216--226. Springer, 1979.
+\newblock
+  \href{https://doi.org/10.1007/3-540-09519-5_73}{doi:10.1007/3-540-09519-5\_73}.
+
+\end{thebibliography}

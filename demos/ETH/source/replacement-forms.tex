@@ -1,0 +1,779 @@
+\section{Constructing low-degree replacement forms}\label{sec:construction}
+The counting routine needs one replacement form for each pair $(f,v)$
+where factor $f$ reads variable $v$. For the application in
+Section~\ref{sec:setup}, $f$ is a polynomial equation and its scope is
+the union of the variable sets of its monomials. This section uses
+only those scopes.
+We construct the rows $\vec{P}_{f,v}(T)$ and measurement matrices $C_{t,g}$
+in Definition~\ref{def:layout}, together with the partitions $S_{t,g}$
+and factor assignments $\sigma_f$. The main difficulty is to keep
+$\deg \vec{P}_{f,v}\le R$ with $R$ much smaller than $Q$. The degree bound
+for $H$ grows linearly with $R$, so a small $R/Q$ reduces the number
+of Taylor coefficients needed at each point. Choosing the rows
+independently at $T=0,1,\ldots,Q$ and interpolating would generally give
+degree $Q$. We instead construct their values at all these points together.
+
+The construction first gives polynomial rows on a complete array of
+auxiliary coordinates. We then place each factor--variable pair in a
+copy of that array. Several positions can contain the same Boolean
+variable $x_v$; their values are always equal, and they do not become
+independent variables in the counting sum.
+
+\subsection{The auxiliary coordinates}\label{subsec:incidence-layout}
+We first specify the larger coordinate set $\mathcal U$ on which
+the auxiliary rows $\vec{P}_u(T)$ will act, together with the incidence
+bounds needed to place the actual pairs $(f,v)$ into copies of it.
+Let $(I_f)_{f\in\mathcal F}$ be the factor scopes, with $I_f\subseteq[n]$,
+and write
+\begin{equation}\label{eq:factor-incidences}
+ \begin{gathered}
+ \mathcal J=\{(f,v):f\in\mathcal F,\ v\in I_f\},\qquad M=|\mathcal J|,\\
+ |I_f|\le w\quad(f\in\mathcal F),\qquad
+ \#\{f:v\in I_f\}\le b\quad(v\in[n]).
+ \end{gathered}
+\end{equation}
+Thus $w$ bounds the number of variables in a factor's scope, and $b$
+bounds the number of factors containing one variable. The scope bound
+$w$ need not bound the degree of the factor polynomial. A factor with
+empty scope is constant and needs no auxiliary position; assign such
+a factor to group one at every point. If necessary, adjoin a distinct
+constant-one factor with scope $\{v\}$ for every $v\in[n]$. This changes
+neither the product nor the count, and increases the maximum incidence
+by at most one. With $b$ denoting the bound after this addition, we assume
+\[
+ n\ge1,\qquad b,w\ge1,\qquad n\le M\le bn.
+\]
+Throughout this section, $r\ge2$ and $1\le R<Q$ are integers and
+$0<\tau\le1/2$.
+
+The output needed by the counting routine is the following.
+
+\begin{lemma}\label{lem:layout}
+Let $n,b,w\ge1$ be integers, and let $(I_f)_{f\in\mathcal F}$ be
+subsets of $[n]$ of size at most $w$,
+with each $v\in[n]$ belonging to at most $b$ sets. Put
+$M=\sum_f|I_f|$ and assume $n\le M\le bn$. Let $r\ge2$ and
+$1\le R<Q$ be integers, let $0<\tau\le1/2$, and put $D=r^{2Q}$.
+Suppose
+\[
+ 2(b+w)D^2\le M,\qquad 2Qr^2\le n,
+\]
+and an interval
+$\mathcal I=\{A_0,\ldots,A_0+R-1\}\subseteq\{0,\ldots,Q\}$ satisfies
+\[
+ \Pr[W\notin\mathcal I]\le\frac{\tau}{rb},\qquad
+ W\sim\operatorname{Bin}\!\left(Q,\frac{r-1}{2r}\right).
+\]
+One can deterministically construct all the data in
+Definition~\ref{def:layout} in
+$\poly(n,M,|\mathcal F|,D,Q,r,b,w)$ bit operations.
+\end{lemma}
+The auxiliary matrix and rows are constructed in the next two
+subsections. Lemma~\ref{lem:incidence-labels} then balances the actual
+factor incidences, and Section~\ref{subsec:embedding} transfers the
+rows and measurements to the original variables. The coefficient
+estimate in Lemma~\ref{lem:row-coefficients} completes the proof.
+
+At each point $t\in[Q]$, the variable $x_v$ will belong to one group,
+while a factor containing $v$ may be assigned to another. We will choose
+\[
+ a_v\in[r]^Q\quad(v\in[n]),\qquad
+ d_f\in[r]^Q\quad(f\in\mathcal F),
+\]
+where $a_v(t)$ specifies the group containing $x_v$ and $d_f(t)$
+specifies the group assigned to factor $f$. The position for $(f,v)$
+will have label $(a_v,d_f)$. In particular, all positions containing
+$x_v$ will have the same first sequence $a_v$.
+
+Before choosing $a_v$ and $d_f$, take the complete set of possible labels:
+\begin{equation}\label{eq:auxiliary-labels}
+ \mathcal U=([r]^Q)^2,\qquad u=(a_u,d_u),\qquad D=|\mathcal U|=r^{2Q}.
+\end{equation}
+An auxiliary vector $\zeta\in\mathbb Q^{\mathcal U}$ has one rational
+coordinate $\zeta_u$ for each pair $u$. The label $u$ stays fixed as
+$\zeta$ varies. For $t\in[Q]$ and $g\in[r]$, define
+\begin{equation}\label{eq:auxiliary-groups}
+ S^{\mathcal U}_{t,g}=\{u\in\mathcal U:a_u(t)=g\}.
+\end{equation}
+For fixed $t$, these sets partition $\mathcal U$ into $r$ sets of size
+$D/r$.
+
+For each $u\in\mathcal U$, we seek a polynomial row
+$\vec{P}_u(T)\in\mathbb Q[T]^{1\times\mathcal U}$ of degree at most $R-1$
+with $\vec{P}_u(0)=\delta_u$. At $T=t$, the value $\langle \vec{P}_u(t), \zeta\rangle$ should be
+determined by
+\[
+ \zeta|_{S^{\mathcal U}_{t,d_u(t)}}
+ \quad\text{and}\quad C^{\mathcal U}\zeta,
+\]
+where $C^{\mathcal U}$ is one integer matrix, independent of $u,t$,
+with entries in $\{0,1,-1\}$ and few rows. Later, using
+$u_{f,v}=(a_v,d_f)$ will make every input of factor $f$ use the group
+$d_f(t)$. The choices of $a_v,d_f$ and the placement into copies are
+deferred to Sections~\ref{subsec:choosing-labels}
+and~\ref{subsec:embedding}, respectively.
+
+\subsection{The matrices $M_0$ and $C^{\mathcal U}$}
+To construct the rows $\vec{P}_u(T)$, we seek a matrix
+$M_0\in\mathbb Q^{\mathcal U\times\mathcal U}$ that fixes
+$\ker C^{\mathcal U}$ and satisfies
+\begin{equation}\label{eq:matrix-support-target}
+ M_0[u,y]\ne0\quad\Longrightarrow\quad
+ \bigl|\{s\in[Q]:a_y(s)\ne d_u(s)\}\bigr|\le R-1.
+\end{equation}
+The identity
+\begin{equation}\label{eq:coordinate-decomposition}
+ \zeta_u=((I-M_0)\zeta)_u+
+          \sum_{y\in\mathcal U}M_0[u,y]\zeta_y
+\end{equation}
+explains both requirements. If $M_0$ fixes $\ker C^{\mathcal U}$,
+the first term is determined by $C^{\mathcal U}\zeta$; we will leave
+it independent of $T$. In the sum, multiply each nonzero
+$M_0[u,y]$ by a polynomial that is one at zero and vanishes at every
+$t$ with $a_y(t)\ne d_u(t)$. The bound
+\eqref{eq:matrix-support-target} permits degree at most $R-1$.
+At $T=t$, the sum will then use only the coordinates
+$y\in S^{\mathcal U}_{t,d_u(t)}$.
+
+For $s\in[Q]$, let $\vartheta_s:\mathcal U\to\mathcal U$ exchange the
+entries $a_u(s)$ and $d_u(s)$, leaving every other entry unchanged.
+Define its permutation matrix $\Pi_s$ by
+\[
+ (\Pi_s\zeta)_u=\zeta_{\vartheta_s(u)}.
+\]
+The exchanged pair $\vartheta_s(u)$ belongs to $\mathcal U$ because this set
+contains every pair of sequences in $[r]^Q$. The matrices $\Pi_s$
+commute and satisfy $\Pi_s^2=I$. Their product
+\[
+ V_0=\prod_{s=1}^Q\Pi_s
+\]
+exchanges the complete sequences $a_u$ and $d_u$. Thus
+$V_0[u,y]\ne0$ implies $a_y(s)=d_u(s)$ for every $s$; it satisfies
+\eqref{eq:matrix-support-target} with no mismatches. We will modify
+$V_0$ so that the resulting matrix also fixes the kernel of a short
+list of integer measurements.
+
+Define
+\begin{equation}\label{eq:swap-weight}
+ W_0=\frac12\sum_{s=1}^Q(I-\Pi_s).
+\end{equation}
+On a common eigenvector $\psi$ of the $\Pi_s$, let $j$ be the number
+of indices $s$ for which $\Pi_s\psi=-\psi$. Then
+\[
+ W_0\psi=j\psi,\qquad V_0\psi=(-1)^j\psi,
+ \qquad V_0p(W_0)\psi=(-1)^jp(j)\psi
+\]
+for every polynomial $p$. Therefore $V_0p(W_0)$ fixes $\psi$ whenever
+$p(j)=(-1)^j$. We will construct an explicit common eigenbasis in which
+the proportion of vectors with a given $j$ is
+$\Pr[W=j]$ for $W\sim\operatorname{Bin}(Q,(r-1)/(2r))$.
+
+For an interval
+$\mathcal I=\{A_0,\ldots,A_0+R-1\}\subseteq\{0,\ldots,Q\}$,
+we can enforce the equalities $f_{\mathcal I}(j)=(-1)^j$
+for $j\in\mathcal I$ with a polynomial of degree at most $R-1$.
+We use the explicit interpolation formula
+\begin{equation}\label{eq:swap-matrix-definition}
+ f_{\mathcal I}(z)=(-1)^{A_0}\sum_{j=0}^{R-1}(-2)^j
+                         \binom{z-A_0}{j},
+ \qquad M_0=V_0f_{\mathcal I}(W_0),
+\end{equation}
+where
+\[
+ \binom{z-A_0}{j}=\frac1{j!}\prod_{a=0}^{j-1}(z-A_0-a)
+\]
+and the empty product is one. For $0\le q<R$, the binomial theorem gives
+$f_{\mathcal I}(A_0+q)=(-1)^{A_0}(1-2)^q=(-1)^{A_0+q}$.
+
+\begin{lemma}\label{lem:swaps-matrix}
+For $\mathcal U$, $\mathcal I$ and $M_0$ as above, there is a matrix
+$C^{\mathcal U}\in\{0,1,-1\}^{[c_{\mathcal U}]\times\mathcal U}$ such that
+\[
+ c_{\mathcal U}\le D\Pr[W\notin\mathcal I],\qquad
+ W\sim\operatorname{Bin}\!\left(Q,\frac{r-1}{2r}\right),
+\]
+and $M_0\xi=\xi$ for every $\xi\in\ker C^{\mathcal U}$.
+\end{lemma}
+\begin{proof}
+For $(\alpha,\delta)\in[r]^2$, let $e_{\alpha\delta}$ be the
+indicator function of that ordered pair. Exchanging its two entries
+has the orthogonal eigenbasis
+\[
+ e_{\alpha\alpha}\quad(\alpha\in[r]),\qquad
+ e_{\alpha\delta}+e_{\delta\alpha},\quad
+ e_{\alpha\delta}-e_{\delta\alpha}\quad(1\le\alpha<\delta\le r).
+\]
+The first two types have eigenvalue $+1$, and the third has eigenvalue
+$-1$. There are $r(r+1)/2$ vectors with eigenvalue $+1$ and
+$r(r-1)/2$ with eigenvalue $-1$.
+
+For each $s\in[Q]$, choose one of these functions
+$\psi_s:[r]^2\to\{0,1,-1\}$, and define
+\[
+ \psi(u)=\prod_{s=1}^Q\psi_s(a_u(s),d_u(s))
+ \qquad(u\in\mathcal U).
+\]
+The $D=r^{2Q}$ choices give nonzero orthogonal vectors: their inner
+products factor into the inner products of the functions $\psi_s$.
+They form a basis of $\mathbb Q^{\mathcal U}$ with entries in
+$\{0,1,-1\}$. If exactly $j$ of the chosen $\psi_s$ have eigenvalue
+$-1$, then $W_0\psi=j\psi$ and $V_0\psi=(-1)^j\psi$. Hence $M_0$
+fixes $\psi$ whenever $j\in\mathcal I$.
+
+To make $\ker C^{\mathcal U}$ a space fixed by $M_0$, we define
+the rows of $C^{\mathcal U}$ to be the transposes of the basis
+vectors with $j\notin\mathcal I$.
+A fraction $(r-1)/(2r)$ of the choices at each
+position have eigenvalue $-1$, independently across positions. The
+fraction of the $D$ basis vectors retained as rows is therefore
+$\Pr[W\notin\mathcal I]$, proving the row bound. If
+$C^{\mathcal U}\xi=\vec{0}$, then $\xi$ is orthogonal to every retained
+basis vector. It is a linear combination of the basis vectors with
+$j\in\mathcal I$, all of which $M_0$ fixes.
+\end{proof}
+
+Fix the matrix $C^{\mathcal U}$ constructed in the proof of
+Lemma~\ref{lem:swaps-matrix}. For a bound $\epsilon>0$, the condition
+\begin{equation}\label{eq:incidence-tail}
+ \Pr\!\left[\operatorname{Bin}\!\left(Q,\frac{r-1}{2r}\right)
+                         \notin\mathcal I\right]\le\epsilon
+\end{equation}
+thus gives $c_{\mathcal U}\le\epsilon D$. After placing the factor
+inputs, we will use $\epsilon=\tau/(rb)$. We next prove the other
+requirement on $M_0$.
+
+\begin{lemma}\label{lem:swaps-support}
+For all $u,y\in\mathcal U$, if $M_0[u,y]\ne0$, then
+\[
+ \bigl|\{s\in[Q]:a_y(s)\ne d_u(s)\}\bigr|\le R-1.
+\]
+\end{lemma}
+\begin{proof}
+Expand $f_{\mathcal I}(W_0)$ in the commuting matrices $\Pi_s$.
+Since $\deg f_{\mathcal I}\le R-1$ and $\Pi_s^2=I$, each resulting
+monomial is a scalar multiple of $\prod_{s\in J}\Pi_s$ for some
+$J\subseteq[Q]$ with $|J|\le R-1$. Multiplication by $V_0$ gives
+\[
+ V_0\prod_{s\in J}\Pi_s=\prod_{s\notin J}\Pi_s.
+\]
+A nonzero $(u,y)$ entry of this permutation matrix requires
+$a_y(s)=d_u(s)$ for every $s\notin J$. There are at most $R-1$
+other positions. If more than $R-1$ positions disagree, every
+summand has zero $(u,y)$ entry, so $M_0[u,y]=0$ as well.
+\end{proof}
+
+\subsection{The polynomial rows}
+We now use $M_0$ to construct the auxiliary rows $\vec{P}_u(T)$ sought
+in Section~\ref{subsec:incidence-layout}.
+Lemma~\ref{lem:swaps-matrix} makes $(I-M_0)\zeta$ a function of
+$C^{\mathcal U}\zeta$. Lemma~\ref{lem:swaps-support} bounds the number
+of points at which a nonzero term $M_0[u,y]\zeta_y$ uses a coordinate
+outside $S^{\mathcal U}_{t,d_u(t)}$. We now multiply that term by a
+polynomial vanishing at those points and equal to one at zero.
+
+For $M_0[u,y]\ne0$, define
+\begin{equation}\label{eq:coefficient-correction}
+ E_{u,y}=\{s\in[Q]:a_y(s)\ne d_u(s)\},\qquad
+ \varphi_{u,y}(T)=\prod_{s\in E_{u,y}}\left(1-\frac Ts\right).
+\end{equation}
+The empty product is one. Then $\deg\varphi_{u,y}\le R-1$,
+$\varphi_{u,y}(0)=1$, and $\varphi_{u,y}(t)=0$ whenever
+$a_y(t)\ne d_u(t)$. Define
+\begin{equation}\label{eq:swaps-row}
+ \vec{P}_u(T)=\delta_u(I-M_0)+
+ \sum_{\substack{y\in\mathcal U\\M_0[u,y]\ne0}}
+ M_0[u,y]\varphi_{u,y}(T)\delta_y.
+\end{equation}
+This row acts as a linear form in $\zeta$, with coefficients that are
+polynomials in the single parameter $T$.
+
+\begin{lemma}\label{lem:swaps-forms}
+The rows $\vec P_u(T)$ of \eqref{eq:swaps-row} satisfy
+$\vec P_u(0)=\delta_u$ and $\deg\vec P_u\le R-1$ for every
+$u\in\mathcal U$. For every $t\in[Q]$, the linear form
+$\langle\vec P_u(t),\zeta\rangle$ on $\mathbb Q^{\mathcal U}$ is
+determined by $\zeta|_{S^{\mathcal U}_{t,d_u(t)}}$ and
+$C^{\mathcal U}\zeta$. Moreover, let $C^{\mathcal U}_{t,g}$ be the
+restriction of $C^{\mathcal U}$ to the columns $S^{\mathcal U}_{t,g}$.
+For $g\ne d_u(t)$ and $\xi\in\mathbb Q^{S^{\mathcal U}_{t,g}}$,
+\[
+ C^{\mathcal U}_{t,g}\xi=\vec0
+ \quad\Longrightarrow\quad
+ \langle\vec P_u(t),\widetilde\xi\rangle=0,
+\]
+where $\widetilde\xi$ extends $\xi$ by zero to $\mathcal U$.
+\end{lemma}
+\begin{proof}
+The degree bound follows from that of $\varphi_{u,y}$. At zero,
+\[
+ \vec{P}_u(0)=\delta_u(I-M_0)+\delta_uM_0=\delta_u.
+\]
+Applying \eqref{eq:swaps-row} to $\zeta$ gives
+\begin{equation}\label{eq:swaps-form-decomposition}
+ \langle \vec{P}_u(T), \zeta\rangle=((I-M_0)\zeta)_u+
+ \sum_{\substack{y\in\mathcal U\\M_0[u,y]\ne0}}
+ M_0[u,y]\varphi_{u,y}(T)\zeta_y.
+\end{equation}
+At $T=t$, all summands with $a_y(t)\ne d_u(t)$ vanish. If
+$\widetilde\xi$ is supported on $S^{\mathcal U}_{t,g}$ with
+$g\ne d_u(t)$, each remaining summand is zero on $\widetilde\xi$.
+The hypothesis $C^{\mathcal U}_{t,g}\xi=\vec{0}$ also gives
+$C^{\mathcal U}\widetilde\xi=\vec{0}$, so
+$(I-M_0)\widetilde\xi=\vec{0}$ by Lemma~\ref{lem:swaps-matrix}.
+This proves the final implication of the lemma.
+
+For the final assertion, two vectors with the same measurements under
+$C^{\mathcal U}$ differ by an element of its kernel. Thus
+$(I-M_0)\zeta$ is determined by $C^{\mathcal U}\zeta$. The remaining
+terms in \eqref{eq:swaps-form-decomposition} at $T=t$ use only
+$\zeta|_{S^{\mathcal U}_{t,d_u(t)}}$.
+\end{proof}
+
+Fix $t$ and write $\zeta_g=\zeta|_{S^{\mathcal U}_{t,g}}$ and
+$C^{\mathcal U}_{t,g}=C^{\mathcal U}|_{S^{\mathcal U}_{t,g}}$,
+the restriction to these columns. Then
+\begin{equation}\label{eq:auxiliary-measurements}
+ C^{\mathcal U}\zeta=\sum_{g=1}^r C^{\mathcal U}_{t,g}\zeta_g.
+\end{equation}
+Fixing each vector $C^{\mathcal U}_{t,g}\zeta_g$ therefore fixes
+$C^{\mathcal U}\zeta$ while imposing separate conditions on the
+$r$ auxiliary coordinate groups. When all vectors
+$C^{\mathcal U}_{t,g}\zeta_g$ are fixed, $\langle \vec{P}_u(t), \zeta\rangle$ is determined
+by $\zeta|_{S^{\mathcal U}_{t,d_u(t)}}$.
+We will obtain the corresponding separation on the actual Boolean
+variables by placing $(f,v)$ at a coordinate labeled $(a_v,d_f)$.
+
+\begin{remark}
+We illustrate how \eqref{eq:swaps-row} confines dependence outside the
+assigned group to one linear measurement. Take $Q=R=2$, outside the
+regime $R<Q$ used for the running-time bound, and $r=2$. Use
+$\{0,1\}$ as the group indices and $\mathcal I=\{0,1\}$, so
+$f_{\mathcal I}(z)=1-2z$. Starting with the label $(00,11)$, the
+two exchanges generate four coordinates:
+\[
+ \zeta_0=\zeta_{(00,11)},\quad \zeta_1=\zeta_{(10,01)},\quad
+ \zeta_2=\zeta_{(01,10)},\quad \zeta_{12}=\zeta_{(11,00)}.
+\]
+Both exchanges preserve this set of four coordinates, so we can
+restrict the calculation to it. On this restriction,
+$M_0=\Pi_1+\Pi_2-\Pi_1\Pi_2$ fixes the kernel of
+\[
+ c(\zeta)=\zeta_0-\zeta_1-\zeta_2+\zeta_{12}.
+\]
+The row indexed by $u=(00,11)$ gives
+\[
+ \langle \vec{P}_u(T), \zeta\rangle=\zeta_0-\frac T2\zeta_1-T\zeta_2.
+\]
+It equals $\zeta_0$ at zero, while
+\[
+ \langle \vec{P}_u(1), \zeta\rangle=c(\zeta)+\frac12\zeta_1-\zeta_{12},\qquad
+ \langle \vec{P}_u(2), \zeta\rangle=c(\zeta)-\zeta_2-\zeta_{12}.
+\]
+At $t=1$, the labels of $\zeta_1,\zeta_{12}$ satisfy
+$a_y(1)=1=d_u(1)$. At $t=2$, the labels of
+$\zeta_2,\zeta_{12}$ satisfy $a_y(2)=1=d_u(2)$.
+Fixing $c(\zeta)$ therefore leaves $\langle \vec{P}_u(t), \zeta\rangle$ dependent only on
+coordinates in its assigned group. Here $c(\zeta)$ plays the role
+of $C^{\mathcal U}\zeta$ on the four-coordinate restriction. The
+full construction must give this property for every $u\in\mathcal U$
+with at most $\epsilon D$ measurement rows.
+\end{remark}
+
+\subsection{Choosing the variable and factor groups}\label{subsec:choosing-labels}
+We now choose the families $(a_v)_{v\in[n]}$ and
+$(d_f)_{f\in\mathcal F}$ from
+Section~\ref{subsec:incidence-layout}, and set
+\[
+ u_{f,v}=(a_v,d_f)\qquad((f,v)\in\mathcal J).
+\]
+These choices have two requirements. First, if a label occurs $c_u$
+times, its incidences need $c_u$ different positions in copies of the
+auxiliary array. Thus the number of copies needed is
+\[
+ c_u=\#\{(f,v)\in\mathcal J:u_{f,v}=u\},\qquad
+ h=\max_{u\in\mathcal U}c_u.
+\]
+Second, the actual variable group $\{v:a_v(t)=g\}$ must be small.
+Bounding $h$ alone would bound the number of incidences in a group,
+not give the required bound on its number of Boolean variables.
+The next lemma controls both quantities.
+
+\begin{lemma}\label{lem:incidence-labels}
+Let $(I_f)_{f\in\mathcal F}$ satisfy \eqref{eq:factor-incidences},
+with $n\le M\le bn$, and put $D=r^{2Q}$ for integers $r\ge2$ and
+$Q\ge1$. Suppose
+\begin{equation}\label{eq:incidence-balance-hypotheses}
+ 2(b+w)D^2\le M,\qquad 2Qr^2\le n.
+\end{equation}
+One can deterministically choose $a_v,d_f\in[r]^Q$, with $d_f(t)=1$
+for factors of empty scope, so that
+\[
+ \begin{aligned}
+ \max_{u\in\mathcal U}\#\{(f,v)\in\mathcal J:(a_v,d_f)=u\}
+ &\le\frac{2M}{D},\\
+ \#\{v\in[n]:a_v(t)=g\}&\le\frac{2n}{r}
+ \qquad(t\in[Q],\ g\in[r]).
+ \end{aligned}
+\]
+The construction takes
+$\poly(n,M,|\mathcal F|,D,Q,r,b,w)$ bit operations.
+\end{lemma}
+\begin{proof}
+We first estimate the effect of random labels; we will then fix
+their values deterministically. For this estimate, all $a_v$ and
+all $d_f$ with nonempty $I_f$ are independent and uniform on $[r]^Q$.
+For empty $I_f$, we set $d_f$ identically one.
+Each incidence label $u_{f,v}=(a_v,d_f)$ is uniform on $\mathcal U$.
+Put $n_{t,g}=\#\{v:a_v(t)=g\}$, and consider
+\[
+ \Phi=\sum_{u\in\mathcal U}(c_u-M/D)^2,
+ \qquad
+ \Xi=\sum_{t=1}^Q\sum_{g=1}^r(n_{t,g}-n/r)^2.
+\]
+Their expansions as sums of indicators are
+\[
+ \begin{aligned}
+ \Phi&=\sum_{(f,v),(f',v')\in\mathcal J}
+       \mathds{1}_{\{(a_v,d_f)=(a_{v'},d_{f'})\}}-\frac{M^2}{D},\\
+ \Xi&=\sum_{t=1}^Q\sum_{v,v'\in[n]}
+       \mathds{1}_{\{a_v(t)=a_{v'}(t)\}}-\frac{Qn^2}{r}.
+ \end{aligned}
+\]
+Two incidence labels are independent unless they share a factor or a
+variable. For each $(f,v)$, there are at most $b+w$ incidences sharing
+$f$ or $v$, including $(f,v)$ itself. Independent pairs have equality
+probability $1/D$; the other pairs have probability at most one. Hence
+\[
+ \mathbb E\Phi\le M(b+w).
+\]
+For each $t$ and $v\ne v'$, the values $a_v(t),a_{v'}(t)$ are independent
+and uniform on $[r]$. The second expansion therefore gives
+\[
+ \mathbb E\Xi=Qn(1-1/r)\le Qn.
+\]
+
+To obtain the labels deterministically, we fix the $a_v$ and the
+$d_f$ for nonempty $I_f$ one at a time. At each step we choose a
+value that does not increase the conditional expectation of
+\[
+ \frac{\Phi}{M(b+w)}+\frac{\Xi}{Qn}.
+\]
+Such a choice exists because the current expectation is the average
+over the possible values of the next $a_v$ or $d_f$. The final value
+is at most two. Since both summands are nonnegative,
+\[
+ c_u\le\frac MD+\sqrt{2M(b+w)},\qquad
+ n_{t,g}\le\frac nr+\sqrt{2Qn}.
+\]
+The two inequalities in \eqref{eq:incidence-balance-hypotheses} make
+the square-root terms at most $M/D$ and $n/r$, respectively.
+
+The following enumeration computes the conditional expectations in
+$\poly(n,M,|\mathcal F|,D,Q,r,b,w)$ bit operations.
+Put $K=r^Q$, so $D=K^2$. Each indicator in the expansion of
+$\Phi$ depends on at most the four independent choices
+$a_v,d_f,a_{v'},d_{f'}$; repeated indices contribute just one choice.
+Each indicator in $\Xi$ depends on at most $a_v,a_{v'}$. After any
+partial fixing, enumerate at most $K^4=D^2$ assignments to the
+remaining choices in one indicator. Its conditional probability has
+denominator dividing $K^4$. Summing the $M^2+Qn^2$ indicators computes
+both expectations. Including the normalizations $M(b+w)$ and $Qn$,
+all rational values in these calculations have numerators and
+denominators with
+\[
+ O\!\left(\log(2D)+\log(2M)+\log(2n)+\log(2Q)+\log(2+b+w)\right)
+\]
+bits. There are at most $n+|\mathcal F|$ choices to fix, each with
+$K$ candidate values. Since $K^4=D^2$, the entire construction takes
+$\poly(n,M,|\mathcal F|,D,Q,r,b,w)$ bit operations.
+\end{proof}
+
+\subsection{Placing copies of the variables in the auxiliary arrays}\label{subsec:embedding}
+We now transfer the auxiliary rows $\vec{P}_u(T)$ and matrix
+$C^{\mathcal U}$ to the rows $\vec{P}_{f,v}(T)$ and matrices $C_{t,g}$
+on the original variables required by Definition~\ref{def:layout}.
+Assume \eqref{eq:incidence-balance-hypotheses} and apply
+Lemma~\ref{lem:incidence-labels}. With $h=\max_u c_u$, index $h$
+copies of the auxiliary coordinates by $[h]\times\mathcal U$.
+For each $(f,v)\in\mathcal J$, we assign $c(f,v)\in[h]$ so that all
+pairs $(c(f,v),u_{f,v})$ are distinct. This is possible because no
+label occurs more than $h$ times, and
+\[
+ hD\le2M\le2bn.
+\]
+Define the linear map
+$\iota:\mathbb Q^n\longrightarrow\mathbb Q^{[h]\times\mathcal U}$ by
+\[
+ (\iota x)_{c,u}=
+ \begin{cases}
+ x_v,&(c,u)=(c(f,v),u_{f,v})\text{ for some }(f,v)\in\mathcal J,\\
+ 0,&\text{otherwise}.
+ \end{cases}
+\]
+The occupied positions are distinct, so this definition is unambiguous.
+Different positions can contain the same $x_v$, and unused positions
+are fixed at zero. For $c\in[h]$, define the projection
+\[
+ \pi_c:\mathbb Q^{[h]\times\mathcal U}\longrightarrow\mathbb Q^{\mathcal U},
+ \qquad (\pi_c\eta)_u=\eta_{c,u}.
+\]
+Now put
+\begin{equation}\label{eq:actual-rows}
+ \begin{gathered}
+ \vec{P}_{f,v}(T)=\vec{P}_{u_{f,v}}(T)\pi_{c(f,v)}\iota,\\
+ S_{t,g}=\{v\in[n]:a_v(t)=g\},\qquad \sigma_f(t)=d_f(t).
+ \end{gathered}
+\end{equation}
+The row $\vec{P}_{f,v}(T)$ acts on the actual variables $x\in\mathbb Q^n$.
+At $T=0$, it extracts the value in position $(c(f,v),u_{f,v})$,
+which is $x_v$. Thus $\vec{P}_{f,v}(0)=\delta_v$, and its degree is at most
+$R-1$. Lemma~\ref{lem:incidence-labels} gives $|S_{t,g}|\le2n/r$.
+
+Define the measurement matrices by
+\begin{equation}\label{eq:actual-measurements}
+ \widetilde C=\operatorname{diag}
+   \bigl(\underbrace{C^{\mathcal U},\ldots,C^{\mathcal U}}_{h\text{ copies}}\bigr),
+ \qquad \widehat C=\widetilde C\iota,
+ \qquad C_{t,g}=\widehat C|_{S_{t,g}}.
+\end{equation}
+The restriction keeps the columns in $S_{t,g}$ and all rows, including
+zero rows. Thus $\widehat Cx$ records the auxiliary measurements in
+each copy after its coordinates have been filled from $x$.
+The matrices $C_{t,g}$ are integral. Their entries need not belong to
+$\{0,1,-1\}$, because coefficients at several positions containing
+the same $x_v$ are added. Each row of $\widetilde C$ has at
+most $D$ nonzero entries, all equal to $1$ or $-1$. Multiplication by
+$\iota$ adds entries in a common column and discards unused positions,
+so it cannot increase
+the sum of their absolute values. Consequently every row of $C_{t,g}$
+has absolute row sum at most $D$, and its value on a Boolean assignment
+lies in $[-D,D]\cap\mathbb Z$.
+
+If \eqref{eq:incidence-tail} holds, each $C_{t,g}$ has
+$c_{t,g}=hc_{\mathcal U}$ rows. Hence
+\begin{equation}\label{eq:incidence-measurement-count}
+ \sum_{g=1}^r c_{t,g}=rh c_{\mathcal U}
+ \le rh\epsilon D\le2r\epsilon M\le2r\epsilon bn.
+\end{equation}
+Setting $\epsilon=\tau/(rb)$ makes this at most $2\tau n$.
+
+To verify separation, fix $t\in[Q]$, $g\in[r]$ and
+$(f,v)\in\mathcal J$ with $g\ne\sigma_f(t)$. Suppose
+$\xi\in\mathbb Q^{S_{t,g}}$ satisfies $C_{t,g}\xi=\vec{0}$, and extend it
+by zero to $\widetilde\xi\in\mathbb Q^n$. Equation
+\eqref{eq:actual-measurements} gives
+$\widetilde C\iota\widetilde\xi=\vec{0}$. Thus, for every $c\in[h]$,
+\[
+ C^{\mathcal U}\pi_c\iota\widetilde\xi=\vec{0}.
+\]
+Every nonzero coordinate of $\pi_c\iota\widetilde\xi$ contains a
+variable $v'$ with $a_{v'}(t)=g$. Its auxiliary label has first
+sequence $a_{v'}$, so this vector is supported on
+$S^{\mathcal U}_{t,g}$. Lemma~\ref{lem:swaps-forms}, applied in copy
+$c(f,v)$ with $d_{u_{f,v}}(t)=d_f(t)=\sigma_f(t)$, gives
+\[
+ \langle \vec{P}_{f,v}(t), \widetilde\xi\rangle
+ =\langle \vec{P}_{u_{f,v}}(t), \pi_{c(f,v)}\iota\widetilde\xi\rangle=0.
+\]
+This is the kernel condition in Definition~\ref{def:layout}.
+All inputs of factor $f$ use the same assigned group $d_f(t)$, and
+the counting sum still ranges over exactly the $n$ Boolean bits.
+
+\subsection{Coefficient bounds and the completed construction}
+The substitution rows $\vec{P}_{f,v}(T)\in\mathbb Q[T]^{1\times n}$ in
+\eqref{eq:actual-rows} have polynomial entries with rational
+coefficients. We now bound the bits needed to store those coefficients;
+these bounds will control exact arithmetic in
+Section~\ref{subsec:one-query-cost}.
+We first give a common denominator and coefficient bounds for the
+auxiliary rows $\vec{P}_u(T)$ defined in \eqref{eq:swaps-row}.
+Passing from $\vec{P}_u(T)$ to $\vec{P}_{f,v}(T)$ by \eqref{eq:actual-rows} only
+adds coefficients in common columns or discards unused columns,
+so the same denominator and bound on the sum of absolute values apply.
+
+\begin{lemma}\label{lem:row-coefficients}
+For the auxiliary rows in \eqref{eq:swaps-row} and their transferred
+rows in \eqref{eq:actual-rows}, put $d_{\mathrm{den}}=(R-1)!Q!$. Then
+$d_{\mathrm{den}}\vec{P}_u(T)\in\mathbb Z[T]^{1\times D}$ for every $u\in\mathcal U$. The sum of the absolute values of all coefficients
+in each row $d_{\mathrm{den}}\vec{P}_u(T)$ is at most $2^{O(Q\log Q)}$.
+The same bound holds for $d_{\mathrm{den}}\vec{P}_{f,v}(T)$.
+The matrices $M_0,C^{\mathcal U}$ and the rows $\vec{P}_u(T)$ can be
+constructed in $\poly(D,Q,r)$ bit operations.
+\end{lemma}
+\begin{proof}
+For $0\le j<R$, the corresponding summand of
+$f_{\mathcal I}(W_0)$ equals
+\[
+ (-1)^{A_0}(-2)^j\binom{W_0-A_0I}{j}
+ =\frac{(-1)^{A_0+j}}{j!}
+   \prod_{a=0}^{j-1}\bigl(2W_0-2(A_0+a)I\bigr).
+\]
+Each matrix factor on the right is integral because
+$2W_0=QI-\sum_s\Pi_s$. Also $j!$ divides $(R-1)!$.
+Multiplication by the permutation matrix $V_0$ therefore shows that
+$(R-1)!M_0$ is integral. The coefficients of $\varphi_{u,y}$ have
+denominators dividing $\prod_{s\in E_{u,y}}s$, which divides $Q!$.
+Equation~\eqref{eq:swaps-row} proves the asserted common denominator.
+
+For the coefficient estimates, we use the matrix norm
+$\|A\|_\infty=\max_i\sum_j|A[i,j]|$ and
+the polynomial norm $\|\sum_j a_jT^j\|_1=\sum_j|a_j|$.
+Since $\|W_0\|_\infty\le Q$ and $0\le A_0+a\le Q$ for all
+factors above, each $2W_0-2(A_0+a)I$ has norm at most $4Q$.
+It follows that
+\[
+ \|M_0\|_\infty\le R(4Q)^{R-1},\qquad
+ \|\varphi_{u,y}\|_1
+ \le\prod_{s\in E_{u,y}}(1+1/s)\le2^Q.
+\]
+The sum of the absolute values of all coefficients in the row
+$d_{\mathrm{den}}\vec{P}_u$ is therefore at most
+\[
+ d_{\mathrm{den}}\bigl(1+(1+2^Q)R(4Q)^{R-1}\bigr).
+\]
+Its logarithm is $O(Q\log Q)$ because $R<Q$.
+For $u=u_{f,v}$, multiplication of $d_{\mathrm{den}}\vec{P}_u(T)$ by
+$\pi_{c(f,v)}\iota$ adds coefficients in common columns and discards
+unused columns. By \eqref{eq:actual-rows}, the resulting row is
+$d_{\mathrm{den}}\vec{P}_{f,v}(T)$, so it satisfies the same bound.
+
+Enumerating the eigenbasis in Lemma~\ref{lem:swaps-matrix}, evaluating
+$f_{\mathcal I}(W_0)$, and forming the polynomials $\varphi_{u,y}$
+require $\poly(D,Q,r)$ arithmetic operations. Using the common
+denominators above, the coefficients stored during these matrix
+and polynomial calculations have numerators and denominators with
+$O(Q\log Q)$ bits. Thus the construction takes $\poly(D,Q,r)$ bit
+operations.
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:layout}]
+Lemma~\ref{lem:swaps-matrix} constructs $C^{\mathcal U}$ with
+$c_{\mathcal U}\le\tau D/(rb)$. Lemmas~\ref{lem:swaps-support}
+and~\ref{lem:swaps-forms} give the auxiliary polynomial rows.
+Lemma~\ref{lem:incidence-labels} chooses the variable and factor
+groups with $hD\le2M$ and $|S_{t,g}|\le2n/r$.
+The maps in \eqref{eq:actual-rows} and \eqref{eq:actual-measurements}
+then give rows with $\vec{P}_{f,v}(0)=\delta_v$, degree at most $R-1\le R$,
+and the required kernel implication. Every row of $C_{t,g}$ has
+absolute row sum at most $D$, and \eqref{eq:incidence-measurement-count}
+gives $\sum_{g=1}^r c_{t,g}\le2\tau n$ for each $t\in[Q]$.
+Lemma~\ref{lem:row-coefficients} supplies the common denominator and
+coefficient bounds. Together, the constructions take
+$\poly(n,M,|\mathcal F|,D,Q,r,b,w)$ bit operations, and the resulting
+arrays occupy $\poly(n,M,|\mathcal F|,D,Q,r,b,w)$ bits.
+\end{proof}
+
+\subsection{Choosing the parameters}\label{subsec:incidence-parameters}
+In the application, both the largest scope $w$ and the maximum number
+$b$ of factors containing a variable will be bounded by a fixed power
+of $\log n$. We now choose parameters satisfying
+Lemma~\ref{lem:layout} in that regime. The exponent of the counting
+cost depends on the three quantities
+\[
+ \frac RQ\log\frac{2Q}{R},\qquad
+ \tau\log(2D+1),\qquad \frac1r.
+\]
+They account respectively for recovering Taylor coefficients,
+enumerating measurement values, and enumerating assignments in one
+group. The following choices bound all three at once.
+
+\begin{lemma}\label{lem:incidence-parameters}
+Fix an integer $\beta\ge1$. Let $n\ge20$, put
+$\lambda=\lceil\log_2 n\rceil$ and $\nu=\lceil\log_2\lambda\rceil$,
+and suppose $b,w$ are positive integers with
+$b,w\le\lambda^\beta$ and $n\le M\le bn$.
+For all sufficiently large $n$, the parameters
+\begin{equation}\label{eq:parameter-QR}
+ r=\left\lfloor\frac{\sqrt\lambda}{\nu^2}\right\rfloor,
+ \qquad Q=\left\lfloor\frac{\lambda}{128\nu}\right\rfloor,
+ \qquad R=(\beta+3)\lceil\sqrt\lambda\rceil,
+\end{equation}
+\[
+ \tau=\frac1{r\lambda},\qquad
+ D=r^{2Q},
+\]
+together with
+\[
+ \mu=\frac{Q(r-1)}{2r},\qquad
+ A_0=\left\lfloor\mu-\frac{R-1}{2}\right\rfloor,\qquad
+ \mathcal I=\{A_0,\ldots,A_0+R-1\},
+\]
+satisfy all numerical hypotheses of Lemma~\ref{lem:layout}. They also satisfy
+\[
+ R\ge32,\qquad 6R\le Q,\qquad D\le2^{\lambda/128},
+\]
+and
+\begin{equation}\label{eq:balanced-cost}
+ \frac RQ\log\frac{2Q}{R}+\tau\log(2D+1)+\frac1r
+ =O_\beta\!\left(\frac{\nu^2}{\sqrt\lambda}\right).
+\end{equation}
+Given the numerical values $n,M,b,w$, the parameters and numerical
+hypotheses can be computed and checked exactly in
+$\poly_\beta(\log n)$ bit operations. For fixed $\beta$, only finitely
+many $n$ fail these checks.
+\end{lemma}
+\begin{proof}
+For sufficiently large $n$, the parameters have orders
+\[
+ r=\Theta(\sqrt\lambda/\nu^2),\qquad
+ Q=\Theta(\lambda/\nu),\qquad R=\Theta_\beta(\sqrt\lambda).
+\]
+In particular, eventually $r\ge2$, $R\ge32$, and $6R\le Q$.
+Since $\log_2 r\le\nu/2$,
+\[
+ \log_2 D=2Q\log_2 r
+ \le2\frac{\lambda}{128\nu}\frac\nu2=\frac{\lambda}{128}.
+\]
+The two balance inequalities follow for sufficiently large $n$:
+\[
+ 2(b+w)D^2\le4\lambda^\beta2^{\lambda/64}\le n\le M,
+ \qquad 2Qr^2\le n.
+\]
+For the second, $Q,r$ are bounded by fixed powers of $\lambda$,
+whereas $n>2^{\lambda-1}$. The first follows from the same comparison.
+
+For the specified interval, $Q/4\le\mu\le Q/2$. Since $R\le Q/6$, the interval lies in
+$\{0,\ldots,Q\}$. Its center differs from $\mu$ by less than one,
+and $R\ge32$ ensures that it contains every integer within $R/4$
+of $\mu$. For $W\sim\operatorname{Bin}(Q,(r-1)/(2r))$, Hoeffding's
+inequality gives
+\[
+ \Pr[W\notin\mathcal I]
+ \le2e^{-R^2/(8Q)}
+ \le2e^{-16(\beta+3)^2\nu}
+ \le2^{-(\beta+2)\nu}
+ \le\lambda^{-(\beta+2)}
+ \le\frac1{br^2\lambda}.
+\]
+The last inequality uses $b\le\lambda^\beta$ and $r^2\le\lambda$.
+This proves \eqref{eq:incidence-tail} with
+$\epsilon=\tau/(rb)=1/(br^2\lambda)$. Also $0<\tau\le1/2$ once $r\ge2$.
+
+Finally,
+\[
+ \frac RQ=O_\beta(\nu/\sqrt\lambda),\qquad
+ \log(2Q/R)=O(\nu),\qquad
+ \tau\log(2D+1)=O(1/r).
+\]
+Together with $1/r=O(\nu^2/\sqrt\lambda)$, these prove
+\eqref{eq:balanced-cost}.
+
+We finish by showing that the parameters in \eqref{eq:parameter-QR}
+can be constructed exactly within the stated bit bound.
+The algorithm finds $\lambda=\lceil\log_2 n\rceil$ as the least
+integer with $n\le2^\lambda$, and then finds
+$\nu=\lceil\log_2\lambda\rceil$ in the same way. It obtains $r$ as
+the largest integer satisfying $r^2\nu^4\le\lambda$, computes $Q$
+by integer division, and finds $\lceil\sqrt\lambda\rceil$ by an
+integer square-root search to obtain $R$.
+If $r<2$ or $Q\le R$, the algorithm reports failure at this stage.
+Otherwise it constructs $\tau,\epsilon,D$ and the endpoints of
+$\mathcal I$ using integer or rational arithmetic. It then checks
+$\mathcal I\subseteq\{0,\ldots,Q\}$, the two balance inequalities,
+$R\ge32$, and $6R\le Q$. The tail probability in
+\eqref{eq:incidence-tail} has denominator $(2r)^Q$, so its required
+bound can also be checked by integer arithmetic. These computations
+take $\poly_\beta(\log n)$ bit operations. The preceding estimates
+show that all checks pass for sufficiently large $n$.
+\end{proof}
+

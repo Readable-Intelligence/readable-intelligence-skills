@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\input{preamble}
+
+\title{Exact Derandomization of Logarithmic Space:\protect\\
+  $\Lclass=\RL=\BPL$}
+\author{OpenAI}
+\date{September 23, 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+For every fixed randomized machine that runs in polynomial worst-case time
+and logarithmic space, we give a deterministic algorithm that approximates
+its acceptance probability to any fixed inverse-polynomial accuracy in
+logarithmic space and polynomial time. This proves $\Lclass=\RL=\BPL$.
+For length-$n$ inputs and unary $q\ge1$, the acceptance probability is
+approximated to error $2^{-q}$ in deterministic space $O(\log(n+2)+q)$ and
+time $(n+2)^{O(1)}2^{O(q)}$.
+For fixed inverse-polynomial accuracy, the construction starts with a
+coordinate of $(I-S)^{-1}e$, where $S$ is the
+substochastic matrix on time-labelled configurations with transitions only to later times and $e$ is the
+final-time accepting indicator. A hierarchy of corrections and vertex
+copies transfers transition mass into accumulated rewards. These rewards
+are estimated recursively in a shared random environment of
+$O(\log(n+2))$ bits that specifies sampled vertex sets and endpoint
+fingerprints. Conditional averaging uses walks with a uniform spectral
+gap to suppress the noise of estimates that share one environment across
+recursive calls. Compressed row lists, adaptive fingerprints and a
+telescoping $O(\log(n+2))$ bound on suspended records control the storage
+those calls retain.
+Among valid environment encodings whose sampled set contains the
+designated start vertex, more than three quarters give accurate estimates.
+Every environment is evaluated by a halting logarithmic-space computation,
+so the algorithm enumerates polynomially many estimates over these
+encodings and outputs their median.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+\input{sections/introduction}
+\input{sections/model}
+\input{sections/deduction}
+\input{sections/environment}
+\input{sections/hierarchy}
+\input{sections/atoms}
+\input{sections/averaging}
+\input{sections/estimation}
+\input{sections/compression}
+\input{sections/fingerprints}
+\input{sections/arithmetic}
+\input{sections/implementation}
+\input{sections/conclusion}
+\input{sections/compiler}
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

@@ -1,0 +1,180 @@
+\begin{thebibliography}{10}
+
+\bibitem{agostonPalvolgyi2022}
+P{\'e}ter {\'A}goston and D{\"o}m{\"o}t{\"o}r P{\'a}lv{\"o}lgyi.
+\newblock An improved constant factor for the unit distance problem.
+\newblock {\em Studia Scientiarum Mathematicarum Hungarica}, 59(1):40--57,
+  2022.
+
+\bibitem{Ahlswede1982}
+Rudolf Ahlswede.
+\newblock An elementary proof of the strong converse theorem for the
+  multiple-access channel.
+\newblock {\em Journal of Combinatorics, Information and System Sciences},
+  7(3):216--230, 1982.
+
+\bibitem{ajtaiEtAl1982}
+M.~Ajtai, V.~Chv{\'a}tal, M.~M. Newborn, and E.~Szemer{\'e}di.
+\newblock Crossing-free subgraphs.
+\newblock In Alexander Rosa, Gert Sabidussi, and Jean Turgeon, editors, {\em
+  Theory and Practice of Combinatorics}, volume~60 of {\em North-Holland
+  Mathematics Studies}, pages 9--12. North-Holland, Amsterdam, 1982.
+
+\bibitem{alonEtAl2026}
+Noga Alon, Thomas~F. Bloom, W.~T. Gowers, Daniel Litt, Will Sawin, Arul
+  Shankar, Jacob Tsimerman, Victor Wang, and Melanie~Matchett Wood.
+\newblock Remarks on the disproof of the unit distance conjecture.
+\newblock \url{https://arxiv.org/abs/2605.20695v1}, 2026.
+\newblock arXiv:2605.20695v1, submitted 20 May 2026.
+
+\bibitem{Clarkson1987}
+Kenneth~L. Clarkson.
+\newblock New applications of random sampling in computational geometry.
+\newblock {\em Discrete \& Computational Geometry}, 2:195--222, 1987.
+
+\bibitem{ClarksonShor1989}
+Kenneth~L. Clarkson and Peter~W. Shor.
+\newblock Applications of random sampling in computational geometry, {II}.
+\newblock {\em Discrete \& Computational Geometry}, 4:387--421, 1989.
+
+\bibitem{conradSeparability}
+Keith Conrad.
+\newblock Separability {II}.
+\newblock
+  \url{https://kconrad.math.uconn.edu/blurbs/galoistheory/separable2.pdf}.
+\newblock Undated author notes; accessed 23 September 2026.
+
+\bibitem{CoverThomas2006}
+Thomas~M. Cover and Joy~A. Thomas.
+\newblock {\em Elements of Information Theory}.
+\newblock Wiley-Interscience, 2 edition, 2006.
+
+\bibitem{ellenbergVenkatesh2007}
+Jordan~S. Ellenberg and Akshay Venkatesh.
+\newblock Reflection principles and bounds for class group torsion.
+\newblock {\em International Mathematics Research Notices}, 2007, 2007.
+\newblock Article rnm002, 18 pp.
+
+\bibitem{erdos1946}
+P.~Erd{\H{o}}s.
+\newblock On sets of distances of {$n$} points.
+\newblock {\em The American Mathematical Monthly}, 53(5):248--250, May 1946.
+
+\bibitem{fultonCurves}
+William Fulton.
+\newblock Algebraic curves: An introduction to algebraic geometry.
+\newblock \url{https://www.math.lsa.umich.edu/~wfulton/CurveBook.pdf}, 2008.
+\newblock Electronic edition.
+
+\bibitem{golodShafarevich1964}
+E.~S. Golod and I.~R. Shafarevich.
+\newblock On the class field tower.
+\newblock {\em Izvestiya Akademii Nauk SSSR. Seriya Matematicheskaya},
+  28(2):261--272, 1964.
+\newblock Russian; English translation in American Mathematical Society
+  Translations, Series 2, 48 (1965), 91--102.
+
+\bibitem{hajirMaireRamakrishna2021}
+Farshid Hajir, Christian Maire, and Ravi Ramakrishna.
+\newblock Cutting towers of number fields.
+\newblock {\em Annales math{\'e}matiques du Qu{\'e}bec}, 45(2):321--345, 2021.
+
+\bibitem{HausslerWelzl1987}
+David Haussler and Emo Welzl.
+\newblock {$\varepsilon$}-nets and simplex range queries.
+\newblock {\em Discrete \& Computational Geometry}, 2:127--151, 1987.
+
+\bibitem{katzSilier2026}
+Nets Katz and Olivine Silier.
+\newblock Structure of cell decompositions in extremal {Szemer{\'e}di--Trotter}
+  examples.
+\newblock \url{https://arxiv.org/abs/2303.17186v2}, 2026.
+\newblock Version 2, 1 June 2026; first submitted 2023.
+
+\bibitem{KatzTardos}
+Nets~Hawk Katz and G{\'a}bor Tardos.
+\newblock A new entropy inequality for the {Erd{\H o}s} distance problem.
+\newblock In J{\'a}nos Pach, editor, {\em Towards a Theory of Geometric
+  Graphs}, volume 342 of {\em Contemporary Mathematics}, pages 119--126.
+  American Mathematical Society, Providence, RI, 2004.
+
+\bibitem{RCFTransfer}
+Salma Kuhlmann.
+\newblock Real algebraic geometry lecture notes: Lecture 09.
+\newblock \url{https://www.math.uni-konstanz.de/algebra/WS0910/Notes09.pdf},
+  2009.
+\newblock 17 November 2009, Theorems 3.1 and 4.1.
+
+\bibitem{leighton1983}
+F.~Thomson Leighton.
+\newblock {\em Complexity Issues in {VLSI}: Optimal Layouts for the
+  Shuffle-Exchange Graph and Other Networks}.
+\newblock Foundations of Computing. MIT Press, Cambridge, MA, 1983.
+
+\bibitem{ProductFormula}
+James~S. Milne.
+\newblock Algebraic number theory.
+\newblock \url{https://www.jmilne.org/math/CourseNotes/ANTc.pdf}, 2020.
+\newblock Version 3.08, 19 July 2020.
+
+\bibitem{milneFields}
+James~S. Milne.
+\newblock Fields and galois theory.
+\newblock \url{https://www.jmilne.org/math/CourseNotes/FT.pdf}, 2022.
+\newblock Version 5.10, September 2022.
+
+\bibitem{openaiUnitLower2026}
+{OpenAI}.
+\newblock Planar point sets with many unit distances.
+\newblock
+  \url{https://cdn.openai.com/pdf/74c24085-19b0-4534-9c90-465b8e29ad73/unit-distance-proof.pdf},
+  2026.
+\newblock Public manuscript, 20 May 2026.
+
+\bibitem{pachRazSolymosi2026}
+J{\'a}nos Pach, Orit~E. Raz, and J{\'o}zsef Solymosi.
+\newblock {Erd{\H o}s}'s unit distance problem and rigidity.
+\newblock In Hee-Kap Ahn, Michael Hoffmann, and Amir Nayyeri, editors, {\em
+  42nd International Symposium on Computational Geometry (SoCG 2026)}, volume
+  367 of {\em Leibniz International Proceedings in Informatics}, pages
+  83:1--83:9. Schloss Dagstuhl--Leibniz-Zentrum f{\"u}r Informatik, 2026.
+
+\bibitem{sawin2026}
+Will Sawin.
+\newblock An explicit lower bound for the unit distance problem.
+\newblock \url{https://arxiv.org/abs/2605.20579v1}, 2026.
+\newblock Version 1, 20 May 2026.
+
+\bibitem{SilvermanHeights}
+Joseph~H. Silverman.
+\newblock An introduction to height functions.
+\newblock
+  \url{https://legacy.slmath.org/attachments/workshops/301/HtSurveyMSRIJan06.pdf},
+  2006.
+\newblock Survey lectures, MSRI Workshop on Rational and Integral Points on
+  Higher-Dimensional Varieties, 17--21 January 2006.
+
+\bibitem{sst1984}
+J.~Spencer, E.~Szemer{\'e}di, and W.~T. Trotter, Jr.
+\newblock Unit distances in the {Euclidean} plane.
+\newblock In B.~Bollob{\'a}s, editor, {\em Graph Theory and Combinatorics},
+  pages 293--303. Academic Press, London, 1984.
+\newblock Proceedings of the Cambridge Conference, 1983.
+
+\bibitem{Szekely1997}
+L{\'a}szl{\'o}~A. Sz{\'e}kely.
+\newblock Crossing numbers and hard {Erd{\H o}s} problems in discrete geometry.
+\newblock {\em Combinatorics, Probability and Computing}, 6(3):353--358, 1997.
+
+\bibitem{Tardos2003}
+G{\'a}bor Tardos.
+\newblock On distinct sums and distinct distances.
+\newblock {\em Advances in Mathematics}, 180(1):275--289, 2003.
+
+\bibitem{stacksUFD}
+{The Stacks Project Authors}.
+\newblock The {Stacks Project}.
+\newblock \url{https://stacks.math.columbia.edu/tag/0BC1}, 2026.
+\newblock Lemma 10.120.10, Tag 0BC1; accessed 23 September 2026.
+
+\end{thebibliography}

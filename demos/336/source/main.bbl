@@ -1,0 +1,320 @@
+\begin{thebibliography}{38}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agmon(1982)]{agmon1982}
+Shmuel Agmon.
+\newblock \emph{Lectures on Exponential Decay of Solutions of Second-Order
+  Elliptic Equations: Bounds on Eigenfunctions of {N}-Body {Schr{\"o}dinger}
+  Operators}, volume~29 of \emph{Mathematical Notes}.
+\newblock Princeton University Press, 1982.
+\newblock URL
+  \url{https://api.pageplace.de/preview/DT0400.9781400853076_A23704097/preview-9781400853076_A23704097.pdf}.
+
+\bibitem[Allard(1972)]{allard1972}
+William~K. Allard.
+\newblock On the first variation of a varifold.
+\newblock \emph{Annals of Mathematics}, 95\penalty0 (3):\penalty0 417--491,
+  1972.
+\newblock \doi{10.2307/1970868}.
+\newblock URL \url{https://doi.org/10.2307/1970868}.
+
+\bibitem[Antonelli(2026)]{antonelli2026Volume}
+Gioacchino Antonelli.
+\newblock Universal volume growth bounds from positive intermediate curvature,
+  2026.
+\newblock URL \url{https://arxiv.org/abs/2608.14507v2}.
+\newblock arXiv:2608.14507v2, August 19, 2026.
+
+\bibitem[Bi and Zhu(2026)]{biZhu2026}
+Yuchen Bi and Jintian Zhu.
+\newblock Positive scalar curvature obstructions via singular dimension
+  descent, 2026.
+\newblock URL \url{https://arxiv.org/abs/2606.20528v3}.
+\newblock Version 3, 11 September 2026.
+
+\bibitem[Bolotov(2009)]{bolotov2009}
+Dmitry Bolotov.
+\newblock About the macroscopic dimension of certain {PSC}-manifolds.
+\newblock \emph{Algebraic \& Geometric Topology}, 9\penalty0 (1):\penalty0
+  21--27, 2009.
+\newblock \doi{10.2140/agt.2009.9.21}.
+
+\bibitem[Bolotov and Dranishnikov(2010)]{bolotovDranishnikov2010}
+Dmitry Bolotov and Alexander Dranishnikov.
+\newblock On {Gromov}'s scalar curvature conjecture.
+\newblock \emph{Proceedings of the American Mathematical Society}, 138\penalty0
+  (4):\penalty0 1517--1524, 2010.
+\newblock URL \url{https://arxiv.org/pdf/0901.4503v1}.
+\newblock Theorem 4.3 cited from arXiv:0901.4503v1.
+
+\bibitem[Bolotov and Dranishnikov(2016)]{bolotovDranishnikov2016}
+Dmitry Bolotov and Alexander Dranishnikov.
+\newblock On {Gromov}'s conjecture for totally non-spin manifolds.
+\newblock \emph{Journal of Topology and Analysis}, 8\penalty0 (4):\penalty0
+  571--587, 2016.
+\newblock \doi{10.1142/S1793525316500230}.
+\newblock URL \url{https://arxiv.org/pdf/1402.4510v6}.
+\newblock Theorem 3.4 cited from arXiv:1402.4510v6.
+
+\bibitem[Bolotov(2003)]{bolotov2003}
+Dmitry~V. Bolotov.
+\newblock Macroscopic dimension of 3-manifolds.
+\newblock \emph{Mathematical Physics, Analysis and Geometry}, 6\penalty0
+  (3):\penalty0 291--299, 2003.
+\newblock \doi{10.1023/A:1024994930786}.
+
+\bibitem[Chodosh and Li(2024)]{chodoshLi}
+Otis Chodosh and Chao Li.
+\newblock Generalized soap bubbles and the topology of manifolds with positive
+  scalar curvature.
+\newblock \emph{Annals of Mathematics}, 199\penalty0 (2):\penalty0 707--740,
+  2024.
+\newblock \doi{10.4007/annals.2024.199.2.3}.
+\newblock URL \url{https://arxiv.org/abs/2008.11888v4}.
+\newblock Numbering follows arXiv:2008.11888v4, 20 September 2023.
+
+\bibitem[Daher and Dranishnikov(2019)]{daherDranishnikov2019}
+Michelle Daher and Alexander Dranishnikov.
+\newblock On macroscopic dimension of non-spin 4-manifolds, 2019.
+\newblock URL \url{https://arxiv.org/abs/1904.00846v1}.
+\newblock Version 1. Published in Journal of Topology and Analysis;
+  doi:10.1142/S1793525321500084.
+
+\bibitem[De~Giorgi(1954)]{deGiorgi1954}
+Ennio De~Giorgi.
+\newblock Su una teoria generale della misura {$({r}-1)$}-dimensionale in uno
+  spazio ad {$r$} dimensioni.
+\newblock \emph{Annali di Matematica Pura ed Applicata}, 36:\penalty0 191--213,
+  1954.
+\newblock \doi{10.1007/BF02412838}.
+\newblock URL \url{https://doi.org/10.1007/BF02412838}.
+
+\bibitem[De~Giorgi(1955)]{deGiorgi1955}
+Ennio De~Giorgi.
+\newblock Nuovi teoremi relativi alle misure {$({r}-1)$}-dimensionali in uno
+  spazio ad {$r$} dimensioni.
+\newblock \emph{Ricerche di Matematica}, 4:\penalty0 95--113, 1955.
+
+\bibitem[Dranishnikov(2013)]{dranishnikov2014}
+Alexander Dranishnikov.
+\newblock On macroscopic dimension of universal coverings of closed manifolds.
+\newblock \emph{Transactions of the Moscow Mathematical Society}, 74:\penalty0
+  229--244, 2013.
+\newblock \doi{10.1090/S0077-1554-2014-00221-1}.
+\newblock URL \url{https://arxiv.org/pdf/1307.1029v1}.
+\newblock Definitions 1.1--1.2, Theorem 6.3 and the following Example cited
+  from arXiv:1307.1029v1.
+
+\bibitem[Federer(1970)]{federer1970}
+Herbert Federer.
+\newblock The singular sets of area minimizing rectifiable currents with
+  codimension one and of area minimizing flat chains modulo two with arbitrary
+  codimension.
+\newblock \emph{Bulletin of the American Mathematical Society}, 76\penalty0
+  (4):\penalty0 767--771, 1970.
+\newblock \doi{10.1090/S0002-9904-1970-12542-3}.
+\newblock URL \url{https://doi.org/10.1090/S0002-9904-1970-12542-3}.
+
+\bibitem[Federer and Fleming(1960)]{federerFleming1960}
+Herbert Federer and Wendell~H. Fleming.
+\newblock Normal and integral currents.
+\newblock \emph{Annals of Mathematics}, 72\penalty0 (3):\penalty0 458--520,
+  1960.
+\newblock \doi{10.2307/1970227}.
+\newblock URL \url{https://doi.org/10.2307/1970227}.
+
+\bibitem[Fischer-Colbrie and Schoen(1980)]{fischerColbrieSchoen1980}
+Doris Fischer-Colbrie and Richard Schoen.
+\newblock The structure of complete stable minimal surfaces in 3-manifolds of
+  non-negative scalar curvature.
+\newblock \emph{Communications on Pure and Applied Mathematics}, 33\penalty0
+  (2):\penalty0 199--211, 1980.
+\newblock \doi{10.1002/cpa.3160330206}.
+\newblock URL
+  \url{https://math.jhu.edu/~js/Math748/fischer-colbrie-schoen.pdf}.
+
+\bibitem[Gromov(1983)]{gromov1983Filling}
+M.~Gromov.
+\newblock Filling {Riemannian} manifolds.
+\newblock \emph{Journal of Differential Geometry}, 18\penalty0 (1):\penalty0
+  1--147, 1983.
+\newblock URL
+  \url{https://www.ihes.fr/~gromov/wp-content/uploads/2018/08/fillingRiemannianManifolds.pdf}.
+
+\bibitem[Gromov(1996)]{gromov1996}
+M.~Gromov.
+\newblock Positive curvature, macroscopic dimension, spectral gaps and higher
+  signatures.
+\newblock In Simon Gindikin, James Lepowsky, and Robert~L. Wilson, editors,
+  \emph{Functional Analysis on the Eve of the 21st Century, Volume II}, volume
+  132 of \emph{Progress in Mathematics}, pages 1--213. Birkh{\"a}user Boston,
+  1996.
+\newblock \doi{10.1007/978-1-4612-4098-3_1}.
+\newblock URL
+  \url{https://www.ihes.fr/~gromov/wp-content/uploads/2018/08/positivecurvature.pdf}.
+
+\bibitem[Gromov and Lawson(1983)]{gromovLawson1983}
+Mikhael Gromov and H.~Blaine Lawson, Jr.
+\newblock Positive scalar curvature and the {Dirac} operator on complete
+  {Riemannian} manifolds.
+\newblock \emph{Publications Math{\'e}matiques de l'IH{\'E}S}, 58:\penalty0
+  83--196, 1983.
+\newblock \doi{10.1007/BF02953774}.
+\newblock URL \url{https://numdam.org/articles/10.1007/BF02953774/}.
+
+\bibitem[Gromov(2017)]{gromov2017Dozen}
+Misha Gromov.
+\newblock A dozen problems, questions and conjectures about positive scalar
+  curvature.
+\newblock Author-hosted preprint, 2017.
+\newblock URL
+  \url{https://www.ihes.fr/~gromov/wp-content/uploads/2018/08/dozen_problems_Sept_2017.pdf}.
+\newblock 19 September 2017.
+
+\bibitem[Gromov(2018)]{gromov2018Metric}
+Misha Gromov.
+\newblock Metric inequalities with scalar curvature.
+\newblock \emph{Geometric and Functional Analysis}, 28\penalty0 (3):\penalty0
+  645--726, 2018.
+\newblock \doi{10.1007/s00039-018-0453-z}.
+\newblock URL
+  \url{https://www.ihes.fr/~gromov/wp-content/uploads/2019/02/Inequalities-scalar-Apr-6-2018Oct25.pdf}.
+\newblock Section 2 cited from the author version dated 28 October 2018.
+
+\bibitem[Gromov(2019)]{gromov2019Mean}
+Misha Gromov.
+\newblock Mean curvature in the light of scalar curvature.
+\newblock \emph{Annales de l'Institut Fourier}, 69\penalty0 (7):\penalty0
+  3169--3194, 2019.
+\newblock \doi{10.5802/aif.3347}.
+\newblock URL \url{https://www.numdam.org/articles/10.5802/aif.3347/}.
+
+\bibitem[Gromov(2020)]{gromov2020Aspherical}
+Misha Gromov.
+\newblock No metrics with positive scalar curvatures on aspherical 5-manifolds,
+  2020.
+\newblock URL \url{https://arxiv.org/abs/2009.05332v1}.
+\newblock Locators follow arXiv:2009.05332v1.
+
+\bibitem[Kumar and Sen(2026)]{kumarSen2026Width}
+Aditya Kumar and Balarka Sen.
+\newblock {Urysohn} width and macroscopic scalar curvature, 2026.
+\newblock URL \url{https://arxiv.org/abs/2601.14669v2}.
+\newblock arXiv:2601.14669v2, February 1, 2026.
+
+\bibitem[Liokumovich and Maximo(2023)]{liokumovichMaximo2023}
+Yevgeny Liokumovich and Davi Maximo.
+\newblock Waist inequality for 3-manifolds with positive scalar curvature.
+\newblock In \emph{Perspectives in Scalar Curvature}, volume~2, pages 799--831.
+  World Scientific, 2023.
+\newblock URL \url{https://arxiv.org/abs/2012.12478v4}.
+\newblock Theorem 1.1 cited from arXiv:2012.12478v4.
+
+\bibitem[Liokumovich and Wang(2026)]{liokumovichWang2023}
+Yevgeny Liokumovich and Zhichao Wang.
+\newblock On the waist and width inequality in complete 3-manifolds with
+  positive scalar curvature.
+\newblock \emph{Cambridge Journal of Mathematics}, 14\penalty0 (2):\penalty0
+  349--375, 2026.
+\newblock \doi{10.4310/CJM.260514230515}.
+\newblock URL \url{https://arxiv.org/abs/2308.04044v1}.
+\newblock Theorem 1.1 cited from arXiv version 1 (2023).
+
+\bibitem[Lohkamp(2022)]{lohkamp2022SplittingsII}
+Joachim Lohkamp.
+\newblock Scalar curvature splittings {II}: Removal of singularities, 2022.
+\newblock URL \url{https://arxiv.org/abs/2203.15531v2}.
+\newblock Version 2, 24 April 2022.
+
+\bibitem[Massari(1975)]{massari1975}
+Umberto Massari.
+\newblock Frontiere orientate di curvatura media assegnata in {$L^p$}.
+\newblock \emph{Rendiconti del Seminario Matematico della Universit{\`a} di
+  Padova}, 53:\penalty0 37--52, 1975.
+\newblock URL \url{https://www.numdam.org/item/RSMUP_1975__53__37_0/}.
+
+\bibitem[Massari and Pepe(1975)]{massariPepe1975}
+Umberto Massari and L.~Pepe.
+\newblock Successioni convergenti di ipersuperfici di curvatura media
+  assegnata.
+\newblock \emph{Rendiconti del Seminario Matematico della Universit{\`a} di
+  Padova}, 53:\penalty0 53--68, 1975.
+\newblock URL \url{https://www.numdam.org/item/RSMUP_1975__53__53_0/}.
+
+\bibitem[Miao(2002)]{miao2002Corners}
+Pengzi Miao.
+\newblock Positive mass theorem on manifolds admitting corners along a
+  hypersurface.
+\newblock \emph{Advances in Theoretical and Mathematical Physics}, 6\penalty0
+  (6):\penalty0 1163--1182, 2002.
+\newblock \doi{10.4310/ATMP.2002.v6.n6.a4}.
+\newblock URL \url{https://arxiv.org/abs/math-ph/0212025v3}.
+\newblock Locators follow arXiv:math-ph/0212025v3.
+
+\bibitem[Michael and Simon(1973)]{michaelSimon1973}
+J.~H. Michael and L.~M. Simon.
+\newblock Sobolev and mean-value inequalities on generalized submanifolds of
+  {$R^n$}.
+\newblock \emph{Communications on Pure and Applied Mathematics}, 26\penalty0
+  (3):\penalty0 361--379, 1973.
+\newblock \doi{10.1002/cpa.3160260305}.
+\newblock URL \url{https://doi.org/10.1002/cpa.3160260305}.
+
+\bibitem[Nabutovsky et~al.(2021)Nabutovsky, Rotman, and
+  Sabourau]{nabutovskyRotmanSabourau2021}
+Alexander Nabutovsky, Regina Rotman, and St{\'e}phane Sabourau.
+\newblock Sweepouts of closed {Riemannian} manifolds.
+\newblock \emph{Geometric and Functional Analysis}, 31:\penalty0 721--766,
+  2021.
+\newblock \doi{10.1007/s00039-021-00575-3}.
+\newblock URL \url{https://arxiv.org/abs/2007.14954v1}.
+\newblock Definitions 3.1 and 6.1 and equation (6.1) cited from
+  arXiv:2007.14954v1.
+
+\bibitem[Nash(1956)]{nash1956}
+John Nash.
+\newblock The imbedding problem for {Riemannian} manifolds.
+\newblock \emph{Annals of Mathematics}, 63\penalty0 (1):\penalty0 20--63, 1956.
+\newblock \doi{10.2307/1969989}.
+\newblock URL \url{https://mccuan.math.gatech.edu/courses/6455/nash55.pdf}.
+
+\bibitem[{OpenAI}(2026)]{openai2026RationalInessentiality}
+{OpenAI}.
+\newblock {Positive scalar curvature forces rational inessentiality}.
+\newblock OpenAI Math Release preprint
+  \href{https://github.com/openai/math/blob/main/preprints/Positive-scalar-curvature-forces-rational-inessentiality-September-23-2026/paper.pdf}{OAI:Positive-scalar-curvature-forces-rational-inessentiality-September-23-2026},
+  2026.
+
+\bibitem[Schoen and Yau(1979)]{schoenYau1979Structure}
+Richard Schoen and Shing-Tung Yau.
+\newblock On the structure of manifolds with positive scalar curvature.
+\newblock \emph{Manuscripta Mathematica}, 28:\penalty0 159--183, 1979.
+\newblock \doi{10.1007/BF01647970}.
+
+\bibitem[Simon(2014)]{simonGMT}
+Leon Simon.
+\newblock Introduction to geometric measure theory.
+\newblock Author-hosted lecture notes, 2014.
+\newblock URL \url{https://web.stanford.edu/class/math285/ts-gmt.pdf}.
+\newblock Tsinghua lecture notes, draft updated 3 December 2014.
+
+\bibitem[Simon(2015)]{simonPDE}
+Leon Simon.
+\newblock Lectures on {PDE}.
+\newblock Author-hosted lecture notes, 2015.
+\newblock URL \url{https://math.stanford.edu/~lms/lecs-on-pde.pdf}.
+\newblock Updated 5 March 2015.
+
+\bibitem[Simons(1968)]{simons1968}
+James Simons.
+\newblock Minimal varieties in {Riemannian} manifolds.
+\newblock \emph{Annals of Mathematics}, 88\penalty0 (1):\penalty0 62--105,
+  1968.
+\newblock \doi{10.2307/1970556}.
+\newblock URL \url{https://doi.org/10.2307/1970556}.
+
+\end{thebibliography}

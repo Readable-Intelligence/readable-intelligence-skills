@@ -1,0 +1,846 @@
+\section{Proof of the contraction theorem}
+\label{app:tensor}
+
+Theorem~\ref{thm:tensor-contraction} is proved by recursion on the
+number of wires. Lemma~\ref{lem:tensor-arrays} balances the edge ends;
+Lemma~\ref{lem:tensor-integrality} permits evaluation over the coefficient
+ring; and Lemma~\ref{lem:decreasing-hermite-multiplicities} recovers each call's answer
+from its local evaluations. The identity
+\eqref{eq:tensor-recursion-identity} expresses each evaluation as a sum
+of products of contractions with fewer than one eighth as many wires.
+Section~\ref{subsec:tensor-cost} combines these facts and bounds the
+complete recursion.
+
+A recursive call receives a bipartite network with $M$ edges and
+maximum degree at most the bound $\Delta$ of
+Section~\ref{subsec:tensor-packing}, whose entries lie in
+the coefficient ring modulo $2^p$ for a precision $p$, together with its depth $d$ in the
+recursion; it returns the contraction modulo $2^p$. The root call
+has $d=0$ and $p=P_0$. A call with $M\le H_{\mathrm{leaf}}$ edges, for the threshold
+$H_{\mathrm{leaf}}$ of Section~\ref{subsec:tensor-packing}, is a \emph{leaf} and sums
+directly over all Boolean edge assignments. Every other call is
+\emph{nonleaf} and performs the following steps, in which the array
+length $L$ and the number $u$ of retained two-adic levels are those of
+\eqref{eq:tensor-parameters}, and the grid $S$ and the scaling
+$\alpha$ are those of Section~\ref{subsec:tensor-deformation}.
+\begin{enumerate}
+\item Lift its entries using least nonnegative coordinate representatives
+      (Section~\ref{subsec:tensor-arithmetic}).
+\item Label the vertices and place the edges into arrays
+      (Lemma~\ref{lem:tensor-arrays}).
+\item Write the contraction as the value $\mathcal D(0)$ of the deformed
+      contraction $\mathcal D(T)$ in \eqref{eq:tensor-deformed-contraction},
+      with the polynomial matrix $W(T)$. Call $t\in S\setminus\{0\}$ a
+      \emph{selected node} if $v_2(t)<u$; these are the nodes of positive
+      multiplicity $q_t$ in Lemma~\ref{lem:decreasing-hermite-multiplicities}. At a
+      selected node $t$, the matrix $W(t)$ joins only row and column
+      edge ends of vertices whose labels from the previous step agree in
+      coordinate $v_2(t)$; the $r$ classes of this coordinate are the
+      groups.
+\item For each selected node $t$ and each of $M(2L-1)+1$ interpolation
+      values $\zeta$, compute $\mathcal D(t+\alpha\zeta)$ modulo $2^{p_t}$ by
+      \eqref{eq:tensor-recursion-identity}: the entries of $W$ joining
+      different groups are expanded in auxiliary variables
+      (Section~\ref{subsec:tensor-auxiliary-variables}), and each surviving tuple of
+      exponents of the auxiliary variables contributes the product of the contractions of
+      $r$ child networks with at most $M/8$ edges each
+      (Section~\ref{subsec:tensor-children}). The children are calls
+      at depth $d+1$ with precision $p_t$.
+\item For each selected node $t$, recover $\mathcal D(t+\alpha z)$ modulo
+      $2^{p_t}$ from these values by Lagrange interpolation; then
+      recover $\mathcal D(0)$ modulo $2^p$ by Lemma~\ref{lem:decreasing-hermite-multiplicities}.
+\end{enumerate}
+The recovery in the last step divides by powers of two, so the
+children need the precision $p_t>p$. This is why each call first
+fixes lifts of its entries, which it receives only modulo $2^p$.
+
+\subsection{The coefficient ring and exact arithmetic}
+\label{subsec:tensor-arithmetic}
+
+The recursion recovers polynomials in an interpolation variable modulo
+a power of two from their values at fewer than $s^4$ points
+(Section~\ref{subsec:tensor-hermite}). Interpolation modulo $2^p$ needs
+points whose pairwise differences are units, and modulo two the integers
+supply only two such points. We therefore work with polynomials in a
+root $U$ of a polynomial $f$ of degree $e$ that is irreducible modulo
+two, with $2^e\ge s^4$.
+Write $\lambda=\lceil\log_2 s\rceil$ and $e=4\lambda$.
+Choose a monic polynomial $f\in\mathbb Z[U]$ of degree $e$, with
+coefficients in $\{0,1\}$ below its leading coefficient, whose reduction
+modulo two is irreducible.  This can be done deterministically in
+polynomial time in $s$ by enumerating the $2^e$ candidates and testing
+divisibility over $\mathbb F_2$ by every monic polynomial of positive
+degree at most $e/2$. A reducible degree-$e$ polynomial has a factor
+in this range. Both enumerations have $2^{O(e)}=s^{O(1)}$ terms.
+Finite fields admit an irreducible polynomial of every positive
+degree~\cite{vzGG13}; specifically, the number of monic irreducibles
+of degree $e$ over $\mathbb F_2$ is at least
+$2^e/(2e)>0$~\cite[Theorem~19.12]{Shoup09}.
+Put
+\[
+ \mathcal O=\mathbb Z_{(2)}[U]/(f),\qquad
+ \mathcal K=\mathbb Q[U]/(f),\qquad
+ \mathcal A=\mathcal O[V]/(V^\ell),\qquad
+ \mathcal A_p=\mathcal A/(2^p).
+\]
+Here $\mathbb Z_{(2)}$ consists of rational numbers with odd
+denominator.  Irreducibility modulo two implies irreducibility over
+$\mathbb Q$, so $\mathcal K$ is a field.  For a nonzero element of
+$\mathcal K$, let $v_2$ be the minimum of the ordinary two-adic
+valuations of its coordinates in $1,U,\ldots,U^{e-1}$.
+Reduction of $\mathcal O$ modulo two is the field $\mathbb F_{2^e}$:
+we have $\mathcal O/2\mathcal O\cong\mathbb F_2[U]/(\bar f)$, where
+$\bar f$ is the reduction of $f$ modulo two, and this quotient is a
+field with $2^e$ elements because $\bar f$ is irreducible of
+degree~$e$. Now write $x=2^\alpha x_0$ and $y=2^\beta y_0$, where
+$x_0,y_0\in\mathcal O$ have nonzero reductions modulo two.
+Their product has nonzero reduction in this field, so
+$v_2(x_0y_0)=0$. Thus
+\[
+ v_2(xy)=v_2(x)+v_2(y)\qquad(x,y\ne0).
+\]
+Every element of $\mathcal O$ that is nonzero modulo two is a unit because
+the determinant of its multiplication matrix is invertible in
+$\mathbb Z_{(2)}$, so the inverse matrix has entries in that ring.
+
+Arithmetic in $\mathcal A_p$ takes polynomial time and space in
+$s,p,\ell$.  We use the bases $1,U,\ldots,U^{e-1}$ and
+$1,V,\ldots,V^{\ell-1}$, and represent each coordinate by its integer
+residue between zero and $2^p-1$.  Inverting a scalar unit can be done
+by inversion modulo two followed by Newton lifting, or by its
+multiplication matrix, using exact polynomial and integer
+operations~\cite{vzGG13}. For the lifting method, if $ab\equiv1$
+modulo $2^j$, put $b'=b(2-ab)$. The identity
+\[
+ 1-ab'=(1-ab)^2
+\]
+gives an inverse modulo $2^{2j}$ in the same coefficient ring.
+Starting with the inverse in $\mathbb F_{2^e}$ and doubling the
+precision therefore takes $O(\log(p+1))$ steps. This is the
+prime-power inversion iteration of~\cite[Section~2.5, equation~(2.3)]{BZ10};
+the displayed identity also proves it for $\mathcal O/(2^p)$.
+Divisibility and precision for
+elements of $\mathcal A$ are always coordinatewise.
+We set $v_2(0)=+\infty$ and, for an element of $\mathcal K[V]/(V^\ell)$,
+use the minimum valuation of its coefficients in $V$.
+
+The binary-coordinate lifts of the $2^e$ residue-field elements give
+interpolation points with pairwise unit differences.  Lagrange
+interpolation at any required number of these points is therefore
+valid over $\mathcal A_p$. Explicitly, for such points
+$\zeta_1,\ldots,\zeta_N$ and $G\in\mathcal A_p[z]$ of degree less than $N$,
+\[
+ G(z)=\sum_{j=1}^N G(\zeta_j)
+       \prod_{h\ne j}\frac{z-\zeta_h}{\zeta_j-\zeta_h}.
+\]
+Every denominator is a scalar unit. The evaluation matrix has
+Vandermonde determinant $\prod_{j<h}(\zeta_h-\zeta_j)$, also a unit,
+so the formula gives existence and uniqueness even with the
+nilpotent variable $V$
+\cite[Chapter~III, Exercise~1(3)--(5), p.~148]{LQ15}.
+We will use fewer than $s^4$ points.
+A contraction whose initial entries belong to $\mathcal B_{P_0,\ell}$
+belongs to that subring after computation in $\mathcal A_{P_0}$,
+because it is a polynomial in those entries.
+
+When the precision increases, we lift each tensor entry separately.
+For an entry originally specified modulo $2^p$, its lift in $\mathcal A$ uses
+coordinate representatives in $\{0,\ldots,2^p-1\}$. This lifting need not preserve
+addition or multiplication. Each recursive call contracts its specified
+tensors modulo the precision of that call.  To define its deformation,
+it first makes this entrywise choice of lifts.  All subsequent
+evaluations in that call refer to these same lifts.
+More explicitly, each tensor description is tagged with its creation
+precision $p_c$ ($P_0$ for an original tensor).  At every later
+precision, its entry is evaluated modulo $2^{p_c}$ and those same
+integer representatives are used.  Precisions strictly increase
+along a recursive path, so these representatives are also the
+least nonnegative coordinate representatives at every later precision.  In particular,
+an array tensor retains its creation-time representatives throughout the recursion.
+
+The relation needed between calls is reduction, which is a ring
+homomorphism. If $\rho_p:\mathcal A\to\mathcal A_p$ is reduction
+and $Z$ denotes contraction, then for any chosen entrywise lifts
+$\widetilde T_v$,
+\[
+ \rho_p\!\left(Z((\widetilde T_v)_v)\right)
+       =Z((\rho_p(\widetilde T_v))_v).
+\]
+This follows term by term from the finite sum of products defining
+$Z$. In particular, the deformation at the origin of a child call
+reduces to the contraction specified by its parent, while its
+evaluations at higher precision all use the child's fixed lifts.
+
+\subsection{Parameters and packing into arrays}
+\label{subsec:tensor-packing}
+
+All estimates below hold for sufficiently large $s$, with the
+threshold depending only on the fixed constants.  A fixed finite
+range of smaller sizes is handled by direct summation. The parameter
+inequalities can be tested directly.  Set
+\[
+ H_{\mathrm{leaf}}=\left\lceil\frac{s}{\lfloor\sqrt\lambda\rfloor}\right\rceil,
+ \qquad r=64,\qquad \varepsilon=\frac1{128\cdot1024},
+ \qquad \Delta=\lceil s^{9/10}\rceil.
+\]
+A call with $M\le H_{\mathrm{leaf}}$ edges is a leaf and is evaluated directly.
+At a nonleaf call at depth $d$, with the root at depth zero,
+$u_d$ is the number of retained valuation levels and $a_d$ is the
+number of label coordinates, also used as slot bits. The cumulative
+choice of $a_d$ will absorb inherited precision in
+Section~\ref{subsec:tensor-hermite}. Set
+\begin{equation}\label{eq:tensor-parameters}
+ u=u_d=\left\lfloor\frac{\varepsilon\lambda}{2^d}\right\rfloor,
+ \qquad a=a_d=2\sum_{j=0}^d u_j,\qquad
+ a_{-1}=0,\qquad L=2^a,\qquad D_{\rm arr}=r^{2a}.
+\end{equation}
+We will arrange that every child has at most $M/8$ edges and maximum
+degree at most $\Delta$.  These assertions imply, on every nonleaf path,
+\[
+ H_{\mathrm{leaf}}<M\le Cs\,8^{-d},\qquad
+ d\le\frac{\log_2\lambda}{6}+O_C(1).
+\]
+Consequently
+\begin{equation}\label{eq:tensor-parameter-bounds}
+ u=\Theta_C(\lambda/2^d),\quad
+ \lambda^{4/5}\le u\le M,\quad
+ a\le4\varepsilon\lambda,\quad
+ L,D_{\rm arr}\le s^{1/1000}
+\end{equation}
+for all sufficiently large $s$.  In particular, at each nonleaf call
+\begin{equation}\label{eq:tensor-packing-conditions}
+ M\ge2D_{\rm arr}^{\,2}\Delta,\qquad
+ M\ge L D_{\rm arr},\qquad 2L\le\Delta.
+\end{equation}
+For example, the right side of the first inequality is
+$O(s^{9/10+2/1000})=o(H_{\mathrm{leaf}})$.  The other inequalities follow in the
+same way.
+
+We call the two sides of the bipartite network its row side and its
+column side, and speak of row and column vertices, edge ends and tensors
+accordingly. In the deformation of Section~\ref{subsec:tensor-deformation}
+the row edge ends index the rows of a matrix and the column edge ends its
+columns.
+
+The lemma below uses the following terms. Each vertex receives a label
+in $[r]^a$, and the $i$th coordinate of its label is its \emph{symbol}
+in coordinate $i$, for $0\le i<a$. An \emph{array} consists of $L$
+\emph{slots}, numbered $0,\ldots,L-1$, and each slot has a row position
+and a column position. An edge placed in a slot is attached at its row
+end to the slot's row position and at its column end to the slot's
+column position. The occupied positions are the edge ends;
+unused slots carry no edge ends. Within an array, the original
+identification of the two ends of each wire is thus the identity
+between the row and column positions of the same slot. For a fixed
+coordinate, the vertices on both sides with a given symbol in that
+coordinate form a \emph{group}. At a nonzero interpolation node $t$,
+Section~\ref{subsec:tensor-auxiliary-variables} uses the $r$ groups of coordinate
+$v_2(t)$. The slot orientation in the second property below will make
+the deformation local at that node; the edge-end bound in the third
+property will give the child-size bound
+(Section~\ref{subsec:tensor-children}).
+
+\begin{lemma}[Packing into arrays]\label{lem:tensor-arrays}
+For a nonleaf call with $M$ edges, maximum degree at most $\Delta$,
+and the parameters in \eqref{eq:tensor-parameters} satisfying
+\eqref{eq:tensor-packing-conditions}, the vertices on each side admit
+labels in $[r]^a$ and the edges admit an embedding into arrays of
+$L$ slots with the following properties.
+\begin{enumerate}
+\item There are at most $3M/L$ arrays.  Each edge occupies the same
+      slot at its row and column ends. Unused slots have no edge ends.
+\item For every array and every coordinate $i$, there are symbols
+      $b\le c$ such that every edge in the array has the symbols $b$
+      and $c$, in some order, at its row end and its column end in
+      coordinate $i$. If $b<c$, the row end has symbol $b$ exactly
+      when bit $i$ of the edge's slot number is zero. Consequently, a
+      row edge end and a column edge end of the array belong to
+      vertices with the same symbol in coordinate $i$ exactly when
+      $b=c$ or their slot numbers differ in bit $i$.
+\item For every coordinate and every symbol, at most $3M/r$ edge ends on each side belong to vertices with that symbol.
+\end{enumerate}
+A deterministic algorithm constructs these labels and this embedding in polynomial time and space in $s+\mathcal L$.
+\end{lemma}
+\begin{proof}
+We give each vertex a single label in $[r]^a$, so all its edge ends
+carry the same symbol in each coordinate. We balance the loads of
+complete pairs of these labels, then pad them equally to arrange
+the orientations by slot bits while keeping these vertex labels fixed.
+For each pair of labels let $X_\gamma$ be the number of edges with
+that pair.  Independent uniform vertex labels give
+\[
+ \mathbb E\sum_\gamma (X_\gamma-M/D_{\rm arr})^2\le2M\Delta.
+\]
+Indeed, expansion expresses this expectation as a sum over ordered
+pairs of edges of their label-agreement probability minus
+$1/D_{\rm arr}$.  Pairs with disjoint endpoints contribute zero.
+At most $2M\Delta$ ordered pairs share an endpoint, including equal
+edges, and each contributes at most one.
+Conditional expectation gives a labeling with this bound.  To
+implement it, try each of the $r^a$ labels of the next vertex and
+compute the conditional expectation by enumerating pairs of edges.
+Each probability concerns at most four vertices, so this is an
+exact polynomial-time calculation.  This is the usual
+conditional-expectation method~\cite{Raghavan88}.
+
+Every load is at most $M/D_{\rm arr}+\sqrt{2M\Delta}$.
+Pad all pair-label classes to a common number $H_{\rm pad}$ of
+slots, the maximum load rounded up to a multiple of $L$.
+The assumptions imply
+\[
+ H_{\rm pad}\le M/D_{\rm arr}+\sqrt{2M\Delta}+L
+              \le3M/D_{\rm arr}.
+\]
+Fix the unordered pair of symbols in each coordinate.  If $a'$
+coordinates have unequal symbols, their orientations give
+$2^{a'}$ pair labels.  Partition their padded slots into arrays
+using $2^{a-a'}$ slots from each of these labels per array.
+This is possible because $H_{\rm pad}$ is divisible by $L$.
+Number an array's positions from $0$ to $L-1$.  Its $i$th bit
+specifies the orientation when the $i$th pair is unequal and the copy
+when the pair is equal. For an unequal pair $\{b,c\}$ with $b<c$,
+use row symbol $b$ and column symbol $c$ at slots whose $i$th bit
+is zero, and the reverse symbols at slots whose $i$th bit is one.
+Thus a row slot and a column slot have equal symbols in this
+coordinate precisely when their $i$th bits differ.
+
+There are $H_{\rm pad}D_{\rm arr}/L\le3M/L$ arrays.  In a fixed
+coordinate, a given symbol occurs in exactly $1/r$ of all padded
+pair labels on either side.  Its number of edge ends is therefore
+at most $H_{\rm pad}D_{\rm arr}/r\le3M/r$.
+\end{proof}
+
+\subsection{A polynomial deformation and integral local coordinates}
+\label{subsec:tensor-deformation}
+
+Fix a nonleaf call, its arrays, and its entrywise lifted tensors.
+Use
+\[
+ S=\{-L,-L+1,\ldots,L-1\},\qquad
+ \mathcal C(T)=\prod_{t\in S}(T-t),\qquad \alpha=2^{a+1}.
+\]
+Within an array, for its row slot $x$ and column slot $y$, put
+\begin{equation}\label{eq:tensor-polynomial-matrix}
+ W_{xy}(T)=\frac{\mathcal C(T)}
+                  {\mathcal C'(0)(T-(y-x))}.
+\end{equation}
+The factor in the denominator cancels a numerator factor, since
+$y-x\in S$.  Thus this is a polynomial over $\mathbb Q$ of degree
+$2L-1$.  Set entries between different arrays to zero and restrict
+to the edge ends.  Under the original edge identification,
+$W(0)=I$, since the diagonal entries are one and each other entry has
+an uncancelled zero factor.
+
+Let $A(Y)$ and $B(X)$ be the products of the lifted row and column
+tensors, respectively, on independent edge-end assignments
+$Y,X\in\{0,1\}^M$.  Write $l_0(z)=1-z$ and $l_1(z)=z$.  Define
+\begin{equation}\label{eq:tensor-deformed-contraction}
+ \mathcal D(T)=\sum_{X,Y\in\{0,1\}^M} A(Y)B(X)
+                  \prod_{\text{row edge ends }x}l_{Y_x}((W(T)X)_x).
+\end{equation}
+Its coefficients lie in $\mathcal K[V]/(V^\ell)$, its degree is at
+most $M(2L-1)$, and $\mathcal D(0)$ is the contraction of the lifted tensors.
+Indeed, for Boolean $X,Y$ the product at $T=0$ is
+$\prod_x l_{Y_x}(X_x)=\mathds{1}_{\{X=Y\}}$; the sum over $Y$
+therefore restores the original edge identification.
+In particular, reducing $\mathcal D(0)$ modulo the call's precision gives
+the required answer.
+
+\begin{lemma}\label{lem:tensor-integrality}
+For every $t\in S$, the entries of $W(t+\alpha z)$ belong to
+$\mathcal O[z]$, and $\mathcal D(t+\alpha z)$ belongs to $\mathcal A[z]$.
+For every integer $p\ge1$ and $\zeta\in\mathcal O$ given by its
+$e$ coordinates modulo $2^p$, each entry
+$W_{xy}(t+\alpha\zeta)\bmod 2^p$ can be computed using polynomially
+many bit operations in $s,p$.
+\end{lemma}
+\begin{proof}
+The grid $S$ is a complete residue system modulo $2^{a+1}$.
+For $t\ne q$ in $S$, $v_2(t-q)\le a$, and the counts of nonzero
+differences of valuation $j$ are $2^{a-j}$ for $0\le j\le a$:
+these are the residue classes divisible by $2^j$ but not by
+$2^{j+1}$. The counts are independent of $t$. Hence
+$v_2(\mathcal C'(t))=v_2(\mathcal C'(0))$.
+In
+\[
+ \frac{\mathcal C(t+\alpha z)}{\mathcal C'(0)}
+  =\frac{\alpha z\prod_{q\in S\setminus\{t\}}
+                         (t-q+\alpha z)}{\mathcal C'(0)},
+\]
+each factor indexed by $q\ne t$ is coefficientwise divisible by
+$2^{v_2(t-q)}$.  After canceling these powers against the
+denominator, the displayed polynomial is divisible by $2^{a+1}$.
+To obtain \eqref{eq:tensor-polynomial-matrix}, omit just the factor indexed by
+$y-x$. If $y-x=t$, this removes $\alpha z$ and leaves an integral
+polynomial. Otherwise $\alpha z$ remains and the omitted factor has
+two-adic content $2^{v_2(t-y+x)}$ with $v_2(t-y+x)\le a$, so the
+result is still divisible by two. Substitution in
+\eqref{eq:tensor-deformed-contraction} proves the assertion for $\mathcal D$.
+
+For the evaluation, first divide each factor
+$t-q+\alpha z$ with $q\ne t$ by the known integer $2^{v_2(t-q)}$.
+Both coefficients of the resulting linear polynomial are integers.
+Cancel the remaining explicit powers of two against the denominator
+as above, and invert its odd part modulo $2^p$. We can now evaluate
+the product directly at the supplied residue of $\zeta$, including
+$\zeta=0$. The input has $ep$ bits, and the product has $O(L)$
+factors. All coordinate operations take polynomial time in $s,p$.
+\end{proof}
+
+\subsection{Hermite interpolation with decreasing multiplicities}
+\label{subsec:tensor-hermite}
+
+The next lemma isolates the precision estimate.  All power-series
+truncations in its statement are ordinary truncations in $z$.
+
+\begin{lemma}[Hermite interpolation with decreasing multiplicities]\label{lem:decreasing-hermite-multiplicities}
+Let integers $u,M$ satisfy $1\le u\le a$ and $M\ge u$, and put
+$h=\lceil3M/u\rceil$.
+For $t\in S\setminus\{0\}$ set
+\[
+ q_t=h\max(0,u-v_2(t)).
+\]
+Suppose $\mathcal D\in(\mathcal K[V]/(V^\ell))[T]$ has degree at most
+$M(2L-1)$, $\mathcal D(0)\in\mathcal A$, and
+$\mathcal D(t+\alpha z)\in\mathcal A[z]$ for every $t\in S$.
+For every integer $p\ge1$, the residue $\mathcal D(0)\bmod2^p$ is
+determined by, and can be computed from, the data
+\[
+ \mathcal D(t+\alpha z)\pmod{(2^{p_t},z^{q_t})},
+ \qquad
+ p_t=p+8hL/2^{v_2(t)}+8M(a+1),\qquad q_t>0.
+\]
+Recovery takes polynomial time and space in $M,L,\ell,e$ and the
+precisions.
+\end{lemma}
+\begin{proof}
+We use the Hermite formula for evaluation at zero and bound its
+denominators separately at each node. The decreasing multiplicities
+control the loss from the other nodes; scaling by $\alpha$ makes
+the local power-series division integral.
+For a nonzero node $t$, write $i=v_2(t)$, $D_t=L/2^i$, and
+$q(i)=h\max(0,u-i)$, so $q_t=q(i)$.
+There are $L$ odd points in $S$, so
+$\sum_{t\ne0}q_t\ge Lhu\ge3ML>M(2L-1)$.  Also
+$h\le4M/u$, and hence $q_t\le4M$.
+For each $t$ of positive multiplicity put, writing $t'$ for the other
+nodes and $q_{t'}$ for their multiplicities,
+\[
+ E_t(T)=\prod_{t'\in S\setminus\{0,t\}}
+                    \left(\frac{T-t'}{t-t'}\right)^{q_{t'}}.
+\]
+Hermite interpolation gives
+\begin{equation}\label{eq:tensor-hermite-origin}
+ \mathcal D(0)=\sum_{t:q_t>0}E_t(0)
+       \left(\left[\frac{\mathcal D(t+\alpha z)}
+                            {E_t(t+\alpha z)}\right]_{<q_t}\right)
+                            (-t/\alpha).
+\end{equation}
+For completeness, replace zero in the right side by an indeterminate
+$T$, and $-t/\alpha$ by $(T-t)/\alpha$.  Each summand has degree
+less than $\sum q_t$.  At its own node it has the prescribed Taylor coefficients,
+and at every other node it vanishes to the required order.
+This verification may be made separately in each coefficient of
+$V$, over the field $\mathcal K$. The difference from $\mathcal D$ is therefore divisible by
+$\prod_{t\ne0}(T-t)^{q_t}$ and has smaller degree, so is zero.
+This is the usual Chinese-remainder construction of Hermite
+interpolation \cite[Section~5.6]{vzGG13}.
+
+Each factor of $E_t(t+\alpha z)$ is a power of
+$1+\alpha z/(t-t')$.  It is integral and has constant term one.
+Its reciprocal truncated at $q_t$ is therefore integral, so
+forming the quotient in \eqref{eq:tensor-hermite-origin} loses no
+precision.
+
+Fix $i=v_2(t)$ and $D=D_t$.  Directly from the product,
+\begin{align}
+ v_2(E_t(0))
+ &=\sum_{t'\ne0,t}q_{t'}\bigl(v_2(t')-v_2(t-t')\bigr)\notag\\
+ &=D\sum_{j=1}^{a-i}\frac{j}{2^j}
+                           \bigl(q(i+j)-q(i)\bigr)
+ \ \ge -6Dh. \label{eq:tensor-hermite-loss}
+\end{align}
+To justify the second equality, points of valuation less than $i$
+contribute zero.  For $1\le j\le a-i$, there are $D/2^j$ points $t'$ with
+$v_2(t')=i+j$, and the same number with $v_2(t-t')=i+j$.
+The latter have $v_2(t')=i$, and these levels exhaust the points
+other than $t$ with that valuation.  These counts follow from the
+complete residue grid, whose nonzero integer differences have
+valuation at most $a$.  Finally,
+$q(i+j)-q(i)\ge-hj$ and $\sum_{j\ge1}j^2/2^j=6$.
+
+Evaluation of a polynomial of degree below $q_t$ at $-t/\alpha$
+loses at most $4M(a+1)$ further powers of two.  Thus replacing
+each quotient coefficient by any lift of its residue modulo
+$2^{p_t}$ changes its contribution in
+\eqref{eq:tensor-hermite-origin} by an element of $2^p\mathcal A$.
+More explicitly, an error $\eta\in2^{p_t}\mathcal A$ in coefficient
+$z^j$, for $0\le j<q_t\le4M$, satisfies coordinatewise
+\[
+ v_2\!\left(E_t(0)(-t/\alpha)^j\eta\right)
+ \ge p_t-6hD_t-j(a+1-i)\ge p.
+\]
+Here $i=v_2(t)$, so the last inequality uses both precision
+increments in the statement. The inverse of $E_t(t+\alpha z)$
+has integral coefficients and constant term one; multiplying by it
+preserves the modulus of every supplied Taylor coefficient.
+Summing these errors loses no further precision.  The reconstructed
+sum is integral, since it differs from the integral value $\mathcal D(0)$
+by an element of $2^p\mathcal A$.
+
+One can perform this last combination by rational arithmetic in the
+specified bases.  The multipliers $E_t(0)(-t/\alpha)^j$,
+$j<q_t$, are products of polynomially many rational factors of
+$O(a)$ bits, counting multiplicity.  Their numerator and denominator
+lengths are therefore polynomial in $M,L,a$.  There are polynomially
+many such coefficients, so even a product of their denominators is
+an adequate polynomial-bit common denominator.  After addition,
+cancel its powers of two and reduce the resulting integral
+coordinates modulo $2^p$.  This proves the algorithmic assertion.
+\end{proof}
+
+At a call with input precision $p$, apply this lemma with the
+parameters in \eqref{eq:tensor-parameters}.  For every selected $t$,
+obtain the entire polynomial $\mathcal D(t+\alpha z)$ modulo $2^{p_t}$ by
+evaluation at $M(2L-1)+1$ distinct binary-coordinate lifts of
+residue-field elements and Lagrange interpolation.  Lemma~\ref{lem:tensor-integrality} permits this
+interpolation over $\mathcal A_{p_t}$.  The number of points is
+less than $s^4$ by \eqref{eq:tensor-parameter-bounds}.
+The evaluation algorithm below passes precision $p_t$ to its
+children.
+
+For each selected node $t$, put $i=v_2(t)$ and $D_t=L/2^i$.
+The input and child precisions satisfy
+\begin{equation}\label{eq:tensor-precision-bound}
+ p\le s\lambda^{O(1)}2^{a_{d-1}},
+ \qquad
+ p_t=O_C(MD_t/u).
+\end{equation}
+The first assertion holds at the root since $P_0\le Cs$ and
+$a_{-1}=0$. A nonleaf call at depth $d'$ passes to its children the
+precision $p_t=p+8hD_t+8M(a_{d'}+1)$. Here $h\le4M/u_{d'}\le4M$,
+$M\le Cs$, $D_t\le L=2^{a_{d'}}$ and $a_{d'}\le4\varepsilon\lambda$,
+so the increment $p_t-p$ is at most
+$32Cs\,2^{a_{d'}}+8Cs(4\varepsilon\lambda+1)$. Summing the increments
+along the path from the root, a call at depth $d$ has
+\[
+ p\le Cs+\sum_{d'=0}^{d-1}\Bigl(32Cs\,2^{a_{d'}}
+        +8Cs(4\varepsilon\lambda+1)\Bigr).
+\]
+Its ancestors are nonleaf calls, so $a_{d'+1}-a_{d'}=2u_{d'+1}\ge2$ for
+$d'+1<d$, and the terms $2^{a_{d'}}$ sum to at most
+$\frac43\,2^{a_{d-1}}$. There are $d=O_C(\log\lambda)$ terms, and
+$2^{a_{d-1}}\ge1$. For sufficiently large $s$, the fixed constant
+$C$ is at most $\lambda$, so
+\[
+ p\le s\lambda^{O(1)}2^{a_{d-1}}.
+\]
+This proves the first assertion for every call, including leaves.
+For the second, $q_t>0$ implies $i<u$ and hence
+\[
+ D_t\ge2^{a_d-u}=2^{a_{d-1}+u}.
+\]
+Since $M>H_{\mathrm{leaf}}$ and $u\ge\lambda^{4/5}$, this extra factor $2^u$
+dominates every fixed power of $\lambda$.  Thus the first bound
+on $p$, as well as $8M(a+1)$, is $O_C(MD_t/u)$.
+The remaining increment $8hD_t$ has that bound directly.
+All precisions remain polynomial in $s$ because
+$a_d\le4\varepsilon\lambda$.
+
+The decrease in multiplicities accounts for the factor $1/u$ in this estimate.
+For comparison, assign the same multiplicity $q_*=\Theta(M)$ to
+every level below $u$, and zero to the remaining levels.  At the
+last retained level $i=u-1$, the identity
+\eqref{eq:tensor-hermite-loss} would give the loss
+\[
+ -q_*D_t\sum_{j=1}^{a-i}\frac{j}{2^j}=-\Theta(MD_t).
+\]
+Our multiplicities instead change by only $h=\Theta(M/u)$ per
+level, giving loss $O(MD_t/u)$.  The cumulative choice of $a_d$
+provides the additional factor $2^u$ needed to absorb inherited
+precision and the evaluation loss.  Thus the smaller bound holds
+at every retained level and every recursion depth.
+
+\subsection{Auxiliary variables for interactions between groups}
+\label{subsec:tensor-auxiliary-variables}
+
+Fix a selected $t$ and an interpolation value $\zeta\in\mathcal O$
+for $z$.  In this subsection $T=t+\alpha\zeta$ and all calculations
+are modulo $2^{p_t}$.  Put $i=v_2(t)<u$ and $D=L/2^i$.
+Group vertices on both sides by their symbol in coordinate $i$.
+Entries of $W(T)$ whose two edge ends have the same group are called
+local and are kept unchanged.
+
+This choice of coordinate makes $W(t)$ local.  Indeed,
+$W_{xy}(t)=0$ unless $y-x=t$.  Adding an integer of valuation $i$
+flips bit $i$, so a surviving pair has different $i$th bits.
+When the array's two symbols in that coordinate differ, this
+means that the row and column symbols agree. Equal pairs of symbols
+already lie in one group.  Moving from $t$ to $t+\alpha\zeta$ introduces
+the crossing terms that we now expand.
+
+In an array whose two symbols in coordinate $i$ differ, a row
+position $x$ and a column position $y$ are in different groups
+exactly when their $i$th bits are equal.  Partition columns into
+residue classes
+\[
+ y=y_0+2^{i+1}j,\qquad 0\le y_0<2^{i+1}.
+\]
+The column group is constant on a residue class.  For a row crossing to
+that residue class,
+\[
+ v_2(t-y_0+x)\le i.
+\]
+Otherwise $y_0$ would agree with $x+2^i$ modulo $2^{i+1}$,
+contrary to equality of their $i$th bits. Put
+$d_x=T-y_0+x$ and $v=v_2(t-y_0+x)\le i$.
+For every $\zeta\in\mathcal O$, adding $\alpha\zeta$ preserves this
+valuation, since $v_2(\alpha\zeta)\ge a+1>i$.
+Thus $d_x/2^v$ is a unit and
+$v_2(2^{i+1}j/d_x)\ge1$.
+A geometric expansion consequently
+gives
+\begin{equation}\label{eq:tensor-linear-form-expansion}
+ W_{xy}(T)=
+ \sum_{\substack{b\ge0\\b+1<p_t}}
+ \frac{\mathcal C(T)}
+      {\mathcal C'(0)(T-y_0+x)}
+ \left(\frac{2^{i+1}}{T-y_0+x}\right)^b j^b
+ \pmod {2^{p_t}}.
+\end{equation}
+Indeed $\mathcal C(T)/\mathcal C'(0)$ has valuation at least
+$a+1$ by the integrality proof, and the coefficient of $j^b$
+in the displayed sum has valuation at least
+\[
+ (a+1-v)+b(i+1-v)\ge b+1.
+\]
+For $R_x=2^{i+1}j/d_x$, use the finite identity
+\[
+ (1-R_x)^{-1}=\sum_{b=0}^{p_t-2}R_x^b+
+                  \frac{R_x^{p_t-1}}{1-R_x}.
+\]
+The last denominator is a unit. Multiplying its remainder by
+$\mathcal C(T)/(\mathcal C'(0)d_x)$ gives an element of
+$2^{p_t}\mathcal O$. This proves the expansion also when
+$\zeta=0$ or $j=0$. These expressions are computable by
+factoring the known powers of two and using only unit inverses.
+
+For each such array, residue class, and $b$ introduce an auxiliary variable ${\omega}$
+of weight $w_{\omega}=b+1$, to be replaced by
+\[
+ L_{\omega}(X)=\sum_{\text{occupied column positions }y\text{ in the residue class}}j^bX_y.
+\]
+As usual $j^0=1$, including $j=0$.
+Its source is the residue class's column group and its target is the other
+group in that array's coordinate pair.  Formula
+\eqref{eq:tensor-linear-form-expansion} expresses each row form as its
+local part plus a linear combination of its auxiliary variables with that target.
+The coefficient of ${\omega}$ is divisible by $2^{w_{\omega}}$.
+There are at most
+\begin{equation}\label{eq:tensor-variable-multiplicity}
+ (3M/L)2^{i+1}=6M/D
+\end{equation}
+variables of any one weight.
+
+In the product of the affine factors
+$l_{Y_x}((W(T)X)_x)$, every coefficient of a monomial in the auxiliary variables
+${\omega}^\beta$ is divisible by $2^{\sum_{\omega}w_{\omega}\beta_{\omega}}$.
+Consequently only the exponent tuples
+\begin{equation}\label{eq:tensor-exponent-budget}
+ \sum_{\omega}w_{\omega}\beta_{\omega}<p_t
+\end{equation}
+need be considered.  The number of these tuples is
+\begin{equation}\label{eq:tensor-partition-count}
+ \exp\bigl(O(\sqrt{Mp_t/D})\bigr)
+       =\exp\bigl(O_C(M/\sqrt u)\bigr).
+\end{equation}
+Here is the complete counting estimate.  Fix $\theta>0$. Every tuple
+$\beta$ satisfying \eqref{eq:tensor-exponent-budget} has
+$\exp(\theta(p_t-\sum_{\omega}w_{\omega}\beta_{\omega}))\ge1$. Summing this quantity over
+all tuples of nonnegative integers gives the generating product, so
+the number of tuples is at most
+\[
+ \sum_{\beta}\exp\Bigl(\theta\bigl(p_t-\sum_{\omega}w_{\omega}\beta_{\omega}\bigr)\Bigr)
+ =e^{\theta p_t}\prod_{\omega}\bigl(1-e^{-\theta w_{\omega}}\bigr)^{-1}.
+\]
+Every weight $w_{\omega}$ is a positive integer, and by
+\eqref{eq:tensor-variable-multiplicity} at most $6M/D$ auxiliary variables have
+any one weight. The number of tuples is therefore at most
+\[
+ \exp\left(\theta p_t+\frac{6M}{D}
+                   \sum_{j\ge1}-\log(1-\exp(-\theta j))\right).
+\]
+Expanding the logarithm and summing the geometric series gives
+\[
+ \sum_{j\ge1}-\log(1-\exp(-\theta j))
+  =\sum_{h\ge1}\frac1{h(\exp(\theta h)-1)}
+  \le\frac1\theta\sum_{h\ge1}\frac1{h^2}.
+\]
+Take $\theta=\sqrt{M/(Dp_t)}$ and use
+\eqref{eq:tensor-precision-bound}.  All auxiliary variables and their
+exponents have polynomial-size descriptions.  Tuples satisfying
+\eqref{eq:tensor-exponent-budget} can be enumerated with polynomial
+delay and space by ordering the variables and successively choosing
+each exponent subject to the remaining budget.  Every feasible partial
+choice has the all-zero continuation, so the number of visited
+partial choices is at most the number of complete tuples times
+the number of variables, up to an additive constant.
+
+\subsection{The child networks and their descriptions}
+\label{subsec:tensor-children}
+
+For one tuple $\beta$ in \eqref{eq:tensor-exponent-budget} construct
+a child network for each group $g\in[r]$.
+Place all current vertices in group $g$, from both sides of the
+current network, on one side of the child.  Retain their edge ends and
+their chosen lifted entries, now reduced modulo $2^{p_t}$.
+On the other side put one vertex for each array, with an edge
+to every retained edge end of that array.  Its indices are precisely
+the row bits $Y$ and column bits $X$ of group $g$ in the array.
+
+To define this new array tensor, form the product of the row
+factors $l_{Y_x}$ for group $g$ in the array, with their arguments
+expressed in local column bits and auxiliary variables.  Extract the
+coefficient with exponents $\beta_{\omega}$ for all auxiliary variables targeted at
+$g$ in that array.  Multiply it by
+\[
+ \prod_{\substack{{\omega}\text{ in this array}\\
+                  \text{source}({\omega})=g}}L_{\omega}(X)^{\beta_{\omega}}.
+\]
+Empty products equal one. If there are no target rows, the extracted
+coefficient is zero whenever a target exponent is positive. If the
+source residue class of ${\omega}$ has no occupied column position, then $L_{\omega}(X)=0$ and its
+power contributes one for $\beta_{\omega}=0$ and zero otherwise.
+
+Every auxiliary variable has one target and one source.  Coefficient extraction
+therefore factors over the array-group row products, and the
+substitution for each auxiliary variable depends only on bits in its source
+group. To see the factorization explicitly, denote the row product
+for array $\kappa$ and target group $g$ by $R_{\kappa,g}(Y_g,X_g;{\omega})$,
+where $Y_g$ and $X_g$ are that group's row and column bits in the array.
+Its formal variables are precisely the auxiliary variables of that array
+targeted at $g$. These sets of formal variables are disjoint as
+$(\kappa,g)$ varies. Consequently, before substituting the auxiliary variables,
+\[
+ [{\omega}^\beta]\prod_{\kappa,g}R_{\kappa,g}
+ =\prod_{\kappa,g}
+    [{\omega}^{\beta|_{\kappa,g}}]R_{\kappa,g},
+\]
+where $\beta|_{\kappa,g}$ is the restriction to those auxiliary variables with that target.
+After substitution, assign each factor $L_{\omega}(X)^{\beta_{\omega}}$ to
+its source group. All factors in a group then depend only on
+that group's edge-end bits, including its original tensor entries.
+Distributing the product in
+\eqref{eq:tensor-deformed-contraction}, and then summing the
+independent bits within groups, proves the exact identity
+\begin{equation}\label{eq:tensor-recursion-identity}
+ \mathcal D(t+\alpha\zeta)
+   =\sum_{\beta:\,\sum w_{\omega}\beta_{\omega}<p_t}
+                       \prod_{g=1}^r Z_{g,\beta}
+                  \pmod {2^{p_t}},
+\end{equation}
+where $Z_{g,\beta}$ is the contraction of the child just defined.
+The omitted monomials vanish by their coefficient divisibility.
+
+Each edge of a child joins a retained edge end of a group-$g$ vertex,
+from either side of the current network, to the vertex of that edge end's
+array. The edges of the child therefore correspond to the edge ends
+of group-$g$ vertices on the two sides. For the coordinate $i$ that
+defines the groups, Lemma~\ref{lem:tensor-arrays}(3) bounds these
+edge ends by $3M/r$ on each side, so a child has at most
+$6M/r=3M/32<M/8$ edges.  Old vertex degrees are unchanged, and a
+new array vertex has at most $2L\le\Delta$ edge ends.  Thus the
+invariants used in \eqref{eq:tensor-parameter-bounds} hold
+inductively.
+
+All new tensors are given implicitly.  To evaluate an array
+tensor entry, expand its product of at most $L$ affine row
+factors.  Each factor has polynomially many terms in $s$,
+including its local term.  Enumerating these choices, checking
+the desired exponents, and summing the resulting terms takes
+\[
+ \exp(O(L\log s))
+\]
+time and polynomial space.  The factors $L_{\omega}(X)^{\beta_{\omega}}$ are
+computed by ordinary repeated squaring in $\mathcal A_{p_t}$.
+Because $L\le s^{1/1000}$, this entry cost is
+$\exp(O(s^{9/10}))$.
+
+A description of a new tensor consists of its array data, the
+tuple $\beta$, the interpolation value, and the creation precision.
+These data and the matrix entries within the array suffice to compute its entry directly.  A retained tensor
+is evaluated from its original description, or from its own
+creation-time description if it was created earlier in the
+recursion.  Its residue at that precision is then lifted using least nonnegative coordinate representatives to the current precision.  The old descriptions are
+immutable and shared by reference.  Thus no composition of
+entry routines builds up with the depth, and all entry routines
+continue to have the required time and space bounds.
+In particular, a new array entry uses the assigned edge-end bits and
+the matrix entries, while the tensors incident to those edge ends remain
+separate vertices; evaluating the array never calls their evaluators.
+Only polynomially many vertices and polynomially much new
+description data are added along a path.
+
+\subsection{Time and space bounds}
+\label{subsec:tensor-cost}
+
+\begin{proof}[Proof of Theorem~\ref{thm:tensor-contraction}]
+Embed the original entries into $\mathcal A_{P_0}$ and perform
+the recursive algorithm above.  At a nonleaf call, for every node
+of positive multiplicity and every required residue-distinct
+interpolation value, compute \eqref{eq:tensor-recursion-identity}
+by its child contractions.  Interpolate $\mathcal D(t+\alpha z)$ and apply
+Lemma~\ref{lem:decreasing-hermite-multiplicities}.  At a leaf, sum directly over all
+Boolean edge assignments.  Lemma~\ref{lem:tensor-integrality},
+the recursion identity, and the recovery lemma prove correctness
+by induction from the leaves.
+
+The number of interpolation nodes, values, and groups at a call
+is polynomial in $s$, independently of $\mathcal L$.
+By \eqref{eq:tensor-partition-count}, the number of children of
+a nonleaf depth-$d$ call is at most
+\[
+ s^{O(1)}\exp\left(
+       O_C\left(\frac{s}{\sqrt\lambda}
+                    \left(\frac{\sqrt2}{8}\right)^d\right)\right).
+\]
+Indeed $M\le Cs\,8^{-d}$ and
+$u_d=\Theta_C(\lambda/2^d)$.  Multiplying these bounds over the
+$O_C(\log\lambda)$ depths, or bounding the number of nodes on
+each level in this way, gives at most
+\[
+ \exp\left(O_C(s/\sqrt\lambda)
+                   +O_C(\lambda\log\lambda)\right)
+       =\exp(O_C(s/\sqrt\lambda))
+\]
+calls in total.  At a leaf, direct summation uses at most $2^{H_{\mathrm{leaf}}}$
+assignments and polynomially many entry evaluations per assignment.
+Its cost is bounded by a polynomial in $s+\mathcal L$ times
+\[
+ \exp(O_C(H_{\mathrm{leaf}})+O_{C,A}(s^{9/10}))
+   =\exp(O_{C,A}(s/\sqrt\lambda)).
+\]
+Local arithmetic, packing, descriptions, and recovery use
+polynomial time per generated term, apart from the already
+bounded entry computations.  The description-dependent factor
+bounds the work per call. Since the branching bound is independent of
+$\mathcal L$, the total work retains a fixed polynomial factor in $s+\mathcal L$.
+This proves the time bound.
+
+For space, traverse the recursion depth first, accumulating one
+sum over $\beta$ and one product over groups at a time.
+Store the polynomially many Taylor data needed for a call's
+recovery, its current interpolation and auxiliary-variable indices, and its
+graph and new tensor descriptions.  Their sizes are polynomial
+in $s+\mathcal L$, including the precisions by
+\eqref{eq:tensor-precision-bound}.  There are only
+$O_C(\log\lambda)$ stack levels.  The common-denominator
+calculation in Lemma~\ref{lem:decreasing-hermite-multiplicities} also uses only
+polynomial-bit integers. Each call accumulates its contraction terms
+modulo its own fixed precision.
+Original entry routines use polynomial space by hypothesis,
+and the new routines have the same property.
+This proves the space bound.  Finally extract the base
+coordinates in $\mathcal A_{P_0}$, which give the answer in
+$\mathcal B_{P_0,\ell}$.
+\end{proof}

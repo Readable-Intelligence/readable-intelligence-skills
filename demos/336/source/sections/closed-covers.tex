@@ -1,0 +1,209 @@
+\section{Consequences for closed manifolds and their covers}
+\label{sec:closed-covers}
+
+The uniform simplex metric in the definition of continuous macroscopic
+dimension was fixed in the introduction. We first show that the
+coordinates of Section~\ref{sec:width-map} retain their fibers in this
+metric, then prove \Cref{cover:main}. The filling-radius and
+aspherical consequences follow at the end of this section.
+
+\begin{lemma}[Changing the simplex metric without changing fibers]
+\label{cover:uniform}
+Let $Y$ be a topological space and $k\ge0$ an integer. Suppose a
+family of continuous functions $t_i:Y\to[0,1]$ has locally finite
+supports, at least one equals $1$ at each point, and at most $k$ are
+strictly between $0$ and $1$.  Their coordinate map admits an injective
+conversion to a simplicial complex of dimension at most $k$ with its
+uniform simplex metric.  The converted map is continuous, and two of
+its values agree if and only if all the original coordinates agree.
+\end{lemma}
+\begin{proof}
+Form the abstract simplicial complex of Section~\ref{sec:width-map}
+for the indices of the family $(t_i)$ and the present $k$: its
+simplices are those of \eqref{topology:triangulation}, where $S,A$ are
+disjoint finite sets of indices, $S\ne\varnothing$, and $|A|\le k$.
+Realize each simplex as a standard simplex.  The coordinate realization
+of this complex is injective, by the argument given in
+Section~\ref{sec:width-map}.  Preserving barycentric coordinates
+therefore gives a well-defined injective conversion: two converted
+values agree exactly when the original coordinate vectors agree.
+
+For $k\ge1$, give each simplex edge length $1$ and define $d_K$
+as the infimum of the total Euclidean lengths of finite piecewise
+straight paths in the simplices.  This infimum is finite: vertices
+$\mathbf1_S$ and $\mathbf1_T$ are joined by adding the coordinates
+in $T\setminus S$ and then removing those in $S\setminus T$, always
+retaining a nonempty set of coordinates equal to $1$.  Every point
+is joined to a vertex in its simplex.  For a vertex $v$, its
+barycentric coordinate $b_v$, set to zero on simplices not containing
+$v$, agrees on faces and is $\sqrt2$-Lipschitz on each unit-edge
+simplex.  Indeed such a simplex is realized by the vectors
+$e_v/\sqrt2$ in a Euclidean coordinate space.  Hence
+\[
+ |b_v(x)-b_v(y)|\le\sqrt2\,d_K(x,y).
+\]
+The barycentric coordinates distinguish points, so $d_K$ is a genuine
+finite metric.  For $k=0$ use the discrete vertex metric.
+
+Near a point of $Y$, only a finite set $F$ of coordinates can be
+nonzero.  The coordinate map there lands continuously in the finite
+cubical subcomplex with all other coordinates zero.  The conversion
+is continuous on each of its closed simplices and hence on the finite
+complex.  Inclusion into the full uniform realization is continuous
+on a simplex because distance there is at most the length of its
+straight segment.  Finite pasting therefore proves continuity on
+the entire finite subcomplex, and thus near every point of $Y$.
+The same local finite argument applies for $k=0$.
+\end{proof}
+
+\begin{lemma}[Level components of a proper Morse function]
+\label{cover:level-quotient}
+Let $u:N\to\R$ be a proper Morse function on a connected smooth
+manifold without boundary.  The connected components of the levels of $u$ are the point fibers
+of a continuous map $q:N\to K$, where $K$ is a locally finite
+simplicial graph with its uniform simplex metric.
+\end{lemma}
+\begin{proof}
+Choose an auxiliary smooth Riemannian metric on $N$ to define gradients.
+The critical set is closed and its points are isolated.  Properness
+therefore makes the number of critical points in any compact slab
+$u^{-1}([a,b])$ finite.  Thus the critical values form a locally finite
+subset of $\R$, even if several critical points have the same value.
+Every level is compact and locally path connected: regular charts
+give a hypersurface, while the Morse normal form at a critical point
+gives the zero set of a nondegenerate quadratic form, which is a cone
+or an isolated point.  A compact locally path connected space has finitely
+many components, since its components are open and form an open cover.
+
+Let $S$ consist of the critical values and the integers.  It is
+locally finite.  At each $a\in S$ put a vertex for every component
+of $u^{-1}(a)$.  Between consecutive values $a<b$ of $S$, the flow of
+$\nabla u/|\nabla u|^2$ identifies $u^{-1}((a,b))$ with a regular
+level times $(a,b)$.  The flow exists for each compact subinterval
+because its trajectory stays in a compact slab.  Each of the finitely
+many connected product components defines an open edge, parametrized
+by its $u$-value.  The image of a proper map to $\R$ is closed;
+any finite endpoint of $u(N)$ is an attained extremum and hence a
+critical value.  Thus no further finite endpoints are missing.
+
+An edge component $E$ has a unique attachment at each end.  At its
+lower end, the nonempty compact connected sets
+\[
+ \overline{E\cap u^{-1}((a,a+\epsilon])},
+ \qquad 0<\epsilon<b-a,
+\]
+are nested as $\epsilon\downarrow0$.  Their intersection equals
+$\overline E\cap u^{-1}(a)$: a point of this latter set is approached
+by points of $E$ whose heights tend to $a$, and therefore belongs
+to every displayed closure.  The intersection is nonempty,
+connected and contained in $u^{-1}(a)$, hence in exactly one of that
+level's components.  Attach the edge to its vertex.  The same argument
+applies at $b$.  There are finitely many edges in either adjacent slab,
+so every vertex has finite valence.  The resulting graph is countable
+and locally finite.  Its points correspond exactly to the connected
+components of all levels, using full level components as vertices
+when critical values coincide.
+
+Define $q$ by this correspondence.  On an open edge it is continuous
+by the product description.  At a vertex corresponding to a compact
+level component $C\subset u^{-1}(a)$, an adjacent edge not attached
+to $C$ has no sequence approaching $C$: such a sequence would put
+a point of $C$ into its endpoint intersection, contrary to its unique
+attachment.  The finitely many other components of $u^{-1}(a)$ are
+disjoint compact sets.  A neighborhood of $C$ can therefore exclude
+them and the finitely many nonincident edges.  Requiring also that
+$|u-a|$ be sufficiently small places its remaining points in any
+prescribed short tails of the finitely many incident edges.  This
+proves continuity at the vertex and shows that its whole inverse
+image is $C$. The graph is connected, since $q$ is a continuous
+surjection and $N$ is connected.
+
+Subdivide every edge once with a different midpoint vertex for each
+edge.  This removes parallel edges from the abstract realization;
+loops do not occur because the endpoint heights differ.  The result
+is a simplicial graph.  Give each new edge the same length.  Finite
+valence implies that its ordinary graph topology equals the topology
+of this uniform simplex metric: vertex neighborhoods contain short
+segments on each of finitely many incident edges.  The subdivision
+and change of edge lengths preserve points and fibers.  Thus $q$
+has the asserted continuity and exact fibers.
+\end{proof}
+
+\begin{proof}[Proof of \cref{cover:main}]
+Put $s=\min_M\Scal_h>0$ and $X=\widetilde M$.  The lifted metric
+is complete.  If $X$ is compact, use a constant map to a vertex,
+whose only nonempty fiber has finite diameter.
+
+For $n\ge4$, the complete metric $s\widetilde h$ has scalar
+curvature at least $1$.  Apply \Cref{thm:main} using the coordinates
+of \eqref{topology:coordinates}, then \Cref{cover:uniform}.  Local
+finiteness of their supports was proved in
+\Cref{sec:width-map}, and the conversion preserves their
+entire fibers.  Scaling back gives the bound $C_n/\sqrt{s}$ in
+the original metric.
+
+For $n=2$, the Gaussian curvature of the cover is at least $s/2$.
+If a unit-speed minimizing geodesic had length $L>\pi\sqrt{2/s}$,
+take a parallel unit normal $E$ along it and the endpoint-zero
+variation field $V(t)=\sin(\pi t/L)E(t)$.  Its index form obeys
+\[
+ I(V,V)=\int_0^L\bigl(|\nabla_tV|^2-K|V|^2\bigr)\,dt
+ \le \frac{\pi^2}{2L}-\frac{sL}{4}<0,
+\]
+contradicting minimality.  Completeness supplies minimizing geodesics,
+so the cover has diameter at most $\pi\sqrt{2/s}$ and is compact
+by properness of a complete Riemannian manifold.  The constant map therefore proves this case.
+
+Finally let $n=3$ and $X$ be noncompact.  Apply
+\citet[Theorem~1.1, arXiv version~1]{liokumovichWang2023} to the
+complete metric $(s/6)\widetilde h$, whose scalar curvature is at
+least $6$.  It gives a proper Morse function such that every
+connected component of every level, including critical levels, has
+ambient diameter less than $18\pi$ in that metric.  Apply
+\Cref{cover:level-quotient}.  Each whole fiber of its graph map is one such
+level component, so in the original lifted metric it has diameter
+less than $18\pi\sqrt{6/s}$.  This is a continuous map to a
+one-dimensional uniform simplicial complex, as required.
+\end{proof}
+
+All map statements here are continuous; changing the simplex metric
+does not supply a Lipschitz bound.
+
+\subsection{Filling radius and the aspherical obstruction}
+
+\begin{proof}[Proof of \Cref{cor:filling-radius}]
+Gromov's comparison, in the form recorded by Nabutovsky, Rotman, and
+Sabourau \citep[Definition~6.1 and equation~(6.1)]{nabutovskyRotmanSabourau2021},
+uses the same continuous-map and entire-fiber width convention as above.
+A target of dimension at most \(n-2\) is also admissible for
+\(\UW_{n-1}\). Since \(M\) is closed, the comparison and the scaled
+form of Theorem~\ref{thm:main} give
+\[
+ \operatorname{FillRad}(M,g)
+ \le \tfrac12\UW_{n-1}(M,g)
+ \le \tfrac12\UW_{n-2}(M,g)
+ \le \frac{C_n}{2\sigma}.
+\]
+\end{proof}
+
+\begin{proof}[Proof of \Cref{cor:aspherical}]
+It suffices to consider a connected manifold \(M\). Suppose that it
+carries a metric \(h\) of positive scalar curvature, put
+\(s=\min_M\Scal_h>0\), and let \(X\) be its universal cover with the
+lifted metric \(\widetilde h\), which is complete. Since \(M\) is
+aspherical, \(X\) is contractible, and the deck group acts on \(X\)
+properly, isometrically and with compact quotient. Hence \(X\) is
+uniformly contractible \citep[\S\(2\frac12\)]{gromov1996}. Gromov's
+Proposition-Example in the same section shows that, for every
+\(0<\eps<\infty\), no continuous map from a complete uniformly
+contractible Riemannian \(n\)-manifold to a polyhedron of dimension
+less than \(n\) has all its fibers of diameter at most \(\eps\). On the other
+hand, \Cref{thm:main} applied to the complete metric \(s\widetilde h\),
+whose scalar curvature is at least \(1\), gives a continuous map from
+\(X\) to a simplicial complex of dimension at most \(n-2<n\) whose
+fibers have \(\widetilde h\)-diameter at most \(C_n/\sqrt s\). This
+contradiction proves the corollary. The width and filling-radius
+implications in Gromov's noncompact argument \(A^+\Rightarrow B\)
+\citep[\S3, pp.~6--8]{gromov2017Dozen} give another route from the same
+map to a contradiction.
+\end{proof}

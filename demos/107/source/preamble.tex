@@ -1,0 +1,49 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,enumitem,graphicx,placeins,longtable,bm,mathrsfs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{microtype}
+\usepackage[hypertexnames=false,colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black,breaklinks=true]{hyperref}
+\hypersetup{pdftitle={An Upper Bound of 9/4 for the Matrix Multiplication Exponent},pdfauthor={OpenAI},pdfsubject={}}
+\setcounter{tocdepth}{2}
+\setlength{\emergencystretch}{2em}
+\newcounter{resultanchor}
+\makeatletter
+\newenvironment{result}[3]{\par\addvspace{\medskipamount}\refstepcounter{resultanchor}\hypertarget{p107.result.#2}{}\protected@edef\@currentlabel{#2}\noindent\textbf{#1 #2\if\relax\detokenize{#3}\relax\else\ (#3)\fi.}\ \def\rtype{#1}\def\dtype{Definition}\def\mtype{Remark}\ifx\rtype\dtype\normalfont\else\ifx\rtype\mtype\normalfont\else\itshape\fi\fi}{\par\normalfont\addvspace{\medskipamount}}
+\makeatother
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\codim}{codim}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\val}{val}
+\DeclareMathOperator{\OPT}{OPT}
+\DeclareMathOperator{\TV}{TV}
+\DeclareMathOperator{\spanop}{span}
+\DeclareMathOperator{\SDP}{SDP}
+\newcommand{\F}{\mathbb F}
+\newcommand{\E}{\mathbb E}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\1}{\mathbf 1}
+\title{An Upper Bound of $9/4$ for the\\Matrix Multiplication Exponent}
+\author{OpenAI}
+\date{October 2, 2026}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\osc}{osc}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+
+\newenvironment{amsthmproof}[1][\proofname]{\begin{proof}[#1]}{\end{proof}}

@@ -1,0 +1,50 @@
+\section{Separating a shared tensor leg}\hypertarget{p107.sec.3}{}
+Suppose tensor blocks share their first leg and have disjoint variables on each of the other two legs. We separate the first leg by a degeneration that also tensors each block with a dot product. Each block's character value is therefore multiplied by the value of that dot product. \hyperlink{p107.result.3.2}{Corollary 3.2} applies this construction to tensor powers and counts the blocks with prescribed frequencies.
+
+\begin{result}{Proposition}{3.1}{Finite separation}
+Let $M\ge1$ and
+\[A=\sum_{h=1}^M A_h,\qquad A_h\in X\otimes Y_h\otimes Z_h,\]
+where the $Y_h$ are pairwise disjoint coordinate spaces and so are the $Z_h$. Then
+\begin{equation}A^{\oplus5M}\rightsquigarrow\bigoplus_{h=1}^M\bigl(A_h\otimes B_X(M)\bigr).\tag{3.1}\hypertarget{p107.eq.3.1}{}\end{equation}
+Each $A_h$ on the right has its own copy of $X$.
+\end{result}
+\begin{amsthmproof}
+Choose a common first-leg basis $x_a$ and sector bases $y_{h,b},z_{h,c}$, and write
+\[A=\sum_{h,a,b,c}c_{h,a,b,c}x_a y_{h,b}z_{h,c}.\]
+The internal index ranges may depend on $h$. Set $L=5M$, choose a primitive $L$th root of unity $\zeta$, and index the source copies by $r=0,\ldots,L-1$. Introduce target variables $X_{a,g},Y_{h,b,u},Z_{h,c,v}$, where $g,u,v\in\{1,\ldots,M\}$. Here $g$ is a tentative sector label, and $u,v$ will supply the dot product. Make the substitutions
+\[
+\begin{aligned}
+x_a^{(r)}&\longmapsto\sum_{g=1}^M\zeta^{2rg}X_{a,g},\\
+y_{h,b}^{(r)}&\longmapsto\sum_{u=1}^M\zeta^{r(u-h)}Y_{h,b,u},\\
+z_{h,c}^{(r)}&\longmapsto\frac1L\sum_{v=1}^M\zeta^{r(-v-h)}Z_{h,c,v}.
+\end{aligned}
+\]
+Within each source copy, each phase depends only on the indices of its target variable. All copies map into common target spaces, so summing over $r$ multiplies each target coefficient by
+\[\frac1L\sum_{r=0}^{L-1}\zeta^{r[u-v+2(g-h)]}.\]
+This Fourier sum is $1$ when $u-v+2(g-h)$ is divisible by $L$ and $0$ otherwise. Since $|u-v+2(g-h)|\le3(M-1)<L$, precisely the terms satisfying
+\begin{equation}u-v+2(g-h)=0\tag{3.2}\hypertarget{p107.eq.3.2}{}\end{equation}
+survive.
+
+To force the tentative label $g$ to equal $h$, give the target variables the weights
+\[w(X_{a,g})=g^2,\qquad w(Y_{h,b,u})=hu-h^2,\qquad w(Z_{h,c,v})=-hv.\]
+On every surviving term, \hyperlink{p107.eq.3.2}{(3.2)} gives
+\[g^2+hu-h^2-hv=(g-h)^2\ge0.\]
+The weight-zero tensor is therefore
+\[D=\sum_{h,a,b,c,u}c_{h,a,b,c}X_{a,h}Y_{h,b,u}Z_{h,c,u}.\]
+The variables are disjoint across $h$ on all three legs, and the common $u$ index supplies $B_X(M)$ within each block. Thus $D$ is the full direct sum in \hyperlink{p107.eq.3.1}{(3.1)}. The transformed tensor has degree at most $(M-1)^2$, even though some individual variable weights are negative.
+\end{amsthmproof}
+
+\begin{result}{Corollary}{3.2}{Shared-leg entropy inequality}
+Let $T=\sum_{i=1}^sT_i$ be a sum of nonzero tensors with a common first space and matched, pairwise disjoint sectors on the other two legs, as in \hyperlink{p107.result.3.1}{Proposition 3.1}. For every tensor character $\lambda$ and every probability vector $q=(q_1,\ldots,q_s)$,
+\begin{equation}\lambda(T)\ge e^{p_XH(q)}\prod_{i=1}^s\lambda(T_i)^{q_i},\qquad H(q)=-\sum_{i=1}^s q_i\log q_i.\tag{3.3}\hypertarget{p107.eq.3.3}{}\end{equation}
+Here logarithms are natural and $0\log0=0$.
+\end{result}
+\begin{amsthmproof}
+We apply \hyperlink{p107.result.3.1}{Proposition 3.1} to words of a prescribed frequency, using the counting argument familiar from tensor-power constructions \cite[Appendix A of the full version]{r10}. First take $q$ rational and let $N$ run through multiples of a common denominator. On the second and third legs of $T^{\otimes N}$, retain only words with $Nq_i$ occurrences of sector $i$. Every supported term has the same sector word on these two legs. The retained tensor $A$ therefore has
+\[M=\frac{N!}{\prod_i(Nq_i)!}\]
+matched sectors, with the first leg still shared. Each sector is a product of the prescribed $T_i$, up to reordering factors, and hence has character value $C_N=\prod_i\lambda(T_i)^{Nq_i}$.
+
+The separation uses $5M$ source copies and produces $M$ independent blocks, each of character value $M^{p_X}C_N$: the dot-product index lies within each block. Applying \hyperlink{p107.result.3.1}{Proposition 3.1} and \hyperlink{p107.result.2.3}{Lemma 2.3} at fixed $N$ gives
+\[5M\lambda(T)^N\ge5M\lambda(A)\ge M^{1+p_X}C_N.\]
+The interpolation limit in Lemma 2.3 is taken before varying $N$, so no degree bound uniform in $N$ is needed. Cancel $M$ and take $N$th roots. Stirling's formula gives $N^{-1}\log M\to H(q)$, proving \hyperlink{p107.eq.3.3}{(3.3)} for rational $q$. Finally, $\lambda(T_i)\ge1$, so the right side of \hyperlink{p107.eq.3.3}{(3.3)} is continuous on the probability simplex. Rational approximation proves the result for all $q$.
+\end{amsthmproof}

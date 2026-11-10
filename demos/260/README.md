@@ -4,6 +4,7 @@ Family 260.
 
 - [Original manuscript](original.pdf) · [upstream source](https://github.com/openai/math/blob/adc7f1241b42e322a6451854ab7e4b4c146bf78a/preprints/The-spacetime-Penrose-inequality-and-enclosing-area-September-27-2026/paper.pdf)
 - [Readable Version](readable.pdf) · [interactive reader](https://readable-intelligence.com/paper/d413001fc703?view=readable)
+- [LaTeX source](source/) of the Readable Version
 
 The Readable Version is a modified edition prepared by Readable Intelligence contributors to improve organization and explanation. It is not the upstream manuscript and is not an independent verification of the mathematical claims.
 

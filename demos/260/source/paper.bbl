@@ -1,0 +1,311 @@
+\begin{thebibliography}{10}
+
+\bibitem{AgmonDouglisNirenberg1959}
+Shmuel Agmon, Avron Douglis, and Louis Nirenberg.
+\newblock Estimates near the boundary for solutions of elliptic partial
+  differential equations satisfying general boundary conditions. {I}.
+\newblock {\em Communications on Pure and Applied Mathematics}, 12(4):623--727,
+  November 1959.
+\newblock
+  \href{https://doi.org/10.1002/cpa.3160120405}{doi:10.1002/cpa.3160120405}.
+
+\bibitem{AllenBrydenKazarasKhuri2025}
+Brian Allen, Edward Bryden, Demetre Kazaras, and Marcus Khuri.
+\newblock Proof of the spacetime {Penrose} inequality with suboptimal constant
+  in the asymptotically flat and asymptotically hyperboloidal regimes.
+\newblock \href{https://arxiv.org/abs/2504.10641v1}{arXiv:2504.10641v1}, 2025.
+
+\bibitem{AFP}
+Luigi Ambrosio, Nicola Fusco, and Diego Pallara.
+\newblock {\em Functions of Bounded Variation and Free Discontinuity Problems}.
+\newblock Oxford University Press, Oxford, 2000.
+\newblock
+  \href{https://doi.org/10.1093/oso/9780198502456.001.0001}{doi:10.1093/oso/9780198502456.001.0001}.
+
+\bibitem{BenDov2004}
+Ishai Ben-Dov.
+\newblock {Penrose} inequality and apparent horizons.
+\newblock {\em Physical Review D}, 70(12):124031, 2004.
+\newblock \href{https://arxiv.org/abs/gr-qc/0408066}{arXiv:gr-qc/0408066}.
+  \href{https://doi.org/10.1103/PhysRevD.70.124031}{doi:10.1103/PhysRevD.70.124031}.
+
+\bibitem{BiZhu2026v2}
+Yuchen Bi and Jintian Zhu.
+\newblock {Riemannian Penrose} inequality in all dimensions.
+\newblock \href{https://arxiv.org/abs/2605.00680v2}{arXiv:2605.00680v2}, 2026.
+
+\bibitem{Bray2001}
+Hubert~L. Bray.
+\newblock Proof of the {Riemannian Penrose} inequality using the positive mass
+  theorem.
+\newblock {\em Journal of Differential Geometry}, 59(2):177--267, 2001.
+\newblock
+  \href{https://doi.org/10.4310/jdg/1090349428}{doi:10.4310/jdg/1090349428}.
+
+\bibitem{BrayKhuri2010}
+Hubert~L. Bray and Marcus~A. Khuri.
+\newblock A {Jang} equation approach to the {Penrose} inequality.
+\newblock {\em Discrete and Continuous Dynamical Systems}, 27(2):741--766,
+  2010.
+\newblock \href{https://arxiv.org/abs/0910.4785}{arXiv:0910.4785}.
+  \href{https://doi.org/10.3934/dcds.2010.27.741}{doi:10.3934/dcds.2010.27.741}.
+
+\bibitem{BrayKhuri2011}
+Hubert~L. Bray and Marcus~A. Khuri.
+\newblock P.d.e.'s which imply the {Penrose} conjecture.
+\newblock {\em Asian Journal of Mathematics}, 15(4):559--612, 2011.
+\newblock \href{https://arxiv.org/abs/0905.2622}{arXiv:0905.2622}.
+  \href{https://doi.org/10.4310/AJM.2011.v15.n4.a5}{doi:10.4310/AJM.2011.v15.n4.a5}.
+
+\bibitem{BrayLee2009}
+Hubert~L. Bray and Dan~A. Lee.
+\newblock On the {Riemannian Penrose} inequality in dimensions less than eight.
+\newblock {\em Duke Mathematical Journal}, 148(1):81--106, 2009.
+\newblock
+  \href{https://doi.org/10.1215/00127094-2009-020}{doi:10.1215/00127094-2009-020}.
+
+\bibitem{BrendleWang2026}
+Simon Brendle and Yipeng Wang.
+\newblock A dimension descent scheme for the positive mass theorem in arbitrary
+  dimension.
+\newblock \href{https://arxiv.org/abs/2604.08473v2}{arXiv:2604.08473v2}, 2026.
+
+\bibitem{BrydenKhuriSormani2021}
+Edward Bryden, Marcus Khuri, and Christina Sormani.
+\newblock Stability of the spacetime positive mass theorem in spherical
+  symmetry.
+\newblock {\em The Journal of Geometric Analysis}, 31(4):4191--4239, 2021.
+\newblock
+  \href{https://doi.org/10.1007/s12220-020-00431-0}{doi:10.1007/s12220-020-00431-0}.
+
+\bibitem{CarrascoMars2010}
+Alberto Carrasco and Marc Mars.
+\newblock A counter-example to a recent version of the {Penrose} conjecture.
+\newblock {\em Classical and Quantum Gravity}, 27:062001, 2010.
+\newblock \href{https://arxiv.org/abs/0911.0883}{arXiv:0911.0883}.
+  \href{https://doi.org/10.1088/0264-9381/27/6/062001}{doi:10.1088/0264-9381/27/6/062001}.
+
+\bibitem{ChruscielDelay2003}
+Piotr~T. Chru{\'s}ciel and Erwann Delay.
+\newblock On mapping properties of the general relativistic constraints
+  operator in weighted function spaces, with applications.
+\newblock {\em M{\'e}moires de la Soci{\'e}t{\'e} Math{\'e}matique de France},
+  94:1--103, 2003.
+\newblock \href{https://arxiv.org/abs/gr-qc/0301073v2}{arXiv:gr-qc/0301073v2}.
+
+\bibitem{CorvinoSchoen2006}
+Justin Corvino and Richard~M. Schoen.
+\newblock On the asymptotics for the vacuum {Einstein} constraint equations.
+\newblock {\em Journal of Differential Geometry}, 73(2):185--217, 2006.
+\newblock \href{https://arxiv.org/abs/gr-qc/0301071}{arXiv:gr-qc/0301071}.
+  \href{https://doi.org/10.4310/jdg/1146169910}{doi:10.4310/jdg/1146169910}.
+
+\bibitem{CostabelMcIntosh2010}
+Martin Costabel and Alan McIntosh.
+\newblock On {Bogovski\u\i} and regularized {Poincar\'e} integral operators for
+  {de Rham} complexes on {Lipschitz} domains.
+\newblock {\em Mathematische Zeitschrift}, 265(2):297--320, 2010.
+\newblock \href{https://arxiv.org/abs/0808.2614v2}{arXiv:0808.2614v2}.
+  \href{https://doi.org/10.1007/s00209-009-0517-8}{doi:10.1007/s00209-009-0517-8}.
+
+\bibitem{Deimling1985}
+Klaus Deimling.
+\newblock {\em Nonlinear Functional Analysis}.
+\newblock Springer-Verlag, Berlin, 1985.
+\newblock
+  \href{https://doi.org/10.1007/978-3-662-00547-7}{doi:10.1007/978-3-662-00547-7}.
+
+\bibitem{Dong2026TwoConvex}
+Conghan Dong.
+\newblock The {Penrose} conjecture for initial data sets satisfying a
+  {$2$}-convexity condition.
+\newblock \href{https://arxiv.org/abs/2607.20741v2}{arXiv:2607.20741v2}, 2026.
+
+\bibitem{Dong2026Sigma}
+Conghan Dong.
+\newblock The {$\sigma$}-inverse mean curvature flow and the generalized
+  {Penrose} conjecture.
+\newblock \href{https://arxiv.org/abs/2605.26504v2}{arXiv:2605.26504v2}, 2026.
+
+\bibitem{Ellithy2026}
+Ahmed Ellithy.
+\newblock The spacetime {Penrose} inequality under a quasi final state
+  hypothesis.
+\newblock \href{https://arxiv.org/abs/2605.18730v1}{arXiv:2605.18730v1}, 2026.
+
+\bibitem{Geroch1973}
+Robert Geroch.
+\newblock Energy extraction.
+\newblock {\em Annals of the New York Academy of Sciences}, 224(1):108--117,
+  1973.
+\newblock
+  \href{https://doi.org/10.1111/j.1749-6632.1973.tb41445.x}{doi:10.1111/j.1749-6632.1973.tb41445.x}.
+
+\bibitem{GilbargTrudinger}
+David Gilbarg and Neil~S. Trudinger.
+\newblock {\em Elliptic Partial Differential Equations of Second Order}.
+\newblock Classics in Mathematics. Springer, Berlin, second edition, 2001.
+\newblock Reprint of the 1998 edition.
+  \href{https://doi.org/10.1007/978-3-642-61798-0}{doi:10.1007/978-3-642-61798-0}.
+
+\bibitem{HanKhuri}
+Qing Han and Marcus Khuri.
+\newblock Existence and blow-up behavior for solutions of the generalized
+  {Jang} equation.
+\newblock {\em Communications in Partial Differential Equations},
+  38:2199--2237, 2013.
+\newblock \href{https://arxiv.org/abs/1206.0079v2}{arXiv:1206.0079v2}.
+
+\bibitem{Hayward1996}
+Sean~A. Hayward.
+\newblock Gravitational energy in spherical symmetry.
+\newblock {\em Physical Review D}, 53(4):1938--1949, 1996.
+\newblock \href{https://arxiv.org/abs/gr-qc/9408002v2}{arXiv:gr-qc/9408002v2}.
+  \href{https://doi.org/10.1103/PhysRevD.53.1938}{doi:10.1103/PhysRevD.53.1938}.
+
+\bibitem{HuiskenIlmanen2001}
+Gerhard Huisken and Tom Ilmanen.
+\newblock The inverse mean curvature flow and the {Riemannian Penrose}
+  inequality.
+\newblock {\em Journal of Differential Geometry}, 59(3):353--437, 2001.
+\newblock
+  \href{https://doi.org/10.4310/jdg/1090349447}{doi:10.4310/jdg/1090349447}.
+
+\bibitem{Jang1978}
+Pong~Soo Jang.
+\newblock On the positivity of energy in general relativity.
+\newblock {\em Journal of Mathematical Physics}, 19(5):1152--1155, 1978.
+\newblock \href{https://doi.org/10.1063/1.523776}{doi:10.1063/1.523776}.
+
+\bibitem{JangWald1977}
+Pong~Soo Jang and Robert~M. Wald.
+\newblock The positive energy conjecture and the cosmic censor hypothesis.
+\newblock {\em Journal of Mathematical Physics}, 18(1):41--44, 1977.
+\newblock \href{https://doi.org/10.1063/1.523134}{doi:10.1063/1.523134}.
+
+\bibitem{Jaracz2023}
+Jaroslaw~S. Jaracz.
+\newblock Nonexistence of solutions to the coupled generalized {Jang}
+  equation/zero divergence system.
+\newblock {\em Classical and Quantum Gravity}, 40:195013, 2023.
+\newblock \href{https://arxiv.org/abs/2304.09332v1}{arXiv:2304.09332v1}.
+  \href{https://doi.org/10.1088/1361-6382/acf17f}{doi:10.1088/1361-6382/acf17f}.
+
+\bibitem{Jaracz2025StrictDEC}
+Jaroslaw~S. Jaracz.
+\newblock Conformal deformations of initial data sets to the strict dominant
+  energy condition using a spacetime {Poisson} equation.
+\newblock {\em International Journal of Geometric Methods in Modern Physics},
+  page 2550198, 2025.
+\newblock \href{https://arxiv.org/abs/2405.12249v1}{arXiv:2405.12249v1}.
+  \href{https://doi.org/10.1142/S0219887825501981}{doi:10.1142/S0219887825501981}.
+
+\bibitem{KhuriKunduri2025}
+Marcus Khuri and Hari Kunduri.
+\newblock The spacetime {Penrose} inequality for cohomogeneity one initial
+  data.
+\newblock {\em Advances in Theoretical and Mathematical Physics},
+  29(7):1905--1943, 2025.
+\newblock \href{https://arxiv.org/abs/2404.13247v1}{arXiv:2404.13247v1}.
+  \href{https://doi.org/10.4310/ATMP.251120040338}{doi:10.4310/ATMP.251120040338}.
+
+\bibitem{LittmanStampacchiaWeinberger1963}
+Walter Littman, Guido Stampacchia, and Hans~F. Weinberger.
+\newblock Regular points for elliptic equations with discontinuous
+  coefficients.
+\newblock {\em Annali della Scuola Normale Superiore di Pisa, Classe di
+  Scienze}, 17(1--2):43--77, 1963.
+
+\bibitem{MalecOMurchadha1994}
+Edward Malec and Niall {\'O Murchadha}.
+\newblock Trapped surfaces and the {Penrose} inequality in spherically
+  symmetric geometries.
+\newblock {\em Physical Review D}, 49(12):6931--6934, 1994.
+\newblock \href{https://arxiv.org/abs/gr-qc/9401014v1}{arXiv:gr-qc/9401014v1}.
+  \href{https://doi.org/10.1103/PhysRevD.49.6931}{doi:10.1103/PhysRevD.49.6931}.
+
+\bibitem{Malec}
+Edward Malec and Niall {\'O Murchadha}.
+\newblock The {Jang} equation, apparent horizons, and the {Penrose} inequality.
+\newblock {\em Classical and Quantum Gravity}, 21:5777--5788, 2004.
+\newblock \href{https://arxiv.org/abs/gr-qc/0408044v2}{arXiv:gr-qc/0408044v2}.
+  \href{https://doi.org/10.1088/0264-9381/21/24/007}{doi:10.1088/0264-9381/21/24/007}.
+
+\bibitem{Mars2009}
+Marc Mars.
+\newblock Present status of the {Penrose} inequality.
+\newblock {\em Classical and Quantum Gravity}, 26(19):193001, 2009.
+\newblock \href{https://arxiv.org/abs/0906.5566}{arXiv:0906.5566}.
+  \href{https://doi.org/10.1088/0264-9381/26/19/193001}{doi:10.1088/0264-9381/26/19/193001}.
+
+\bibitem{MichaelSimon1973}
+J.~H. Michael and L.~M. Simon.
+\newblock Sobolev and mean-value inequalities on generalized submanifolds of
+  {$\mathbb R^n$}.
+\newblock {\em Communications on Pure and Applied Mathematics}, 26(3):361--379,
+  1973.
+\newblock
+  \href{https://doi.org/10.1002/cpa.3160260305}{doi:10.1002/cpa.3160260305}.
+
+\bibitem{Nash1956}
+John Nash.
+\newblock The imbedding problem for {Riemannian} manifolds.
+\newblock {\em Annals of Mathematics}, 63(1):20--63, 1956.
+\newblock \href{https://doi.org/10.2307/1969989}{doi:10.2307/1969989}.
+
+\bibitem{BoundaryCompanion}
+{OpenAI}.
+\newblock {Boundary graph deformations for the spacetime Penrose inequality}.
+\newblock Preprint,
+  \href{https://github.com/openai/math/blob/main/preprints/Boundary-graph-deformations-for-the-spacetime-Penrose-inequality-September-27-2026/paper.pdf}{September
+  27, 2026}, 2026.
+
+\bibitem{RiemannianCompanion}
+{OpenAI}.
+\newblock {Conformal flow and the Riemannian Penrose inequality with minimizing
+  frontiers}.
+\newblock Preprint,
+  \href{https://github.com/openai/math/blob/main/preprints/Conformal-flow-and-the-Riemannian-Penrose-inequality-with-minimizing-frontiers-September-27-2026/paper.pdf}{September
+  27, 2026}, 2026.
+
+\bibitem{RigidityCompanion}
+{OpenAI}.
+\newblock {Equality and rigidity in the spacetime Penrose inequality}.
+\newblock Preprint,
+  \href{https://github.com/openai/math/blob/main/preprints/Equality-and-rigidity-in-the-spacetime-Penrose-inequality-September-27-2026/paper.pdf}{September
+  27, 2026}, 2026.
+
+\bibitem{Penrose1973}
+Roger Penrose.
+\newblock Naked singularities.
+\newblock {\em Annals of the New York Academy of Sciences}, 224(1):125--134,
+  1973.
+\newblock
+  \href{https://doi.org/10.1111/j.1749-6632.1973.tb41447.x}{doi:10.1111/j.1749-6632.1973.tb41447.x}.
+
+\bibitem{SchoenYau1979}
+Richard Schoen and Shing-Tung Yau.
+\newblock On the proof of the positive mass conjecture in general relativity.
+\newblock {\em Communications in Mathematical Physics}, 65:45--76, 1979.
+\newblock \href{https://doi.org/10.1007/BF01940959}{doi:10.1007/BF01940959}.
+
+\bibitem{SchoenYau1981}
+Richard Schoen and Shing-Tung Yau.
+\newblock Proof of the positive mass theorem. {II}.
+\newblock {\em Communications in Mathematical Physics}, 79(2):231--260, 1981.
+\newblock \href{https://doi.org/10.1007/BF01942062}{doi:10.1007/BF01942062}.
+
+\bibitem{SimonGMT}
+Leon Simon.
+\newblock Introduction to geometric measure theory.
+\newblock \url{https://math.stanford.edu/~lms/ntu-gmt-text.pdf}, 2018.
+\newblock NTU lecture notes, version updated 7 March 2018.
+
+\bibitem{Tangherlini1963}
+F.~R. Tangherlini.
+\newblock {Schwarzschild} field in {$n$} dimensions and the dimensionality of
+  space problem.
+\newblock {\em Il Nuovo Cimento}, 27:636--651, 1963.
+\newblock \href{https://doi.org/10.1007/BF02784569}{doi:10.1007/BF02784569}.
+
+\end{thebibliography}

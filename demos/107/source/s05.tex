@@ -1,0 +1,52 @@
+\section{Discrete growth and the arithmetic exponent}\hypertarget{p107.sec.5}{}
+Concavity and shifted tripling force a lower bound on the profile along the diagonal.
+
+\begin{result}{Lemma}{5.1}{Diagonal growth}
+Let $P:\mathbb N_{>0}^2\to\mathbb R_{>0}$ be symmetric, with $P(1,b)=b$. Suppose it satisfies \hyperlink{p107.eq.4.6}{(4.6)} for $a\ge1$, $b\ge2$ and \hyperlink{p107.eq.4.9}{(4.9)} for $a,h\ge1$. Then $P(a,a)\ge a^{4/3}$ for every $a\ge1$.
+\end{result}
+\begin{amsthmproof}
+For fixed $a$, concavity makes the increments $\Delta_{a,h}=P(a,h+1)-P(a,h)$ nonincreasing in $h$. Set $D_a=P(a,a)$ and $H_a=2D_a/(3a-1)$. Applying \hyperlink{p107.eq.4.9}{(4.9)} with $h=a$ bounds the first increment after the diagonal:
+\[
+2D_a\le P(a,4a-1)-D_a=\sum_{h=a}^{4a-2}\Delta_{a,h}\le(3a-1)\Delta_{a,a}.
+\]
+Thus $\Delta_{a,a}\ge H_a$. Comparing consecutive diagonal values requires one increment in each coordinate, so symmetry and concavity give, for $a\ge2$,
+\begin{equation}
+D_a-D_{a-1}=\Delta_{a-1,a-1}+\Delta_{a,a-1}\ge H_{a-1}+H_a.\tag{5.1}\hypertarget{p107.eq.5.1}{}
+\end{equation}
+Substituting $D_a=(3a-1)H_a/2$ gives a multiplicative recurrence for $H_a$. Rearranging and iterating from $H_1=1$ yields
+\begin{equation}
+\begin{aligned}
+H_a&\ge\left(1+\frac1{3(a-1)}\right)H_{a-1}&& (a\ge2),\\
+H_a&\ge\prod_{m=1}^{a-1}\left(1+\frac1{3m}\right)&& (a\ge1).
+\end{aligned}\tag{5.2}\hypertarget{p107.eq.5.2}{}
+\end{equation}
+For $a=1$ the product is empty and equals 1. For $m\ge1$, the elementary inequality $(1+1/(3m))^3\ge1+1/m$ now gives
+\[
+H_a^3\ge\prod_{m=1}^{a-1}\left(1+\frac1{3m}\right)^3\ge\prod_{m=1}^{a-1}\left(1+\frac1m\right)=a.
+\]
+Since $(3a-1)/2\ge a$, we conclude $D_a\ge aH_a\ge a^{4/3}$.
+\end{amsthmproof}
+
+\begin{amsthmproof}[Proof of \hyperlink{p107.result.1.1}{Theorem 1.1}]
+For every character, the profile \hyperlink{p107.eq.4.4}{(4.4)} satisfies all hypotheses of \hyperlink{p107.result.5.1}{Lemma 5.1}. Combining it with \hyperlink{p107.eq.4.5}{(4.5)} gives
+\[
+a^{4/3}\le P(a,a)\le(2a-1)^{1/t}.
+\]
+Letting $a\to\infty$ forces $t\le3/4$. \hyperlink{p107.eq.2.4}{Equation (2.4)} therefore gives $\lambda(T_d)\le d^{9/4}$ for every character.
+
+For each integer $d\ge2$, take $k_d=\lceil d^\nu\rceil-1$. Then $d^\nu-1\le k_d<d^\nu$, so \hyperlink{p107.result.2.2}{Lemma 2.2} supplies a character with $\lambda(T_d)\ge k_d$. This character may depend on $d$, but the upper bound just proved holds for every character. Hence
+\[
+d^\nu\le d^{9/4}+1.
+\]
+Taking logarithms and letting $d\to\infty$ yields $\nu\le9/4$.
+
+To obtain an arithmetic algorithm, fix $\varepsilon>0$ and choose $0<\delta<\varepsilon$. The definition of $\nu$ supplies a fixed integer $u\ge2$ and an exact rank decomposition of $T_u$ of length $r<u^{9/4+\delta}$. Its bilinear identities remain valid on matrix blocks: their coefficients are central scalars, and each product has its left-input block before its right-input block. For $N$ a power of $u$, recursive application therefore has cost
+\[
+S(N)\le rS(N/u)+C_{u,r}(N/u)^2.
+\]
+Flattening gives $r\ge u^2$. Summing the recursion levels gives $S(N)=O(N^{\log_u r})$ if $r>u^2$, and $S(N)=O(N^2\log N)$ if $r=u^2$. Both are $O_\varepsilon(N^{9/4+\varepsilon})$. Padding an arbitrary $n$ to the next power of $u$ increases its size by less than the fixed factor $u$ and proves the theorem.
+\end{amsthmproof}
+
+\begin{result}{Remark}{5.2}{}
+In the complex arithmetic model used here, all coefficients of the recursive algorithm are fixed once $\varepsilon$ is chosen. They can also be chosen algebraic: the equations for an exact rank decomposition have rational coefficients, so the Nullstellensatz turns existence of a complex solution into existence of one over $\overline{\mathbb Q}$. The finitely many resulting coefficients then lie in one number field.
+\end{result}

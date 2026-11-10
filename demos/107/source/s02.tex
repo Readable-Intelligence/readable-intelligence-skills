@@ -1,0 +1,45 @@
+\section{Tensors and their characters}\hypertarget{p107.sec.2}{}
+Throughout, tensors are finite trilinear forms over $\mathbb C$. Their three variable groups are called the $X$-, $Y$-, and $Z$-legs. A restriction applies an independent linear substitution on each leg. We write $A\ge B$ if $B$ is a restriction of $A$.
+
+In a full direct sum, the summands have disjoint variables on all three legs. The tensor product multiplies coefficient arrays and pairs the corresponding variable indices on each leg; we write it by juxtaposition or by $\otimes$. These operations make the set $S$ of tensors modulo mutual restriction a commutative semiring, with the compatible order induced by restriction. The zero tensor is $0$, the scalar tensor $xyz$ is $1$, and the integer $m\ge0$ denotes the direct sum of $m$ copies of $1$. Thus $mA=A^{\oplus m}$.
+
+The tensor rank $\mathrm R(A)$ is the least integer $m$ with $m\ge A$. It is finite by expansion in bases. Every nonzero tensor restricts to $1$, by evaluating its three arguments on suitable lines, so
+\begin{equation}\mathrm R(A)\ge A\ge1\qquad(A\ne0).\tag{2.1}\hypertarget{p107.eq.2.1}{}\end{equation}
+Rank is monotone, subadditive, and submultiplicative. We do not assume its additivity. A \emph{leg flattening} is the matrix obtained by placing that leg against the pair of other legs. Its matrix rank is restriction-monotone, additive on full direct sums, and multiplicative on tensor products.
+
+The trilinear form encoding $n\times n$ matrix multiplication and its exact-rank exponent are
+\begin{equation}T_n=\sum_{i,j,k=1}^n x_{ij}y_{jk}z_{ki},\qquad\nu=\inf_{n\ge2}\log_n\mathrm R(T_n).\tag{2.2}\hypertarget{p107.eq.2.2}{}\end{equation}
+Reindexing identifies $T_nT_m$ with $T_{nm}$. Flattening and the displayed expansion give $n^2\le\mathrm R(T_n)\le n^3$, so $2\le\nu\le3$ and $\mathrm R(T_n)\ge n^\nu$. At the end of the proof we convert the bound on $\nu$ into the asserted arithmetic bound.
+
+\begin{result}{Definition}{2.1}{}
+A \emph{tensor character} is an additive, multiplicative, restriction-monotone map $\lambda:S\to\mathbb R_{\ge0}$ with $\lambda(1)=1$.
+\end{result}
+
+The three flattening ranks are characters, and every character satisfies $\lambda(m)=m$ and $1\le\lambda(A)\le\mathrm R(A)$ for $A\ne0$. Characters are the spectral points of the tensor semiring \cite{r16,r4}. We need only the following special case of spectral separation, proved in \hyperlink{p107.sec.A}{Appendix A} using finite dimensional separation, compactness, and a fixed-point theorem.
+
+\begin{result}{Lemma}{2.2}{Detecting characters}
+Let $d\ge2$ and $k\ge0$ be integers with $k<d^\nu$, where $\nu$ is defined by \hyperlink{p107.eq.2.2}{(2.2)}. There is a tensor character $\lambda$ with $\lambda(T_d)\ge k$.
+\end{result}
+
+\subsection{Dot-product exponents}\hypertarget{p107.sec.2.1}{}
+For $m\ge1$, define
+\[B_X(m)=x\sum_{i=1}^m y_i z_i,\]
+and obtain the other two oriented dot products $B_Y(m),B_Z(m)$ by cyclically permuting the legs. For any character there are numbers $p_X,p_Y,p_Z\in[0,1]$ such that
+\begin{equation}\lambda(B_X(m))=m^{p_X},\qquad\lambda(B_Y(m))=m^{p_Y},\qquad\lambda(B_Z(m))=m^{p_Z}.\tag{2.3}\hypertarget{p107.eq.2.3}{}\end{equation}
+Indeed, $f(m)=\lambda(B_X(m))$ is positive and nondecreasing, satisfies $f(mn)=f(m)f(n)$, and lies between $1$ and $m$. Put $p_X=\log_2 f(2)$. For $r\ge1$, let $\ell=\lfloor r\log_2 m\rfloor$. Comparison with $2^\ell\le m^r<2^{\ell+1}$ gives $f(2)^\ell\le f(m)^r\le f(2)^{\ell+1}$. Taking logarithms and letting $r\to\infty$ proves the first identity; the other two follow in the same way.
+
+The product $B_X(m)B_Y(m)B_Z(m)$ has variables $x_{bc},y_{ac},z_{ab}$ and monomials $x_{bc}y_{ac}z_{ab}$, so it is isomorphic to $T_m$. Consequently
+\begin{equation}\lambda(T_m)=m^{p_X+p_Y+p_Z}.\tag{2.4}\hypertarget{p107.eq.2.4}{}\end{equation}
+Setting all off-diagonal variables of $T_m$ to zero leaves $m$ independent scalar products. Hence $T_m\ge m$, and $p_X+p_Y+p_Z\ge1$. In particular, the parameter $t=(p_X+p_Y+p_Z)/3$ used below is always positive.
+
+\subsection{Degenerations and interpolation}\hypertarget{p107.sec.2.2}{}
+We use only the following elementary form of degeneration. After fixed linear substitutions, give each variable an integer weight, multiply it by the corresponding power of a parameter $\varepsilon$, and retain the terms of minimum total weight. Write $A\rightsquigarrow B$ if this procedure takes $A$ to $B$, with the convention $0\rightsquigarrow0$. Although individual weights may be negative, shifting the minimum total weight to zero gives a polynomial in $\varepsilon$ with constant coefficient $B$.
+
+\begin{result}{Lemma}{2.3}{Interpolation}
+If $A\rightsquigarrow B$, then $\lambda(A)\ge\lambda(B)$ for every tensor character $\lambda$.
+\end{result}
+\begin{amsthmproof}
+This is the interpolation passage from approximate to exact bilinear algorithms \cite{r3}, applied to characters. Let $F(\varepsilon)=B+\varepsilon F_1+\cdots+\varepsilon^L F_L$ be the transformed tensor. For each nonzero $\varepsilon$, it is a restriction of $A$. The polynomial $F(\varepsilon)^{\otimes j}$ has degree at most $jL$ and constant coefficient $B^{\otimes j}$. Interpolation at $jL+1$ distinct nonzero points writes this coefficient as a linear combination of specializations. A linear combination of tensors on common spaces is a restriction of their full direct sum: identify the corresponding variables and absorb each scalar coefficient into one leg. Therefore
+\[\lambda(B)^j\le(jL+1)\lambda(A)^j.\]
+Taking $j$th roots and letting $j\to\infty$ proves the result. The degeneration, and hence $L$, is fixed during this limit.
+\end{amsthmproof}

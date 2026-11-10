@@ -1,0 +1,27 @@
+% Columns z=0,...,4; rows y=0,...,3, ordered downwards.
+\begin{tikzpicture}[x=0.8cm,y=-0.625cm]
+\fill[black!10] (0,0) rectangle (2,1);
+\fill[black!10] (2,1) rectangle (3,3);
+\fill[black!10] (3,3) rectangle (5,4);
+\foreach \col in {0,...,5} {\draw[black!40,line width=0.25pt] (\col,0)--(\col,4);}
+\foreach \row in {0,...,4} {\draw[black!40,line width=0.25pt] (0,\row)--(5,\row);}
+\draw[black,line width=0.6pt] (0,0) rectangle (2,1);
+\draw[black,line width=0.6pt] (2,1) rectangle (3,3);
+\draw[black,line width=0.6pt] (3,3) rectangle (5,4);
+\node at (2.5,-1.0) {$Z$-index};
+\foreach \col in {0,...,4} {\node at (\col+0.5,-0.42) {$\col$};}
+\foreach \row in {0,...,3} {\node[anchor=east] at (-0.24,\row+0.5) {$y=\row$};}
+\node at (0.5,0.5) {$x_0$};
+\node at (1.5,0.5) {$x_1$};
+\node at (1.5,1.5) {$x_0$};
+\node at (2.5,1.5) {$x_1$};
+\node at (2.5,2.5) {$x_0$};
+\node at (3.5,2.5) {$x_1$};
+\node at (3.5,3.5) {$x_0$};
+\node at (4.5,3.5) {$x_1$};
+\draw[line width=0.35pt] (1.23,1.77)--(1.77,1.23);
+\draw[line width=0.35pt] (3.23,2.77)--(3.77,2.23);
+\node[anchor=west] at (5.56,0.80) {Shaded: weight $0$};
+\node[anchor=west] at (5.56,1.80) {Crossed: weight $+1$};
+\node[anchor=west] at (5.56,2.80) {Blank: no term};
+\end{tikzpicture}
